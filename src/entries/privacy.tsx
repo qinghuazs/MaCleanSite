@@ -4,6 +4,6 @@ import { Legal } from '../pages/Legal'
 
 mountPage({
   depth: 1,
-  title: { zh: '隐私政策 | Maclean', en: 'Privacy Policy | Maclean' },
+  title: { zh: '隐私政策 | MaClean', en: 'Privacy Policy | MaClean' },
   children: <Legal doc={privacy} current="privacy" />,
 })

@@ -30,27 +30,28 @@ function Hero() {
   return (
     <section className="wrap grid items-start gap-12 pt-14 pb-20 sm:pt-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:pt-24 lg:pb-28">
       <div className="min-w-0 lg:sticky lg:top-28">
-        <h1 className="text-[2.6rem] leading-[1.1] sm:text-[3.4rem] lg:text-[3.9rem]">
+        <h1 className="text-[2.6rem] leading-[1.1] sm:text-[3.4rem] lg:text-[clamp(3rem,5vw,3.6rem)]">
           {t({
             zh: (
               <>
-                说不清楚的，
+                {/* 第一行整体不换行，避免"把"单独占一行 */}
+                <span className="whitespace-nowrap">把「系统数据」</span>
                 <br />
-                就不让你删。
+                拆开看看
               </>
             ),
-            en: <>If it can’t be explained, it doesn’t get deleted.</>,
+            en: <>Take a look inside System Data</>,
           })}
         </h1>
         <p className="mt-6 max-w-[34rem] text-[1.12rem] leading-[1.7] text-ink-2">
           {t({
-            zh: 'Mac 存储里那条灰色的「系统数据」，Maclean 帮你拆开：每一项是什么、删了有什么代价、会不会自己长回来、实际能腾出多少。',
-            en: 'Maclean opens up the grey “System Data” in your Mac’s storage and tells you what each item is, what deleting it costs, whether it comes back, and how much space you’ll really get.',
+            zh: '我用过好几个清理软件，每次点「一键清理」心里都发虚：它到底删了什么？过两天会不会又长回来？所以写 MaClean 的时候，我让它先把每一项讲清楚，你点了头才删。',
+            en: 'I’ve tried a few Mac cleaners, and hitting “Clean” always made me a little nervous. What did it just delete? Will it all be back next week? So MaClean explains every item first, and deletes nothing until you say so.',
           })}
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href={site.downloadUrl || null} disabledLabel={t({ zh: '即将开放下载', en: 'Download coming soon' })}>
-            {t({ zh: '下载 Maclean', en: 'Download Maclean' })}
+            {t({ zh: '下载 MaClean', en: 'Download MaClean' })}
           </ButtonLink>
           <ButtonLink href={l.section('pricing')} variant="secondary">
             {t({ zh: '查看价格', en: 'See pricing' })}
@@ -58,8 +59,8 @@ function Hero() {
         </div>
         <p className="mt-5 text-[0.85rem] text-ink-3">
           {t({
-            zh: `适用于 macOS ${site.minMacOS} 及以上，安装包经 Apple 公证。`,
-            en: `For macOS ${site.minMacOS} or later. Notarized by Apple.`,
+            zh: `需要 macOS ${site.minMacOS} 或更新的系统，安装包经过 Apple 公证。`,
+            en: `Requires macOS ${site.minMacOS} or later. Notarized by Apple.`,
           })}
         </p>
       </div>
@@ -68,8 +69,8 @@ function Hero() {
         <LedgerDemo />
         <p className="mt-3 px-1 text-[0.82rem] text-ink-3">
           {t({
-            zh: '点开任意一项看说明，勾选看实际能腾出多少。',
-            en: 'Open any item to read why. Tick items to see what you’d actually get back.',
+            zh: '上面是示例数据。点一行能看到详细说明，勾选的时候留意底部的数字。',
+            en: 'That’s sample data. Click a row for details, and watch the number at the bottom as you tick things.',
           })}
         </p>
       </div>
@@ -94,8 +95,8 @@ function FourQuestions() {
     {
       q: { zh: '删了有什么代价？', en: 'What does deleting it cost?' },
       a: {
-        zh: '分四档：无代价、需重新生成、需重新下载、不可恢复。是下次打开慢一点，还是要重新下一遍，删之前就知道。',
-        en: 'Four levels: no cost, rebuilds, re-downloads, irreversible. You know beforehand whether it means a slower next launch or another download.',
+        zh: '有的删了没任何影响，有的下次打开会慢一点，有的得重新下载，还有少数删了就找不回来。标签上写着是哪种。',
+        en: 'Some things cost nothing to delete. Some make the next launch slower, some have to download again, and a few are gone for good. The tag tells you which.',
       },
       tags: (
         <>
@@ -109,24 +110,24 @@ function FourQuestions() {
     {
       q: { zh: '会不会自己长回来？', en: 'Will it come back?' },
       a: {
-        zh: '会长回来的标成「会自动回来」，默认不勾。删了也白删，过几天又是这么大。',
-        en: 'Anything that regenerates is marked “Comes back” and left unticked. Deleting it buys you a few days at best.',
+        zh: '比如 Xcode 的编译缓存，删完编译一次就回来了。这种会标上「会自动回来」，默认不勾，省得你白忙。',
+        en: 'Xcode’s build cache is back after a single build. Things like that are tagged “Comes back” and left unticked, so you don’t waste the effort.',
       },
       tags: <Tag tone="clay">{t({ zh: '会自动回来', en: 'Comes back' })}</Tag>,
     },
     {
       q: { zh: '实际能腾出多少？', en: 'How much space will you really get?' },
       a: {
-        zh: '有些文件和别处共用同一份空间，比如 APFS 克隆和硬链接，删了不一定真释放。Maclean 按扣掉共享之后的大小算。',
-        en: 'Some files share storage with others through APFS clones or hard links, so deleting them frees little. Maclean counts only what you’ll actually get back.',
+        zh: '这一点最容易被忽略。有些文件和别的文件共用磁盘空间（APFS 克隆、硬链接），看着有 6 GB，删掉可能只多出 1 GB。MaClean 显示的是真正能多出来的空间。',
+        en: 'This one is easy to miss. Some files share disk space with others through APFS clones or hard links. A folder can say 6 GB and free up 1 GB when you delete it. MaClean shows the number you’d actually get back.',
       },
       tags: <Tag>{t({ zh: '共享空间，实际 1.1 GB', en: 'Shared, frees 1.1 GB' })}</Tag>,
     },
     {
       q: { zh: '要先退出哪个应用？', en: 'Which apps have to quit first?' },
       a: {
-        zh: '微信、Chrome 这类正开着的应用，要先退出才能清它的缓存。「只选推荐项」会先跳过它们，并告诉你是哪几个。',
-        en: 'Caches of running apps like WeChat or Chrome can only be cleaned once the app quits. “Select recommended” skips them and tells you which ones.',
+        zh: '微信、Chrome 开着的时候，它们的缓存清不了。点「只选推荐项」会先跳过这些，并告诉你要退出哪几个。',
+        en: 'You can’t clear WeChat’s or Chrome’s cache while they’re open. “Select recommended” skips those and tells you which apps to quit.',
       },
       tags: <Tag tone="warn">{t({ zh: '需先退出微信', en: 'Quit WeChat first' })}</Tag>,
     },
@@ -137,10 +138,10 @@ function FourQuestions() {
       <div className="wrap grid gap-12 py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:py-28">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <SectionHeading
-            title={t({ zh: '每一项，都回答四个问题', en: 'Every item answers four questions' })}
+            title={t({ zh: '扫完之后，你会看到什么', en: 'What you see after a scan' })}
             intro={t({
-              zh: '「系统数据」先拆成模拟器、开发者文件、缓存、应用数据、容器、废纸篓、本地快照七类，哪块最大一眼就能看到。再往下，每一项不是一串看不懂的路径，而是「腾讯会议的缓存」「Postman 自动更新时下载的安装包」这样的说明。',
-              en: 'System Data is first split into seven groups: simulators, developer files, caches, app data, containers, Trash and local snapshots, so the biggest one is obvious. Below that, every item is described in plain words, like “Tencent Meeting’s cache” or “the installer Postman downloaded to update itself”, not a cryptic path.',
+              zh: '先是「系统数据」拆出来的几大块：模拟器、开发者文件、缓存、应用数据、容器、废纸篓，还有本地快照（它的大小系统不提供，只能标成未知）。点进去，每一项都用大白话写着是什么，比如「腾讯会议的缓存」「Postman 自动更新时下载的安装包」，后面跟着几个标签。',
+              en: 'First, System Data broken into chunks: simulators, developer files, caches, app data, containers, the Trash, and local snapshots (macOS won’t say how big those are, so they show as unknown). Open one and every item says what it is in plain words, like “Tencent Meeting’s cache” or “the installer Postman downloaded to update itself”, followed by a few tags.',
             })}
           />
         </div>
@@ -163,34 +164,34 @@ function Safety() {
   const points: { icon: ReactNode; title: L; text: L }[] = [
     {
       icon: <Lock className="size-[18px]" />,
-      title: { zh: '锁住不该删的', en: 'Locked items stay locked' },
+      title: { zh: '有些东西是锁着的', en: 'Some items are locked' },
       text: {
-        zh: '聊天记录数据库、浏览器扩展、最新的模拟器运行时，会显示占用，但不能勾选。',
-        en: 'Chat history databases, browser extensions and your newest simulator runtime are shown, but can’t be selected.',
+        zh: '聊天记录数据库、浏览器扩展、最新的那个模拟器系统，会列出来让你知道占了多少，但勾不上。',
+        en: 'Chat history databases, browser extensions and your newest simulator runtime are listed so you know how big they are, but you can’t select them.',
       },
     },
     {
       icon: <ListChecks className="size-[18px]" />,
-      title: { zh: '你的数据逐项确认', en: 'Your own files, one at a time' },
+      title: { zh: '你自己的文件要一个个点', en: 'Your own files need a yes each' },
       text: {
-        zh: '聊天里的图片视频、下载文件夹这类你自己的数据，要一项一项点头才会进清单。',
-        en: 'Things like chat media or your Downloads folder only make the list after you approve each one.',
+        zh: '聊天里存下的图片视频、下载文件夹里的东西，不会被批量勾上，得一项一项确认。',
+        en: 'Photos and videos saved from chats, stuff in Downloads: none of it gets ticked in bulk. You confirm each one.',
       },
     },
     {
       icon: <ClipboardCheck className="size-[18px]" />,
-      title: { zh: '执行前先预检', en: 'A preflight check first' },
+      title: { zh: '动手前再核对一遍', en: 'One more check before it runs' },
       text: {
-        zh: '要退出哪些应用、缺什么权限、每一项怎么处理，执行前全部列出来。',
-        en: 'Before anything runs, you see which apps must quit, which permissions are missing and how each item will be handled.',
+        zh: '真正执行之前会弹出预检窗口，写着哪些应用要先退出、还缺什么权限、每一项会怎么处理。',
+        en: 'Before anything runs you get a preflight window: which apps need to quit, which permissions are missing, and what will happen to each item.',
       },
     },
     {
       icon: <Undo2 className="size-[18px]" />,
-      title: { zh: '清空废纸篓前都能撤回', en: 'Undo until you empty the Trash' },
+      title: { zh: '后悔了还能放回去', en: 'Changed your mind? Put it back' },
       text: {
-        zh: '默认移到废纸篓。清空废纸篓之前，在历史页一键放回原处。',
-        en: 'Items go to the Trash by default. Until you empty it, one click in History puts everything back.',
+        zh: '默认是移到废纸篓。只要废纸篓还没清空，在历史记录里点一下就都回来了。',
+        en: 'Things go to the Trash by default. As long as you haven’t emptied it, one click in History brings everything back.',
       },
     },
   ]
@@ -199,7 +200,7 @@ function Safety() {
     <section id="safety" className="wrap pb-20 lg:pb-28">
       <div className="grid gap-12 rounded-[28px] bg-paper-2 px-6 py-12 sm:px-12 sm:py-16 lg:grid-cols-2 lg:gap-16">
         <div>
-          <SectionHeading title={t({ zh: '不该删的，勾都勾不上', en: 'What shouldn’t go can’t even be ticked' })} />
+          <SectionHeading title={t({ zh: '不该删的，勾都勾不上', en: 'Some things you can’t even tick' })} />
           <ul className="mt-10 space-y-7">
             {points.map((p) => (
               <li key={p.title.en} className="flex gap-4">
@@ -242,7 +243,7 @@ function PreflightMock() {
     <div className="self-center rounded-[18px] border border-line bg-surface p-5 shadow-[0_1px_2px_rgba(20,20,19,0.04),0_12px_40px_-14px_rgba(20,20,19,0.16)] sm:p-6">
       <p className="font-serif text-[1.3rem]">{t({ zh: '预检', en: 'Preflight' })}</p>
       <p className="mt-1 text-[0.85rem] text-ink-3">
-        {t({ zh: '执行前确认下面这些项和处理方式。', en: 'Review these items and how each will be handled.' })}
+        {t({ zh: '确认一下这些项和处理方式，没问题就执行。', en: 'Check these items and how each will be handled, then run.' })}
       </p>
       <p className="mt-4 rounded-[10px] bg-olive-wash px-3 py-2 text-[0.85rem] text-olive-ink">
         {t({ zh: '策略：移到废纸篓。清空废纸篓之前可以回滚。', en: 'Strategy: move to Trash. You can roll back until the Trash is emptied.' })}
@@ -315,10 +316,10 @@ function Developers() {
       <div className="wrap py-20 lg:py-28">
         <SectionHeading
           tone="night"
-          title={t({ zh: '写代码的 Mac，空间都去哪了', en: 'Where a developer’s disk space goes' })}
+          title={t({ zh: '如果你写代码', en: 'If you write code' })}
           intro={t({
-            zh: 'Xcode 缓存、不再用的旧模拟器、项目的编译产物、Homebrew 的缓存和日志，Maclean 都能扫出来。',
-            en: 'Xcode caches, old simulators you no longer use, build output from your projects, Homebrew caches and logs. Maclean finds all of it.',
+            zh: '开发机的空间多半是被这些吃掉的：Xcode 缓存、早就不用的旧模拟器、各个项目的编译产物、Homebrew 的缓存和日志。下面这些 MaClean 都会扫：',
+            en: 'On a dev machine the space usually goes to Xcode caches, simulators you stopped using ages ago, build output from old projects, and Homebrew’s caches and logs. MaClean checks all of these:',
           })}
         />
         <ul className="mt-8 flex max-w-3xl flex-wrap gap-2">
@@ -334,19 +335,19 @@ function Developers() {
           <div className="min-w-0 rounded-[20px] border border-night-line bg-night-2 p-6 sm:p-8">
             <div className="flex items-center gap-3">
               <Terminal className="size-5 text-clay" aria-hidden="true" />
-              <h3 className="text-[1.5rem]">{t({ zh: '系统不让动的，交给终端', en: 'What macOS protects goes to Terminal' })}</h3>
+              <h3 className="text-[1.5rem]">{t({ zh: '系统拦着的，用终端处理', en: 'When macOS says no, use Terminal' })}</h3>
             </div>
             <p className="mt-3 text-[0.98rem] leading-[1.75] text-night-ink-3">
               {t({
-                zh: '遇到系统完整性保护、完全磁盘访问权限拦着的项，Maclean 不硬删，而是生成一份终端脚本。',
-                en: 'When System Integrity Protection or Full Disk Access gets in the way, Maclean doesn’t force it. It writes a Terminal script for you instead.',
+                zh: '有些目录受系统完整性保护，或者要完全磁盘访问权限，应用本身删不了。碰到这种，MaClean 会写好一份终端脚本给你。',
+                en: 'Some folders are protected by System Integrity Protection or need Full Disk Access, and the app can’t touch them. For those, MaClean writes a Terminal script for you.',
               })}
             </p>
             <ol className="mt-5 space-y-2 text-[0.95rem]">
               {[
                 { zh: '复制命令', en: 'Copy the command' },
-                { zh: '在终端里执行', en: 'Run it in Terminal' },
-                { zh: '回到 Maclean 点「复查」，确认每一项都处理了', en: 'Back in Maclean, click Verify to confirm every item was handled' },
+                { zh: '粘到终端里执行', en: 'Paste it into Terminal and run it' },
+                { zh: '回到 MaClean 点「复查」，看看是不是都删掉了', en: 'Back in MaClean, click Verify to check it all went' },
               ].map((s, i) => (
                 <li key={s.en} className="flex gap-3">
                   <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-night-line text-[0.75rem] tabular-nums text-night-ink-3">
@@ -359,7 +360,7 @@ function Developers() {
             <pre className="mt-6 overflow-x-auto rounded-xl bg-night p-4 font-mono text-[0.75rem] leading-[1.8] text-night-ink-3">
               <code>
                 <span className="text-night-ink-3/70">
-                  {t({ zh: '# Maclean 生成于 2026-11-03 10:12', en: '# Generated by Maclean, 2026-11-03 10:12' })}
+                  {t({ zh: '# MaClean 生成于 2026-11-03 10:12', en: '# Generated by MaClean, 2026-11-03 10:12' })}
                   {'\n'}
                   {t({ zh: '# 3 项，预计释放 6.8 GB，含 sudo', en: '# 3 items, about 6.8 GB, uses sudo' })}
                 </span>
@@ -377,12 +378,12 @@ function Developers() {
           <div className="min-w-0 rounded-[20px] border border-night-line bg-night-2 p-6 sm:p-8">
             <div className="flex items-center gap-3">
               <Bot className="size-5 text-clay" aria-hidden="true" />
-              <h3 className="text-[1.5rem]">{t({ zh: '让 AI 助手帮你查', en: 'Ask your AI assistant' })}</h3>
+              <h3 className="text-[1.5rem]">{t({ zh: '也可以让 AI 来查', en: 'Or let an AI assistant look' })}</h3>
             </div>
             <p className="mt-3 text-[0.98rem] leading-[1.75] text-night-ink-3">
               {t({
-                zh: 'Maclean 内置 MCP 服务，可以接入 Claude Code、Codex 等 AI 助手，让 AI 帮你查空间去哪了、出一份清理计划。用的是和应用同一套引擎、同一份账本。',
-                en: 'Maclean includes an MCP server, so assistants like Claude Code and Codex can find where your space went and draft a cleanup plan, using the same engine and ledger as the app.',
+                zh: 'MaClean 带了一个 MCP 服务。接到 Claude Code 或 Codex 上，就能直接问它「我的空间都去哪了」，让它帮你列个清理计划。',
+                en: 'MaClean comes with an MCP server. Hook it up to Claude Code or Codex and you can just ask “where did my disk space go?” and have it draft a cleanup plan.',
               })}
             </p>
             <pre className="mt-6 overflow-x-auto rounded-xl bg-night p-4 font-mono text-[0.75rem] leading-[1.8] text-night-ink">
@@ -403,7 +404,7 @@ function Developers() {
               ))}
             </dl>
             <p className="mt-3 text-[0.82rem] text-night-ink-3">
-              {t({ zh: '建议先用只读模式。', en: 'We suggest starting with read-only.' })}
+              {t({ zh: '只是试试的话，选只读就够了。', en: 'If you’re just trying it out, read-only is enough.' })}
             </p>
           </div>
         </div>
@@ -417,29 +418,29 @@ function Beyond() {
   const items: { icon: ReactNode; title: L; text: L }[] = [
     {
       icon: <Trash2 className="size-5" />,
-      title: { zh: '卸载应用不留残留', en: 'Uninstall without leftovers' },
+      title: { zh: '卸载得干净点', en: 'Cleaner uninstalls' },
       text: {
-        zh: '应用本体和它在 ~/Library 里的数据一起移到废纸篓，记进历史，可以撤回。',
-        en: 'The app and its data in ~/Library go to the Trash together, recorded in History so you can undo.',
+        zh: '卸载应用时，顺带把它在 ~/Library 里留下的数据一起清掉。同样是进废纸篓，能撤回。',
+        en: 'Uninstalling an app also takes the data it left behind in ~/Library. It all goes to the Trash, so you can undo it.',
       },
     },
     {
       icon: <PanelTop className="size-5" />,
-      title: { zh: '菜单栏看剩余空间', en: 'Free space in the menu bar' },
-      text: { zh: '常驻显示剩余空间，快满了会提醒你。', en: 'Always shows free space, and warns you when it runs low.' },
+      title: { zh: '菜单栏显示剩余空间', en: 'Free space in the menu bar' },
+      text: { zh: '不用打开应用，看一眼菜单栏就知道还剩多少，快满了会提醒你。', en: 'Glance at the menu bar to see how much space is left. It warns you when the disk is getting full.' },
     },
     {
       icon: <TrendingUp className="size-5" />,
-      title: { zh: '每周看看谁在变大', en: 'See what grows each week' },
+      title: { zh: '每周记一次', en: 'A weekly snapshot' },
       text: {
-        zh: '打开每周监控，自动记录一次空间变化，找出悄悄变大的那个。',
-        en: 'Turn on the weekly check to record your disk automatically and catch whatever is quietly growing.',
+        zh: '打开之后每周自动记录一次空间占用，过一阵子就能看出是谁在悄悄变大。',
+        en: 'Once a week it records your disk usage, so after a while you can see what’s been quietly growing.',
       },
     },
   ]
   return (
     <section id="more" className="wrap py-20 lg:py-28">
-      <SectionHeading title={t({ zh: '清理之外', en: 'Beyond cleanup' })} />
+      <SectionHeading title={t({ zh: '顺手做的几个小功能', en: 'A few smaller things' })} />
       <ul className="mt-10 grid gap-10 sm:grid-cols-3">
         {items.map((item) => (
           <li key={item.title.en}>
@@ -459,18 +460,18 @@ function Pricing() {
   const { t } = useLang()
   const buy = purchaseUrl()
   const includes: L[] = [
-    { zh: '全部功能', en: 'Every feature' },
+    { zh: '所有功能都能用', en: 'Everything in the app' },
     {
-      zh: `可在 ${macs.zh} Mac 上激活，换电脑时先在旧 Mac 上停用`,
-      en: `Activate on ${macs.en}. Deactivate on the old Mac to move it.`,
+      zh: `一个许可证可以激活 ${macs.zh} Mac。换电脑的话，先在旧电脑上停用`,
+      en: `One license works on ${macs.en}. Switching computers? Deactivate it on the old one first.`,
     },
-    { zh: '付款后许可证密钥立刻发到你的邮箱', en: 'License key emailed right after payment' },
-    { zh: `${site.refundDays} 天内不满意，全额退款`, en: `Full refund within ${site.refundDays} days` },
+    { zh: '付完款马上就能收到密钥', en: 'Your key arrives by email right after you pay' },
+    { zh: `${site.refundDays} 天内不想要了，可以全额退款`, en: `Full refund within ${site.refundDays} days if it’s not for you` },
   ]
   const steps: L[] = [
     { zh: '在结账页付款', en: 'Pay on the checkout page' },
-    { zh: '在邮件里找到许可证密钥', en: 'Find your license key in the email' },
-    { zh: '打开 Maclean，在「设置 → 许可证」里输入密钥', en: 'Open Maclean and enter it in Settings → License' },
+    { zh: '去邮箱找到许可证密钥', en: 'Find the license key in your inbox' },
+    { zh: '打开 MaClean，在「设置 → 许可证」里粘贴进去', en: 'Open MaClean and paste it into Settings → License' },
   ]
 
   return (
@@ -478,10 +479,10 @@ function Pricing() {
       <div className="wrap grid gap-12 py-20 lg:grid-cols-2 lg:gap-16 lg:py-28">
         <div>
           <SectionHeading
-            title={t({ zh: '一次购买，不用订阅', en: 'Buy once. No subscription.' })}
+            title={t({ zh: '买一次，一直用', en: 'Pay once, keep using it' })}
             intro={t({
-              zh: '付款通过 Dodo Payments 完成，许可证密钥会立刻发到你的邮箱。',
-              en: 'You pay through Dodo Payments, and your license key arrives by email right away.',
+              zh: '付款走 Dodo Payments。不是订阅，不会自动续费。',
+              en: 'Payment goes through Dodo Payments. It’s not a subscription and it never renews.',
             })}
           />
           <ol className="mt-8 space-y-3">
@@ -500,7 +501,7 @@ function Pricing() {
           <p className="font-sans text-[0.95rem] font-semibold">{site.productName}</p>
           <p className="mt-3 flex items-baseline gap-2.5">
             <span className="font-serif text-[3.2rem] leading-none tabular-nums">{t(site.price)}</span>
-            <span className="text-ink-3">{t({ zh: '一次性付款', en: 'one-time' })}</span>
+            <span className="text-ink-3">{t({ zh: '买断', en: 'one-time' })}</span>
           </p>
           <ul className="mt-7 space-y-3">
             {includes.map((item) => (
@@ -517,8 +518,8 @@ function Pricing() {
           </div>
           <p className="mt-4 text-[0.82rem] leading-relaxed text-ink-3">
             {t({
-              zh: '订单由 Dodo Payments 作为经销商处理并开具收据。',
-              en: 'Dodo Payments handles the order and receipt as our Merchant of Record.',
+              zh: '收据由 Dodo Payments 开具，它是这笔订单的经销商（Merchant of Record）。',
+              en: 'Dodo Payments is the Merchant of Record for your order and sends the receipt.',
             })}{' '}
             <a href={l.refund} className="underline decoration-line-2 underline-offset-4 hover:text-ink">
               {t({ zh: '退款政策', en: 'Refund Policy' })}
@@ -536,22 +537,22 @@ function Faq() {
     {
       q: { zh: '「系统数据」到底是什么？', en: 'What is “System Data”, exactly?' },
       a: {
-        zh: 'macOS 的存储设置把归不了类的文件都算作「系统数据」：模拟器、开发工具、各个应用的缓存和数据、本地快照等。Maclean 把它拆成七类，分别算出大小。',
-        en: 'macOS storage settings put everything it can’t categorize into “System Data”: simulators, developer tools, app caches and data, local snapshots and more. Maclean splits it into seven groups and measures each one.',
+        zh: 'macOS 存储设置里，凡是它归不了类的东西都算进「系统数据」，比如模拟器、开发工具、各种应用的缓存和数据、本地快照。所以它经常大得离谱，又看不出里面是什么。',
+        en: 'It’s where macOS puts everything it can’t categorize: simulators, developer tools, app caches and data, local snapshots. That’s why it gets so big and tells you nothing.',
       },
     },
     {
       q: { zh: '会不会误删我的东西？', en: 'Could it delete something I need?' },
       a: {
-        zh: '默认只移到废纸篓，清空之前可以在历史页撤回。聊天记录数据库这类东西不能勾选，你自己的文件要逐项确认，执行前还会预检一遍。',
-        en: 'By default items go to the Trash, and you can undo from History until you empty it. Chat databases and the like can’t be selected, your own files need approval one by one, and a preflight check runs before anything happens.',
+        zh: '默认只是移到废纸篓，清空之前随时能放回去。聊天记录这类东西压根勾不上，你自己的文件得一个个确认，执行前还有一次预检。',
+        en: 'By default everything goes to the Trash, and you can put it back any time before you empty it. Things like chat history can’t be selected at all, your own files need a yes each, and there’s a preflight check before anything runs.',
       },
     },
     {
-      q: { zh: '为什么要打开「完全磁盘访问权限」？', en: 'Why does it ask for Full Disk Access?' },
+      q: { zh: '为什么要给「完全磁盘访问权限」？', en: 'Why does it ask for Full Disk Access?' },
       a: {
-        zh: '不少应用的缓存和容器受 macOS 保护，没有这个权限只能扫到一部分。不开也能用，只是扫出来的会少一些。',
-        en: 'Many app caches and containers are protected by macOS, so without it Maclean can only scan part of them. It still works without the permission, with fewer results.',
+        zh: '很多应用的缓存和容器被 macOS 保护着，不给这个权限只能扫到一部分。不给也能用，只是扫出来的东西少一些。',
+        en: 'macOS protects a lot of app caches and containers, so without it MaClean only sees part of them. It still works, it just finds less.',
       },
     },
     {
@@ -559,14 +560,14 @@ function Faq() {
       a: {
         zh: (
           <>
-            不会。扫描、账本、历史都只存在你的 Mac 上。只有激活和定期校验许可证时会联网，发送的是许可证密钥和这台 Mac 的名称。详见
+            不会。扫描结果和清理记录都只存在你自己的 Mac 上。应用只在激活和定期校验许可证时联网，发出去的只有许可证密钥和这台 Mac 的名字。详细的写在
             <a href={l.privacy} className="text-clay-ink underline underline-offset-4">隐私政策</a>。
           </>
         ),
         en: (
           <>
-            No. Scans, the ledger and history stay on your Mac. Maclean only goes online to activate and periodically check your license, sending
-            the license key and your Mac’s name. See the{' '}
+            No. Scan results and cleanup history stay on your Mac. The app only goes online to activate and now and then check your license, and all it
+            sends is the license key and your Mac’s name. Details are in the{' '}
             <a href={l.privacy} className="text-clay-ink underline underline-offset-4">Privacy Policy</a>.
           </>
         ),
@@ -574,13 +575,13 @@ function Faq() {
     },
     {
       q: { zh: '支持哪些 macOS 版本？', en: 'Which macOS versions are supported?' },
-      a: { zh: `macOS ${site.minMacOS} 及以上。`, en: `macOS ${site.minMacOS} or later.` },
+      a: { zh: `macOS ${site.minMacOS} 或更新的版本。`, en: `macOS ${site.minMacOS} or later.` },
     },
     {
       q: { zh: '换了新 Mac，许可证怎么办？', en: 'I got a new Mac. What about my license?' },
       a: {
-        zh: '在旧 Mac 的「设置 → 许可证」里点「在这台 Mac 上停用」，再到新 Mac 上输入同一个密钥激活。',
-        en: 'On the old Mac, open Settings → License and choose “Deactivate on this Mac”, then enter the same key on the new one.',
+        zh: '先在旧 Mac 上打开「设置 → 许可证」，点「在这台 Mac 上停用」，然后在新 Mac 上输入同一个密钥。',
+        en: 'On the old Mac, go to Settings → License and click “Deactivate on this Mac”. Then enter the same key on the new one.',
       },
     },
     {
@@ -588,13 +589,13 @@ function Faq() {
       a: {
         zh: (
           <>
-            可以。购买 {site.refundDays} 天内，不需要理由，全额退款。详见
+            可以。买了 {site.refundDays} 天之内，不用说理由，发封邮件就行。具体见
             <a href={l.refund} className="text-clay-ink underline underline-offset-4">退款政策</a>。
           </>
         ),
         en: (
           <>
-            Yes. Within {site.refundDays} days of purchase, for any reason. See the{' '}
+            Yes. Within {site.refundDays} days of buying, no reason needed, just send an email. See the{' '}
             <a href={l.refund} className="text-clay-ink underline underline-offset-4">Refund Policy</a>.
           </>
         ),
@@ -603,8 +604,8 @@ function Faq() {
     {
       q: { zh: '怎么接入 Claude Code、Codex？', en: 'How do I connect Claude Code or Codex?' },
       a: {
-        zh: '在 Maclean 的「设置 → AI 助手接入」里选好模式，拷贝对应客户端的配置。建议先用只读模式，AI 只能查看，不能删除。',
-        en: 'In Maclean, open Settings → AI assistants, pick a mode and copy the config for your client. Start with read-only: the assistant can look but can’t delete.',
+        zh: '在 MaClean 的「设置 → AI 助手接入」里选个模式，把对应客户端的配置复制过去就行。刚开始建议用只读，AI 只能看不能删。',
+        en: 'In MaClean, open Settings → AI assistants, pick a mode and copy the config for your client. Read-only is a good place to start, since the assistant can look but not delete.',
       },
     },
   ]
@@ -612,7 +613,7 @@ function Faq() {
   return (
     <section id="faq" className="border-t border-line">
       <div className="wrap grid gap-10 py-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14 lg:py-28">
-        <SectionHeading title={t({ zh: '常见问题', en: 'Questions' })} />
+        <SectionHeading title={t({ zh: '常见问题', en: 'Common questions' })} />
         <div className="divide-y divide-line border-y border-line">
           {faqs.map((f) => (
             <details key={f.q.en} className="group py-1">
@@ -639,18 +640,18 @@ function Download() {
       <div className="flex flex-col gap-8 rounded-[28px] bg-clay-wash px-6 py-12 sm:px-12 sm:py-14 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-[40rem]">
           <h2 className="text-[2rem] leading-[1.15] sm:text-[2.5rem]">
-            {t({ zh: '看看你的「系统数据」里都是什么', en: 'See what’s inside your System Data' })}
+            {t({ zh: '你的「系统数据」现在多大？', en: 'How big is your System Data right now?' })}
           </h2>
           <p className="mt-3 text-[0.98rem] text-ink-2">
             {t({
-              zh: `Maclean ${site.version}，适用于 macOS ${site.minMacOS} 及以上，经 Apple 公证。`,
-              en: `Maclean ${site.version} for macOS ${site.minMacOS} or later, notarized by Apple.`,
+              zh: `下载 MaClean 扫一下就知道了。当前版本 ${site.version}，需要 macOS ${site.minMacOS} 或更新的系统。`,
+              en: `Download MaClean and find out. Version ${site.version}, requires macOS ${site.minMacOS} or later.`,
             })}
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <ButtonLink href={site.downloadUrl || null} disabledLabel={t({ zh: '即将开放下载', en: 'Download coming soon' })}>
-            {t({ zh: '下载 Maclean', en: 'Download Maclean' })}
+            {t({ zh: '下载 MaClean', en: 'Download MaClean' })}
           </ButtonLink>
           <ButtonLink href={l.section('pricing')} variant="secondary">
             {t({ zh: '购买许可证', en: 'Buy a license' })}

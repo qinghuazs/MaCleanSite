@@ -8,7 +8,7 @@ export function Header({ depth }: { depth: PageDepth }) {
   const { t, lang, setLang } = useLang()
   const l = links(depth)
   const nav = [
-    { id: 'how', label: { zh: '怎么看清', en: 'How it works' } },
+    { id: 'how', label: { zh: '功能', en: 'Features' } },
     { id: 'safety', label: { zh: '安全', en: 'Safety' } },
     { id: 'developers', label: { zh: '开发者', en: 'Developers' } },
     { id: 'pricing', label: { zh: '价格', en: 'Pricing' } },

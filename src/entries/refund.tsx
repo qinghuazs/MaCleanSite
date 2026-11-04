@@ -4,6 +4,6 @@ import { Legal } from '../pages/Legal'
 
 mountPage({
   depth: 1,
-  title: { zh: '退款政策 | Maclean', en: 'Refund Policy | Maclean' },
+  title: { zh: '退款政策 | MaClean', en: 'Refund Policy | MaClean' },
   children: <Legal doc={refund} current="refund" />,
 })

@@ -1,6 +1,6 @@
-# Maclean 官网
+# MaClean 官网
 
-Maclean（macOS 磁盘清理应用）的产品官网：首页 + 服务条款 / 隐私政策 / 退款政策，中英双语。
+MaClean（macOS 磁盘清理应用）的产品官网：首页 + 服务条款 / 隐私政策 / 退款政策，中英双语。
 技术栈：Vite 8 + React 19 + TypeScript + Tailwind CSS v4，多页面静态站点，无后端。
 
 ## 命令
@@ -19,7 +19,7 @@ npm run preview   # 预览构建结果
 | 字段 | 说明 |
 | --- | --- |
 | `contactEmail` | 客服与退款邮箱，留空时页面和政策里显示"联系邮箱待补充" |
-| `productName` / `price` | 产品名与价格，和 Dodo 产品一致（目前 Maclean Pro，US$10 买断） |
+| `productName` / `price` | 产品名与价格，和 Dodo 产品一致（目前 MaClean Pro，US$10.99 买断） |
 | `devicesPerLicense` | 每个许可证可激活的 Mac 数，和 Dodo 许可证权益的激活上限一致（目前 1） |
 | `refundDays` | 无理由退款天数（目前 3 天），同时出现在价格卡片、常见问题、服务条款和退款政策里 |
 | `downloadUrl` | dmg 下载地址；留空时下载按钮显示"即将开放下载" |

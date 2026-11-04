@@ -13,7 +13,7 @@ export function Footer({ depth }: { depth: PageDepth }) {
     {
       title: { zh: '产品', en: 'Product' },
       items: [
-        { href: l.section('how'), label: { zh: '怎么看清', en: 'How it works' } },
+        { href: l.section('how'), label: { zh: '功能', en: 'Features' } },
         { href: l.section('pricing'), label: { zh: '价格', en: 'Pricing' } },
         { href: l.section('faq'), label: { zh: '常见问题', en: 'FAQ' } },
         { href: l.section('download'), label: { zh: '下载', en: 'Download' } },
@@ -39,8 +39,8 @@ export function Footer({ depth }: { depth: PageDepth }) {
           </a>
           <p className="mt-3 text-[0.93rem] leading-relaxed text-ink-3">
             {t({
-              zh: 'macOS 磁盘清理工具。先看清每一项是什么，再决定删不删。',
-              en: 'A disk cleanup app for macOS that explains every item before you decide to delete it.',
+              zh: '一个 Mac 磁盘清理工具，动手之前先把每一项讲清楚。',
+              en: 'A disk cleaner for Mac that explains each item before it touches anything.',
             })}
           </p>
         </div>
@@ -87,8 +87,8 @@ export function Footer({ depth }: { depth: PageDepth }) {
         </p>
         <p>
           {t({
-            zh: '订单由 Dodo Payments 作为经销商（Merchant of Record）处理。',
-            en: 'Orders are processed by Dodo Payments, our Merchant of Record.',
+            zh: '订单由 Dodo Payments 处理，它是本产品的经销商（Merchant of Record）。',
+            en: 'Orders are handled by Dodo Payments, our Merchant of Record.',
           })}
         </p>
         </div>

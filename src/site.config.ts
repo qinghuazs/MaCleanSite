@@ -1,7 +1,7 @@
 // 官网里所有"要你来定"的信息都集中在这里，改这一个文件即可。
 
 export const site = {
-  name: 'Maclean',
+  name: 'MaClean',
   /** 当前版本号，显示在下载区 */
   version: '1.4.3',
   /** 最低系统要求 */
@@ -15,14 +15,14 @@ export const site = {
   /** dmg 下载地址（例如公开仓库的 GitHub Releases）。留空时下载按钮显示"即将开放下载" */
   downloadUrl: '',
   /** Dodo Payments 正式环境的产品 ID（pdt_…），和应用里 LicenseConfig.productIDs[.live] 一致。留空时购买按钮显示"即将开放购买" */
-  dodoProductId: '',
+  dodoProductId: 'pdt_0NrBpT8ICJhSFYA07VVg8',
   /** 测试阶段可改成 true，购买按钮走 test.checkout.dodopayments.com */
   dodoTestMode: false,
 
   /** 在售产品名，和 Dodo 后台的产品名一致（收据、邮件里显示的就是它） */
-  productName: 'Maclean Pro',
-  /** 价格，原样显示；和 Dodo 产品定价一致（测试模式 Maclean Pro 为 $10 买断） */
-  price: { zh: 'US$10', en: 'US$10' },
+  productName: 'MaClean Pro',
+  /** 价格，原样显示；和 Dodo 正式产品定价一致（MaClean Pro，$10.99 买断） */
+  price: { zh: 'US$10.99', en: 'US$10.99' },
   /** 每个许可证可同时激活的 Mac 数量，和 Dodo 许可证权益的激活上限一致 */
   devicesPerLicense: 1,
   /** 无理由退款天数 */
