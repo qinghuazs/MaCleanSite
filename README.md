@@ -22,7 +22,7 @@ npm run preview   # 预览构建结果
 | `productName` / `price` | 产品名与价格，和 Dodo 产品一致（目前 MaClean Pro，US$10.99 买断） |
 | `devicesPerLicense` | 每个许可证可激活的 Mac 数，和 Dodo 许可证权益的激活上限一致（目前 1） |
 | `refundDays` | 无理由退款天数（目前 3 天），同时出现在价格卡片、常见问题、服务条款和退款政策里 |
-| `downloadUrl` | dmg 下载地址；留空时下载按钮显示"即将开放下载" |
+| `downloadUrl` | dmg 下载直链（GitHub Releases，发新版时连同 `version` 一起改）；留空时下载按钮显示"即将开放下载" |
 | `dodoProductId` | Dodo 正式环境产品 ID（pdt_…），和应用里 `LicenseConfig.productIDs[.live]` 一致；留空时购买按钮显示"即将开放购买" |
 
 ## 结构
