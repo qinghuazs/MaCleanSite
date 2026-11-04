@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+/* 设计变量：暖白纸张底色、深墨文字、陶土色强调；浅色与深色两套，组件里只用语义色名 */
+:root {
+  --paper: #faf9f5;      /* 页面底色 */
+  --paper-2: #f0eee6;    /* 次级区块底色 */
+  --surface: #ffffff;    /* 卡片、示例窗口 */
+  --ink: #141413;        /* 正文 */
+  --ink-2: #3d3d3a;      /* 次要文字 */
+  --ink-3: #6b6a65;      /* 说明文字 */
+  --line: #e5e3da;       /* 细边框 */
+  --line-2: #d3d0c4;     /* 强调边框 */
+  --clay: #d97757;       /* 强调色：勾选、焦点、图形 */
+  --clay-ink: #b8532f;   /* 强调色用在文字上时的深一档，保证对比度 */
+  --clay-wash: #f5e4da;  /* 强调色淡底 */
+  --olive: #788c5d;      /* 安全、可回滚 */
+  --olive-ink: #56663f;
+  --olive-wash: #e6ebdc;
+  --amber-ink: #9a5a12;  /* 需先退出等提醒 */
+  --amber-wash: #f6e8d2;
+  --night: #1b1a18;      /* 开发者区块的深色底 */
+  --night-2: #262522;
+  --night-ink: #f0eee6;
+  --night-ink-3: #a3a097;
+  --night-line: #3a3935;
+
+  /* 示例里"系统数据"各分类的颜色 */
+  --seg-sim: #6a9bcc;
+  --seg-dev: #788c5d;
+  --seg-cache: #d4a27f;
+  --seg-appdata: #c46686;
+  --seg-container: #9c98b8;
+  --seg-trash: #8fb3a8;
+  --seg-gray: #b9b6ac;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #262624;
+    --paper-2: #1f1e1d;
+    --surface: #30302e;
+    --ink: #faf9f5;
+    --ink-2: #dad8cf;
+    --ink-3: #a3a097;
+    --line: #3e3e3a;
+    --line-2: #55544f;
+    --clay: #d97757;
+    --clay-ink: #e8957a;
+    --clay-wash: #4a3027;
+    --olive: #8fa472;
+    --olive-ink: #b4c79a;
+    --olive-wash: #33392a;
+    --amber-ink: #e8b46a;
+    --amber-wash: #463621;
+    --night: #191817;
+    --night-2: #232220;
+    --night-line: #36352f;
+    --seg-gray: #66645d;
+    color-scheme: dark;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-line: var(--line);
+  --color-line-2: var(--line-2);
+  --color-clay: var(--clay);
+  --color-clay-ink: var(--clay-ink);
+  --color-clay-wash: var(--clay-wash);
+  --color-olive: var(--olive);
+  --color-olive-ink: var(--olive-ink);
+  --color-olive-wash: var(--olive-wash);
+  --color-amber-ink: var(--amber-ink);
+  --color-amber-wash: var(--amber-wash);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-night-ink: var(--night-ink);
+  --color-night-ink-3: var(--night-ink-3);
+  --color-night-line: var(--night-line);
+
+  /* 标题衬线：拉丁字母 Newsreader，中文思源宋体；正文无衬线：拉丁 Instrument Sans，中文苹方 */
+  --font-serif: "Newsreader Variable", "Noto Serif SC", "Songti SC", "STSong", serif;
+  --font-sans: "Instrument Sans Variable", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-optical-sizing: auto;
+    font-weight: 500;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--clay-wash); }
+  :focus-visible {
+    outline: 2px solid var(--clay);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+}
+
+@layer components {
+  /* 页面内容容器 */
+  .wrap {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 72rem;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .wrap { padding-inline: 2rem; }
+  }
+  /* 本地快照"大小未知"的斜纹 */
+  .hatch {
+    background-image: repeating-linear-gradient(135deg, var(--line-2) 0 2px, transparent 2px 6px);
+  }
+}
+
+/* 英文标题略收字距，中文保持默认 */
+html:lang(en) h1 { letter-spacing: -0.022em; }
+html:lang(en) h2, html:lang(en) h3 { letter-spacing: -0.012em; }
+/* 中文标题只在标点、空格处换行，避免把词拆开；实在放不下时再强制断行 */
+html:lang(zh-CN) h1, html:lang(zh-CN) h2, html:lang(zh-CN) h3 { word-break: keep-all; overflow-wrap: anywhere; }
