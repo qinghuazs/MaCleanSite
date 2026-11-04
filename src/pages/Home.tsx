@@ -126,8 +126,8 @@ function FourQuestions() {
     {
       q: { zh: '要先退出哪个应用？', en: 'Which apps have to quit first?' },
       a: {
-        zh: '微信、Chrome 开着的时候，它们的缓存清不了。点「只选推荐项」会先跳过这些，并告诉你要退出哪几个。',
-        en: 'You can’t clear WeChat’s or Chrome’s cache while they’re open. “Select recommended” skips those and tells you which apps to quit.',
+        zh: '微信、Chrome 开着的时候，它们的缓存清不了。点「只选建议项」会先跳过这些，并告诉你要退出哪几个。',
+        en: 'You can’t clear WeChat’s or Chrome’s cache while they’re open. “Select suggested” skips those and tells you which apps to quit.',
       },
       tags: <Tag tone="warn">{t({ zh: '需先退出微信', en: 'Quit WeChat first' })}</Tag>,
     },
@@ -182,8 +182,8 @@ function Safety() {
       icon: <ClipboardCheck className="size-[18px]" />,
       title: { zh: '动手前再核对一遍', en: 'One more check before it runs' },
       text: {
-        zh: '真正执行之前会弹出预检窗口，写着哪些应用要先退出、还缺什么权限、每一项会怎么处理。',
-        en: 'Before anything runs you get a preflight window: which apps need to quit, which permissions are missing, and what will happen to each item.',
+        zh: '真正清理之前会弹出「清理前检查」窗口，写着哪些应用要先退出、还缺什么权限、每一项会怎么处理。',
+        en: 'Before anything runs you get a pre-cleanup check: which apps need to quit, which permissions are missing, and what will happen to each item.',
       },
     },
     {
@@ -221,7 +221,7 @@ function Safety() {
   )
 }
 
-/** 预检弹窗示意，数字和首屏示例的默认勾选一致 */
+/** 清理前检查弹窗示意，数字和首屏示例的默认勾选一致 */
 function PreflightMock() {
   const { t } = useLang()
   const groups = [
@@ -241,7 +241,7 @@ function PreflightMock() {
   ]
   return (
     <div className="self-center rounded-[18px] border border-line bg-surface p-5 shadow-[0_1px_2px_rgba(20,20,19,0.04),0_12px_40px_-14px_rgba(20,20,19,0.16)] sm:p-6">
-      <p className="font-serif text-[1.3rem]">{t({ zh: '预检', en: 'Preflight' })}</p>
+      <p className="font-serif text-[1.3rem]">{t({ zh: '清理前检查', en: 'Pre-Cleanup Check' })}</p>
       <p className="mt-1 text-[0.85rem] text-ink-3">
         {t({ zh: '确认一下这些项和处理方式，没问题就执行。', en: 'Check these items and how each will be handled, then run.' })}
       </p>
@@ -258,7 +258,7 @@ function PreflightMock() {
           <dd className="font-serif text-lg tabular-nums">29.9 GB</dd>
         </div>
         <div>
-          <dt className="text-ink-3">{t({ zh: '预计实际释放', en: 'You get back' })}</dt>
+          <dt className="text-ink-3">{t({ zh: '预计释放', en: 'Est. freed' })}</dt>
           <dd className="font-serif text-lg tabular-nums">24.8 GB</dd>
         </div>
       </dl>
@@ -482,8 +482,8 @@ function Pricing() {
           <SectionHeading
             title={t({ zh: '买一次，一直用', en: 'Pay once, keep using it' })}
             intro={t({
-              zh: '下载和扫描不收费：看「系统数据」里有什么、预检、预览清理结果都能直接用。真正执行清理、生成终端脚本、卸载应用的时候，才需要许可证。付款走 Dodo Payments，不是订阅，不会自动续费。',
-              en: 'Downloading and scanning are free: see what’s in System Data, run preflight, preview the cleanup. You need a license when you actually clean, generate Terminal scripts or uninstall apps. Payment goes through Dodo Payments. It’s not a subscription and it never renews.',
+              zh: '下载和扫描不收费：看「系统数据」里有什么、清理前检查、预览清理结果都能直接用。真正执行清理、生成终端脚本、卸载应用的时候，才需要许可证。付款走 Dodo Payments，不是订阅，不会自动续费。',
+              en: 'Downloading and scanning are free: see what’s in System Data, run the pre-cleanup check, preview the cleanup. You need a license when you actually clean, generate Terminal scripts or uninstall apps. Payment goes through Dodo Payments. It’s not a subscription and it never renews.',
             })}
           />
           <ol className="mt-8 space-y-3">
@@ -545,8 +545,8 @@ function Faq() {
     {
       q: { zh: '会不会误删我的东西？', en: 'Could it delete something I need?' },
       a: {
-        zh: '默认只是移到废纸篓，清空之前随时能放回去。聊天记录这类东西压根勾不上，你自己的文件得一个个确认，执行前还有一次预检。',
-        en: 'By default everything goes to the Trash, and you can put it back any time before you empty it. Things like chat history can’t be selected at all, your own files need a yes each, and there’s a preflight check before anything runs.',
+        zh: '默认只是移到废纸篓，清空之前随时能放回去。聊天记录这类东西压根勾不上，你自己的文件得一个个确认，清理前还会再检查一遍。',
+        en: 'By default everything goes to the Trash, and you can put it back any time before you empty it. Things like chat history can’t be selected at all, your own files need a yes each, and there’s one more check before anything runs.',
       },
     },
     {
@@ -588,8 +588,8 @@ function Faq() {
     {
       q: { zh: '不买能用吗？', en: 'Can I use it without paying?' },
       a: {
-        zh: '能。扫描、看系统数据、预检和预览都免费，想知道空间去哪了不用花钱。真正执行清理、生成终端脚本、卸载应用时才需要许可证。',
-        en: 'Yes. Scanning, the System Data breakdown, preflight and preview are all free, so finding out where your space went costs nothing. You only need a license to actually clean, generate Terminal scripts or uninstall apps.',
+        zh: '能。扫描、看系统数据、检查和预览都免费，想知道空间去哪了不用花钱。真正执行清理、生成终端脚本、卸载应用时才需要许可证。',
+        en: 'Yes. Scanning, the System Data breakdown, checking and previewing are all free, so finding out where your space went costs nothing. You only need a license to actually clean, generate Terminal scripts or uninstall apps.',
       },
     },
     {

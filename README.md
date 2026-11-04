@@ -32,7 +32,7 @@ index.html, terms/, privacy/, refund/   各页面入口 HTML（多页面构建�
 src/site.config.ts      可配置项
 src/i18n.tsx            中英切换（?lang= → 上次选择 → 浏览器语言）
 src/styles.css          设计变量（浅色 / 深色两套）与 Tailwind 主题
-src/components/         页头、页脚、首屏清理账本示例、按钮与标签
+src/components/         页头、页脚、首屏扫描结果示例、按钮与标签
 src/pages/Home.tsx      首页各区块
 src/content/legal.ts    三份政策正文（中英）
 src/pages/Legal.tsx     政策页模板
@@ -42,7 +42,7 @@ src/pages/Legal.tsx     政策页模板
 
 参考 Claude 官网风格：暖白纸张底色 `#FAF9F5`、深墨文字 `#141413`、陶土色强调 `#D97757`；标题用衬线（Newsreader + 思源宋体），正文用 Instrument Sans + 苹方。
 字体全部用 @fontsource 本地打包，不依赖 Google Fonts（国内访问不到）；思源宋体按 unicode-range 分片，只下载用到的字。
-首屏是一个可交互的"清理账本"示例（示例数据），页面加载时灰色的"系统数据"条会拆成彩色分类，这是全页唯一的自动动效，系统开了"减弱动态效果"时直接显示结果。
+首屏是一个可交互的"扫描结果"示例（示例数据），页面加载时灰色的"系统数据"条会拆成彩色分类，这是全页唯一的自动动效，系统开了"减弱动态效果"时直接显示结果。
 
 ## 部署
 

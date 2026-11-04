@@ -3,8 +3,8 @@ import { useEffect, useId, useState } from 'react'
 import { useLang, type L } from '../i18n'
 import { Tag } from './ui'
 
-// 首屏示例：模仿应用里的"清理账本"。先把灰色的"系统数据"拆成分类，再列出候选项和四维标签；
-// 勾选会实时算出合计与"预计实际释放"（共享空间已扣除）。数据是示例，不读取访客的电脑。
+// 首屏示例：模仿应用里的"扫描结果"页。先把灰色的"系统数据"拆成分类，再列出候选项和四维标签；
+// 勾选会实时算出合计与"预计释放"（共享空间已扣除）。数据是示例，不读取访客的电脑。
 
 type Policy = 'auto' | 'confirm' | 'forbidden'
 type Cost = 'none' | 'time' | 'download' | 'irreversible'
@@ -13,7 +13,7 @@ type Item = {
   id: string
   title: L
   path: string
-  /** 逻辑大小（GB） */
+  /** 文件大小（GB） */
   size: number
   /** 与别处共享时，删掉实际能腾出的大小（GB） */
   freed?: number
@@ -22,7 +22,7 @@ type Item = {
   regenerates?: boolean
   /** 需先退出的正在运行的应用 */
   quit?: L
-  /** 默认是否勾选（"只选推荐项"的结果） */
+  /** 默认是否勾选（"只选建议项"的结果） */
   recommended: boolean
   detail: { cost: L; back: L; freed?: L; how: L }
 }
@@ -30,7 +30,7 @@ type Item = {
 const policyTag: Record<Policy, { label: L; tone: 'safe' | 'warn' | 'muted' }> = {
   auto: { label: { zh: '可批量清理', en: 'Safe to batch' }, tone: 'safe' },
   confirm: { label: { zh: '需逐项确认', en: 'Confirm each' }, tone: 'warn' },
-  forbidden: { label: { zh: '禁止清理', en: 'Locked' }, tone: 'muted' },
+  forbidden: { label: { zh: '受保护', en: 'Protected' }, tone: 'muted' },
 }
 
 const costLabel: Record<Cost, L> = {
@@ -101,7 +101,7 @@ const items: Item[] = [
     detail: {
       cost: { zh: '没保存过的旧图片、视频要重新下载，过期的可能打不开。', en: 'Old photos and videos you never saved download again. Expired ones may not open.' },
       back: { zh: '会随着聊天慢慢变大。', en: 'It grows slowly as you chat.' },
-      how: { zh: '微信正开着，要先退出才能清。「只选推荐项」会先跳过它。', en: 'WeChat is running and has to quit first. “Select recommended” skips it.' },
+      how: { zh: '微信正开着，要先退出才能清。「只选建议项」会先跳过它。', en: 'WeChat is running and has to quit first. “Select suggested” skips it.' },
     },
   },
   {
@@ -168,7 +168,7 @@ export function LedgerDemo() {
 
   return (
     <figure
-      aria-label={t({ zh: '清理账本示例', en: 'Example cleanup ledger' })}
+      aria-label={t({ zh: '扫描结果示例', en: 'Example scan results' })}
       className="overflow-hidden rounded-[18px] border border-line bg-surface shadow-[0_1px_2px_rgba(20,20,19,0.04),0_12px_40px_-12px_rgba(20,20,19,0.14)]"
     >
       {/* 窗口标题栏 */}
@@ -178,7 +178,7 @@ export function LedgerDemo() {
           <span className="size-3 rounded-full bg-[#f4be4f]" />
           <span className="size-3 rounded-full bg-[#61c454]" />
         </div>
-        <span className="text-sm font-medium text-ink-2">{t({ zh: '清理账本', en: 'Cleanup ledger' })}</span>
+        <span className="text-sm font-medium text-ink-2">{t({ zh: '扫描结果', en: 'Scan results' })}</span>
         <span className="ml-auto text-[0.75rem] text-ink-3">{t({ zh: '示例数据', en: 'Sample data' })}</span>
       </div>
 
@@ -244,7 +244,7 @@ export function LedgerDemo() {
             {t({ zh: `已选 ${chosen.length} 项，合计 ${gb(sum)}`, en: `${chosen.length} selected, ${gb(sum)} in total` })}
           </p>
           <p className="text-sm text-ink-2">
-            {t({ zh: '预计实际释放', en: 'Space you actually get back' })}{' '}
+            {t({ zh: '预计释放', en: 'Est. freed' })}{' '}
             <span className="font-serif text-2xl text-ink tabular-nums">{gb(freed)}</span>
           </p>
         </div>
@@ -282,7 +282,7 @@ function Row({
   return (
     <li className={expanded ? 'bg-paper/60' : undefined}>
       <div className="flex items-start gap-3 px-4 py-3 sm:px-5">
-        {/* 勾选框：禁止清理的项显示锁 */}
+        {/* 勾选框：受保护的项显示锁 */}
         <span className="mt-[3px] flex size-[18px] shrink-0 items-center justify-center">
           {locked ? (
             <Lock className="size-4 text-ink-3" aria-label={t({ zh: '不能勾选', en: 'Cannot be selected' })} />
@@ -315,7 +315,7 @@ function Row({
               <Tag>{t(costLabel[item.cost])}</Tag>
               {item.regenerates && <Tag tone="clay">{t({ zh: '会自动回来', en: 'Comes back' })}</Tag>}
               {item.freed !== undefined && (
-                <Tag>{t({ zh: `共享空间，实际 ${gb(item.freed)}`, en: `Shared, frees ${gb(item.freed)}` })}</Tag>
+                <Tag>{t({ zh: `共享空间，预计释放 ${gb(item.freed)}`, en: `Shared, est. ${gb(item.freed)} freed` })}</Tag>
               )}
               {item.quit && <Tag tone="warn">{t({ zh: `需先退出${item.quit.zh}`, en: `Quit ${item.quit.en} first` })}</Tag>}
             </span>

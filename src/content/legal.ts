@@ -16,8 +16,8 @@ export const terms: LegalDoc = {
     {
       h: { zh: '本软件是什么', en: 'What MaClean is' },
       p: {
-        zh: ['MaClean 是一款 macOS 磁盘清理软件，用来扫描、说明和清理缓存、日志、开发者文件等占用空间的文件。清理前会列出每一项的处理方式，由你确认后才执行。', '下载、扫描、预检和预览免费；执行清理、生成终端脚本和卸载应用需要购买许可证。'],
-        en: ['MaClean is a disk cleanup app for macOS. It scans, explains and cleans up files that take up space, such as caches, logs and developer files. Before cleaning it lists how each item will be handled, and nothing runs until you confirm.', 'Downloading, scanning, preflight and preview are free. Cleaning, generating Terminal scripts and uninstalling apps require a license.'],
+        zh: ['MaClean 是一款 macOS 磁盘清理软件，用来扫描、说明和清理缓存、日志、开发者文件等占用空间的文件。清理前会列出每一项的处理方式，由你确认后才执行。', '下载、扫描、检查和预览免费；执行清理、生成终端脚本和卸载应用需要购买许可证。'],
+        en: ['MaClean is a disk cleanup app for macOS. It scans, explains and cleans up files that take up space, such as caches, logs and developer files. Before cleaning it lists how each item will be handled, and nothing runs until you confirm.', 'Downloading, scanning, checking and previewing are free. Cleaning, generating Terminal scripts and uninstalling apps require a license.'],
       },
     },
     {
@@ -128,12 +128,12 @@ export const privacy: LegalDoc = {
       h: { zh: '留在你 Mac 上的数据', en: 'Data that stays on your Mac' },
       p: {
         zh: [
-          '扫描结果、清理账本、操作历史、空间快照和设置，都保存在你的 Mac 上（~/Library/Application Support/Maclean 等目录）。我们不会上传你的文件、文件名、路径或扫描结果，也看不到它们。',
+          '扫描结果、清理记录、空间快照和设置，都保存在你的 Mac 上（~/Library/Application Support/Maclean 等目录）。我们不会上传你的文件、文件名、路径或扫描结果，也看不到它们。',
           '为了扫描受保护的目录，本软件会请求“完全磁盘访问权限”。这个权限只用于在本机扫描，以及执行你确认的清理。',
           '菜单栏低空间提醒和每周监控的通知由 macOS 在本机发出。',
         ],
         en: [
-          'Scan results, the cleanup ledger, history, disk snapshots and settings are stored on your Mac, in folders such as ~/Library/Application Support/Maclean. We never upload your files, file names, paths or scan results, and we cannot see them.',
+          'Scan results, cleanup history, disk snapshots and settings are stored on your Mac, in folders such as ~/Library/Application Support/Maclean. We never upload your files, file names, paths or scan results, and we cannot see them.',
           'To scan protected folders the app asks for Full Disk Access. It uses this permission only to scan locally and to carry out the cleanup you confirm.',
           'Low-space alerts and weekly monitoring notifications are delivered locally by macOS.',
         ],
