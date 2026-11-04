@@ -16,8 +16,8 @@ export const terms: LegalDoc = {
     {
       h: { zh: '本软件是什么', en: 'What MaClean is' },
       p: {
-        zh: ['MaClean 是一款 macOS 磁盘清理软件，用来扫描、说明和清理缓存、日志、开发者文件等占用空间的文件。清理前会列出每一项的处理方式，由你确认后才执行。'],
-        en: ['MaClean is a disk cleanup app for macOS. It scans, explains and cleans up files that take up space, such as caches, logs and developer files. Before cleaning it lists how each item will be handled, and nothing runs until you confirm.'],
+        zh: ['MaClean 是一款 macOS 磁盘清理软件，用来扫描、说明和清理缓存、日志、开发者文件等占用空间的文件。清理前会列出每一项的处理方式，由你确认后才执行。', '下载、扫描、预检和预览免费；执行清理、生成终端脚本和卸载应用需要购买许可证。'],
+        en: ['MaClean is a disk cleanup app for macOS. It scans, explains and cleans up files that take up space, such as caches, logs and developer files. Before cleaning it lists how each item will be handled, and nothing runs until you confirm.', 'Downloading, scanning, preflight and preview are free. Cleaning, generating Terminal scripts and uninstalling apps require a license.'],
       },
     },
     {

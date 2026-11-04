@@ -3,7 +3,7 @@
 export const site = {
   name: 'MaClean',
   /** 当前版本号，显示在下载区 */
-  version: '1.4.3',
+  version: '1.0.0',
   /** 最低系统要求 */
   minMacOS: '26.1',
 

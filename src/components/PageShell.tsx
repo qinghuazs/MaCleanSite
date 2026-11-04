@@ -1,4 +1,4 @@
-import { StrictMode, type ReactNode } from 'react'
+import { StrictMode, useEffect, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { LangProvider, type L } from '../i18n'
 import type { PageDepth } from '../paths'
@@ -23,7 +23,19 @@ export function mountPage({ title, depth, children }: { title: L; depth: PageDep
         <Header depth={depth} />
         <main id="main">{children}</main>
         <Footer depth={depth} />
+        <ScrollToHash />
       </LangProvider>
     </StrictMode>,
   )
+}
+
+/** 内容是渲染后才出现的，浏览器打开带 #锚点 的链接时找不到目标；渲染完成后再跳一次 */
+function ScrollToHash() {
+  useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (!id) return
+    const frame = window.requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'instant' }))
+    return () => window.cancelAnimationFrame(frame)
+  }, [])
+  return null
 }

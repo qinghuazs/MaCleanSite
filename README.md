@@ -46,4 +46,7 @@ src/pages/Legal.tsx     政策页模板
 
 ## 部署
 
-`vite.config.ts` 里 `base: './'`，构建产物全部用相对路径，`dist/` 可以直接放到 GitHub Pages（含子路径）、Cloudflare Pages、Vercel 或自有服务器。
+线上地址：https://getmaclean.vercel.app （maclean.vercel.app 已被别人占用；项目默认地址 https://maclean-site.vercel.app 也能访问。Vercel 项目 `qinghuazs-projects/maclean-site`，已连接 GitHub 仓库 qinghuazs/MaCleanSite）。
+推送到 `main` 会自动部署正式环境；其他分支会生成预览地址。手动部署：`vercel --prod`。
+
+`vite.config.ts` 里 `base: './'`，构建产物全部用相对路径，换到 GitHub Pages（含子路径）、Cloudflare Pages 或自有服务器也能直接用。

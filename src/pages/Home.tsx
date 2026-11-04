@@ -59,8 +59,8 @@ function Hero() {
         </div>
         <p className="mt-5 text-[0.85rem] text-ink-3">
           {t({
-            zh: `需要 macOS ${site.minMacOS} 或更新的系统，安装包经过 Apple 公证。`,
-            en: `Requires macOS ${site.minMacOS} or later. Notarized by Apple.`,
+            zh: `下载和扫描都免费。需要 macOS ${site.minMacOS} 或更新的系统，安装包经过 Apple 公证。`,
+            en: `Free to download and scan. Requires macOS ${site.minMacOS} or later. Notarized by Apple.`,
           })}
         </p>
       </div>
@@ -389,7 +389,7 @@ function Developers() {
             <pre className="mt-6 overflow-x-auto rounded-xl bg-night p-4 font-mono text-[0.75rem] leading-[1.8] text-night-ink">
               <code>
                 claude mcp add --scope user maclean -- \{'\n'}
-                {'  '}/Applications/MacleanAPP.app/Contents/MacOS/MacleanAPP \{'\n'}
+                {'  '}/Applications/MaClean.app/Contents/MacOS/MaClean \{'\n'}
                 {'  '}--mcp --mode read-only
               </code>
             </pre>
@@ -404,7 +404,7 @@ function Developers() {
               ))}
             </dl>
             <p className="mt-3 text-[0.82rem] text-night-ink-3">
-              {t({ zh: '只是试试的话，选只读就够了。', en: 'If you’re just trying it out, read-only is enough.' })}
+              {t({ zh: '只读模式不用许可证，安全和完全模式要先激活。只是试试的话，只读就够了。', en: 'Read-only works without a license. Safe and full need one. If you’re just trying it out, read-only is enough.' })}
             </p>
           </div>
         </div>
@@ -460,7 +460,8 @@ function Pricing() {
   const { t } = useLang()
   const buy = purchaseUrl()
   const includes: L[] = [
-    { zh: '所有功能都能用', en: 'Everything in the app' },
+    { zh: '解锁执行清理、终端脚本和卸载应用', en: 'Unlocks cleaning, Terminal scripts and uninstalling apps' },
+    { zh: 'AI 助手可以用安全模式和完全模式', en: 'AI assistants can use safe and full modes' },
     {
       zh: `一个许可证可以激活 ${macs.zh} Mac。换电脑的话，先在旧电脑上停用`,
       en: `One license works on ${macs.en}. Switching computers? Deactivate it on the old one first.`,
@@ -481,8 +482,8 @@ function Pricing() {
           <SectionHeading
             title={t({ zh: '买一次，一直用', en: 'Pay once, keep using it' })}
             intro={t({
-              zh: '付款走 Dodo Payments。不是订阅，不会自动续费。',
-              en: 'Payment goes through Dodo Payments. It’s not a subscription and it never renews.',
+              zh: '下载和扫描不收费：看「系统数据」里有什么、预检、预览清理结果都能直接用。真正执行清理、生成终端脚本、卸载应用的时候，才需要许可证。付款走 Dodo Payments，不是订阅，不会自动续费。',
+              en: 'Downloading and scanning are free: see what’s in System Data, run preflight, preview the cleanup. You need a license when you actually clean, generate Terminal scripts or uninstall apps. Payment goes through Dodo Payments. It’s not a subscription and it never renews.',
             })}
           />
           <ol className="mt-8 space-y-3">
@@ -585,6 +586,13 @@ function Faq() {
       },
     },
     {
+      q: { zh: '不买能用吗？', en: 'Can I use it without paying?' },
+      a: {
+        zh: '能。扫描、看系统数据、预检和预览都免费，想知道空间去哪了不用花钱。真正执行清理、生成终端脚本、卸载应用时才需要许可证。',
+        en: 'Yes. Scanning, the System Data breakdown, preflight and preview are all free, so finding out where your space went costs nothing. You only need a license to actually clean, generate Terminal scripts or uninstall apps.',
+      },
+    },
+    {
       q: { zh: '可以退款吗？', en: 'Can I get a refund?' },
       a: {
         zh: (
@@ -644,8 +652,8 @@ function Download() {
           </h2>
           <p className="mt-3 text-[0.98rem] text-ink-2">
             {t({
-              zh: `下载 MaClean 扫一下就知道了。当前版本 ${site.version}，需要 macOS ${site.minMacOS} 或更新的系统。`,
-              en: `Download MaClean and find out. Version ${site.version}, requires macOS ${site.minMacOS} or later.`,
+              zh: `下载 MaClean 扫一下就知道了，扫描不收费。当前版本 ${site.version}，需要 macOS ${site.minMacOS} 或更新的系统。`,
+              en: `Download MaClean and find out. Scanning is free. Version ${site.version}, requires macOS ${site.minMacOS} or later.`,
             })}
           </p>
         </div>
