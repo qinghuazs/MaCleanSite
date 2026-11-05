@@ -1,4 +1,4 @@
-import { Bot, Check, ClipboardCheck, ListChecks, Lock, PanelTop, Terminal, Trash2, TrendingUp, Undo2 } from 'lucide-react'
+import { Bot, Check, ClipboardCheck, ListChecks, Lock, PanelTop, Terminal, Trash2, Undo2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { LedgerDemo } from '../components/LedgerDemo'
 import { ButtonLink, Tag } from '../components/ui'
@@ -429,19 +429,11 @@ function Beyond() {
       title: { zh: '菜单栏显示剩余空间', en: 'Free space in the menu bar' },
       text: { zh: '不用打开应用，看一眼菜单栏就知道还剩多少，快满了会提醒你。', en: 'Glance at the menu bar to see how much space is left. It warns you when the disk is getting full.' },
     },
-    {
-      icon: <TrendingUp className="size-5" />,
-      title: { zh: '每周记一次', en: 'A weekly snapshot' },
-      text: {
-        zh: '打开之后每周自动记录一次空间占用，过一阵子就能看出是谁在悄悄变大。',
-        en: 'Once a week it records your disk usage, so after a while you can see what’s been quietly growing.',
-      },
-    },
   ]
   return (
     <section id="more" className="wrap py-20 lg:py-28">
       <SectionHeading title={t({ zh: '顺手做的几个小功能', en: 'A few smaller things' })} />
-      <ul className="mt-10 grid gap-10 sm:grid-cols-3">
+      <ul className="mt-10 grid gap-10 sm:grid-cols-2">
         {items.map((item) => (
           <li key={item.title.en}>
             <span className="text-clay-ink" aria-hidden="true">
