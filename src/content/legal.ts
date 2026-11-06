@@ -130,12 +130,12 @@ export const privacy: LegalDoc = {
         zh: [
           '扫描结果、清理记录、空间快照和设置，都保存在你的 Mac 上（~/Library/Application Support/Maclean 等目录）。我们不会上传你的文件、文件名、路径或扫描结果，也看不到它们。',
           '为了扫描受保护的目录，本软件会请求“完全磁盘访问权限”。这个权限只用于在本机扫描，以及执行你确认的清理。',
-          '菜单栏低空间提醒的通知由 macOS 在本机发出。',
+          '菜单栏低空间提醒和定时监控的通知由 macOS 在本机发出。',
         ],
         en: [
           'Scan results, cleanup history, disk snapshots and settings are stored on your Mac, in folders such as ~/Library/Application Support/Maclean. We never upload your files, file names, paths or scan results, and we cannot see them.',
           'To scan protected folders the app asks for Full Disk Access. It uses this permission only to scan locally and to carry out the cleanup you confirm.',
-          'Low-space alerts are delivered locally by macOS.',
+          'Low-space alerts and scheduled monitoring notifications are delivered locally by macOS.',
         ],
       },
     },

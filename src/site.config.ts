@@ -28,7 +28,7 @@ export const site = {
   /** 无理由退款天数 */
   refundDays: 3,
   /** 政策页的生效日期 */
-  policyDate: '2026-11-05',
+  policyDate: '2026-11-06',
 } as const
 
 /** 激活台数的说法：1 台时不说“最多”，英文单复数也不同 */
