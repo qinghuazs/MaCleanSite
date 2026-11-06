@@ -50,3 +50,14 @@ src/pages/Legal.tsx     政策页模板
 推送到 `main` 会自动部署正式环境；其他分支会生成预览地址。手动部署：`vercel --prod`。
 
 `vite.config.ts` 里 `base: './'`，构建产物全部用相对路径，换到 GitHub Pages（含子路径）、Cloudflare Pages 或自有服务器也能直接用。
+
+## 应用自动更新（Sparkle，2026-11-06 起）
+
+应用 1.1.0 起内置 Sparkle，每天读一次 `https://getmaclean.vercel.app/appcast.xml`（源文件 `public/appcast.xml`）。发新版的顺序：
+
+1. 应用仓库 `./Scripts/build-release.sh <版本>`，产出公证好的 `build/MaClean-<版本>.dmg` 和 `build/appcast-item.xml`（带 EdDSA 签名）
+2. `gh release create v<版本> build/MaClean-<版本>.dmg -R qinghuazs/MaCleanSite`
+3. 把 `appcast-item.xml` 的 `<item>` 加到 `public/appcast.xml` 的 channel 最上面，连同 `site.config.ts` 的 `version`、`downloadUrl` 一起提交推送
+
+顺序不能反：appcast 先上线而 dmg 还没传，用户点更新会下载失败。
+

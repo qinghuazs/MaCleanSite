@@ -153,6 +153,19 @@ export const privacy: LegalDoc = {
       },
     },
     {
+      h: { zh: '检查更新', en: 'Update checks' },
+      p: {
+        zh: [
+          '本软件（1.1.0 起）大约每天访问一次本网站上的版本清单，看有没有新版本。请求里只有本软件和更新组件（Sparkle）的版本号，不包含你的文件、路径或扫描结果；网站托管商能看到发出请求的 IP 地址。',
+          '有新版本时，安装包从 GitHub 下载，并在安装前核对开发者的签名。自动检查可以在设置里关掉。',
+        ],
+        en: [
+          'Starting with version 1.1.0, the app checks the update list on this website about once a day. The request includes only the version numbers of the app and its update component (Sparkle), never your files, paths or scan results. Our hosting provider can see the IP address the request comes from.',
+          'When a new version is available, it is downloaded from GitHub and its developer signature is verified before installing. You can turn off automatic checks in Settings.',
+        ],
+      },
+    },
+    {
       h: { zh: '购买', en: 'Purchases' },
       p: {
         zh: [

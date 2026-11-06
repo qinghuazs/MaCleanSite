@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  MaClean 的 Sparkle 更新清单（应用 Info.plist 的 SUFeedURL 指向这里，1.1.0 起的版本每天查一次）。
+  发新版：应用仓库 ./Scripts/build-release.sh <版本> 打完包会生成 build/appcast-item.xml，
+  先把 dmg 传到 GitHub Releases（gh release create v<版本> build/MaClean-<版本>.dmg -R qinghuazs/MaCleanSite），
+  再把那段 <item> 加到下面 channel 里、放在最上面，提交推送后 Vercel 自动部署。
+  item 里的签名对应 dmg 的每一个字节，dmg 重新打包后签名要重新生成。
+-->
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>MaClean</title>
+    <link>https://getmaclean.vercel.app/</link>
+    <description>MaClean 更新</description>
+    <language>zh</language>
+  </channel>
+</rss>
