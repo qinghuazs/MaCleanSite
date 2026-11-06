@@ -12,5 +12,13 @@
     <link>https://getmaclean.vercel.app/</link>
     <description>MaClean 更新</description>
     <language>zh</language>
+    <item>
+      <title>MaClean 1.1.0</title>
+      <pubDate>Fri, 06 Nov 2026 04:59:32 +0000</pubDate>
+      <sparkle:version>202611061255</sparkle:version>
+      <sparkle:shortVersionString>1.1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.1</sparkle:minimumSystemVersion>
+      <enclosure url="https://github.com/qinghuazs/MaCleanSite/releases/download/v1.1.0/MaClean-1.1.0.dmg" type="application/octet-stream" sparkle:edSignature="AiDCBAyBSkNDP9UrXvzC7QqB3nfSjEI5d3R8E8VXxTknEBx7knYRnGvix27nzYpC6PmimkL2Fr9W0tontC5FBA==" length="6892433" />
+    </item>
   </channel>
 </rss>

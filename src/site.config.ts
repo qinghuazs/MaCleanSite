@@ -3,7 +3,7 @@
 export const site = {
   name: 'MaClean',
   /** 当前版本号，显示在下载区 */
-  version: '1.0.0',
+  version: '1.1.0',
   /** 最低系统要求 */
   minMacOS: '26.1',
 
@@ -13,7 +13,7 @@ export const site = {
   githubUrl: 'https://github.com/qinghuazs',
 
   /** dmg 下载地址（例如公开仓库的 GitHub Releases）。留空时下载按钮显示"即将开放下载" */
-  downloadUrl: 'https://github.com/qinghuazs/MaCleanSite/releases/download/v1.0.0/MaClean-1.0.0.dmg',
+  downloadUrl: 'https://github.com/qinghuazs/MaCleanSite/releases/download/v1.1.0/MaClean-1.1.0.dmg',
   /** Dodo Payments 正式环境的产品 ID（pdt_…），和应用里 LicenseConfig.productIDs[.live] 一致。留空时购买按钮显示"即将开放购买" */
   dodoProductId: 'pdt_0NrBpT8ICJhSFYA07VVg8',
   /** 测试阶段可改成 true，购买按钮走 test.checkout.dodopayments.com */
