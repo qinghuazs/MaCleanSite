@@ -1,4 +1,4 @@
-import { Bot, Check, ClipboardCheck, ListChecks, Lock, PanelTop, Terminal, Trash2, TrendingUp, Undo2 } from 'lucide-react'
+import { Bot, Check, ClipboardCheck, Languages, ListChecks, Lock, PanelTop, RefreshCw, Terminal, Trash2, TrendingUp, Undo2 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { LedgerDemo } from '../components/LedgerDemo'
 import { ButtonLink, Tag } from '../components/ui'
@@ -190,8 +190,8 @@ function Safety() {
       icon: <Undo2 className="size-[18px]" />,
       title: { zh: '后悔了还能放回去', en: 'Changed your mind? Put it back' },
       text: {
-        zh: '默认是移到废纸篓。只要废纸篓还没清空，在历史记录里点一下就都回来了。',
-        en: 'Things go to the Trash by default. As long as you haven’t emptied it, one click in History brings everything back.',
+        zh: '默认是移到废纸篓。只要废纸篓还没清空，在「清理记录」里点一下就都回来了。',
+        en: 'Things go to the Trash by default. As long as you haven’t emptied it, one click in Cleanup History brings everything back.',
       },
     },
   ]
@@ -420,8 +420,8 @@ function Beyond() {
       icon: <Trash2 className="size-5" />,
       title: { zh: '卸载得干净点', en: 'Cleaner uninstalls' },
       text: {
-        zh: '卸载应用时，顺带把它在 ~/Library 里留下的数据一起清掉。同样是进废纸篓，能撤回。',
-        en: 'Uninstalling an app also takes the data it left behind in ~/Library. It all goes to the Trash, so you can undo it.',
+        zh: '卸载应用时，把它在 ~/Library 里的设置、缓存和数据一项项列出来，你决定哪些一起清掉。同样是进废纸篓，能撤回。',
+        en: 'When you uninstall an app, its settings, caches and data in ~/Library are listed one by one, and you decide which go with it. It all goes to the Trash, so you can undo it.',
       },
     },
     {
@@ -437,11 +437,27 @@ function Beyond() {
         en: 'Once a day it records your disk usage, so after a few days you can see what’s been quietly growing.',
       },
     },
+    {
+      icon: <RefreshCw className="size-5" />,
+      title: { zh: '新版本会提醒你', en: 'Updates come to you' },
+      text: {
+        zh: '有新版本时在应用里提示，点一下就装好，不用回网站重新下载。不想自动检查可以在设置里关掉。',
+        en: 'When a new version is out, the app tells you and installs it in one click, no trip back to this site. You can turn off automatic checks in Settings.',
+      },
+    },
+    {
+      icon: <Languages className="size-5" />,
+      title: { zh: '中英文都有', en: 'Chinese and English' },
+      text: {
+        zh: '界面有简体中文、繁体中文和英文，默认跟着系统语言走，也能在设置里单独换；浅色、深色都有。',
+        en: 'The app comes in English, Simplified Chinese and Traditional Chinese. It follows your system language, or you can pick one in Settings. Light and dark both work.',
+      },
+    },
   ]
   return (
     <section id="more" className="wrap py-20 lg:py-28">
       <SectionHeading title={t({ zh: '顺手做的几个小功能', en: 'A few smaller things' })} />
-      <ul className="mt-10 grid gap-10 sm:grid-cols-3">
+      <ul className="mt-10 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
           <li key={item.title.en}>
             <span className="text-clay-ink" aria-hidden="true">
@@ -612,8 +628,15 @@ function Faq() {
     {
       q: { zh: '怎么接入 Claude Code、Codex？', en: 'How do I connect Claude Code or Codex?' },
       a: {
-        zh: '在 MaClean 的「设置 → AI 助手接入」里选个模式，把对应客户端的配置复制过去就行。刚开始建议用只读，AI 只能看不能删。',
-        en: 'In MaClean, open Settings → AI assistants, pick a mode and copy the config for your client. Read-only is a good place to start, since the assistant can look but not delete.',
+        zh: '在 MaClean 的「设置 → AI 助手」里选个模式，把对应客户端的配置复制过去就行。刚开始建议用只读，AI 只能看不能删。',
+        en: 'In MaClean, open Settings → AI Assistants, pick a mode and copy the config for your client. Read-only is a good place to start, since the assistant can look but not delete.',
+      },
+    },
+    {
+      q: { zh: '怎么更新到新版本？', en: 'How do I update to a new version?' },
+      a: {
+        zh: '从 1.1.0 起，MaClean 每天检查一次，有新版本时在应用里提示，点一下就装好；也可以在菜单里点「检查更新…」。1.0.0 还没有这个功能，需要在这里下载新版，手动替换一次。',
+        en: 'From version 1.1.0, MaClean checks once a day and offers new versions inside the app, installed in one click. You can also choose “Check for Updates…” from the menu. Version 1.0.0 doesn’t have this yet, so download the new version here and replace it once.',
       },
     },
   ]
