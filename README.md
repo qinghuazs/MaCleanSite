@@ -31,8 +31,11 @@ npm run preview   # 预览构建结果
 index.html, guide/, terms/, privacy/, refund/   各页面入口 HTML（多页面构建，路径干净）
 src/site.config.ts      可配置项
 src/i18n.tsx            中英切换（?lang= → 上次选择 → 浏览器语言）
-src/styles.css          设计变量（浅色 / 深色两套）与 Tailwind 主题
-src/components/         页头、页脚、首屏扫描结果示例、按钮与标签
+src/styles.css          设计变量（只有深色一套）与 Tailwind 主题
+src/components/         页头、页脚、按钮
+src/components/demos/   首页的四个交互演示（系统数据、扫描结果、卸载应用、MCP）和共用的窗口外框
+src/content/demo.ts     演示用的数据（分类、目录、应用、各项大小）
+src/assets/apps/        演示里的应用图标（96px）
 src/pages/Home.tsx      首页各区块
 src/content/legal.ts    三份政策正文（中英）
 src/pages/Legal.tsx     政策页模板
@@ -50,9 +53,15 @@ src/pages/Guide.tsx     用户手册页模板（/guide/）
 
 ## 设计
 
-参考 Claude 官网风格：暖白纸张底色 `#FAF9F5`、深墨文字 `#141413`、陶土色强调 `#D97757`；标题用衬线（Newsreader + 思源宋体），正文用 Instrument Sans + 苹方。
-字体全部用 @fontsource 本地打包，不依赖 Google Fonts（国内访问不到）；思源宋体按 unicode-range 分片，只下载用到的字。
-首屏是一个可交互的"扫描结果"示例（示例数据），页面加载时灰色的"系统数据"条会拆成彩色分类，这是全页唯一的自动动效，系统开了"减弱动态效果"时直接显示结果。
+设计稿：Figma「MaClean 官网 1.1.1 · 首页改版」https://www.figma.com/design/xw22wImHiidJRzVqvOw52V/ ，中文、英文各有 1440 和 390 两张画板。2026-11-25 按这份稿子重做了首页。
+
+- **只做深色**（用户决定不做浅色），和应用的深色界面一致：底色 `#090B13`、文字 `#F5F2FA`、强调色淡紫 `#EBCBFF`。变量都在 `src/styles.css`；手册页、政策页还在用旧名字（paper / ink-2 / clay …），那里留了一组别名指到新变量
+- **字体**：标题用衬线（Newsreader + 思源宋体），正文用 Instrument Sans + 苹方。全部用 @fontsource 本地打包，不依赖 Google Fonts（国内访问不到）；思源宋体按 unicode-range 分片，只下载用到的字
+- **宽度**：断点 `desk` = 1080px。1080 以上是桌面版式，内容最宽 1200；1080 以下用手机版式，内容列最宽 480 并居中。首页用 `.wrap`，手册页、政策页用 `.wrap-wide`（窄屏不限 480）
+- **演示**：首页四个演示照应用界面做，可以点，数据在 `src/content/demo.ts`，全是演示数据。演示里的「清理」「卸载」不碰任何文件：「清理」弹出“这是演示”，卸载走到确认那一步为止。界面文字要和应用一致，英文照应用翻译文件里的写法，不要自己另译
+- **MCP 一块的接入配置**和应用「设置 → AI 助手」生成的一样（写法照 `../maclean` 的 `MCPStdio.swift`，客户端和位置照应用的 `SettingsView.swift`），可以直接复制去用，所以应用改了这里要跟着改
+- **首屏的玫瑰星云**是应用概览页那张图（`src/assets/rosette.jpg`），目前是静态的；页脚有图片署名，换图时一起改
+- **图标**：网站图标和页头图标取自应用图标；`src/assets/apps/` 里的第三方应用图标是从本机已装的应用导出的
 
 ## 部署
 

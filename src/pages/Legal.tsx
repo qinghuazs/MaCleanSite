@@ -20,7 +20,7 @@ export function Legal({ doc, current }: { doc: LegalDoc; current: 'terms' | 'pri
   ).filter((o) => o.id !== current)
 
   return (
-    <article className="wrap max-w-[48rem] pt-14 pb-24 sm:pt-20">
+    <article className="wrap-wide max-w-[48rem] pt-14 pb-24 sm:pt-20">
       <p className="text-[0.88rem] text-ink-3">
         {t({ zh: `生效日期：${site.policyDate}`, en: `Effective ${site.policyDate}` })}
       </p>

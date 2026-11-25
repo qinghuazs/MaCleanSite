@@ -15,7 +15,7 @@ export function Guide() {
   const rich = useRich()
 
   return (
-    <div className="wrap pt-14 pb-24 sm:pt-20 lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-16">
+    <div className="wrap-wide pt-14 pb-24 sm:pt-20 lg:grid lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-16">
       <Toc className="hidden lg:sticky lg:top-24 lg:block lg:self-start" />
 
       <article className="max-w-[48rem]">
