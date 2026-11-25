@@ -3,16 +3,18 @@ import { useLang, type Lang } from '../i18n'
 import { links, type PageDepth } from '../paths'
 import { site } from '../site.config'
 
-// 页头：应用图标 + 名称、首页各区块导航、中英切换、下载按钮
+// 页头：应用图标 + 名称、首页各区块与用户手册的导航、中英切换、下载按钮
 export function Header({ depth }: { depth: PageDepth }) {
   const { t, lang, setLang } = useLang()
   const l = links(depth)
   const nav = [
-    { id: 'how', label: { zh: '功能', en: 'Features' } },
-    { id: 'safety', label: { zh: '安全', en: 'Safety' } },
-    { id: 'developers', label: { zh: '开发者', en: 'Developers' } },
-    { id: 'pricing', label: { zh: '价格', en: 'Pricing' } },
-    { id: 'faq', label: { zh: '常见问题', en: 'FAQ' } },
+    { href: l.section('how'), label: { zh: '功能', en: 'Features' } },
+    { href: l.section('safety'), label: { zh: '安全', en: 'Safety' } },
+    { href: l.section('developers'), label: { zh: '开发者', en: 'Developers' } },
+    { href: l.section('pricing'), label: { zh: '价格', en: 'Pricing' } },
+    { href: l.section('faq'), label: { zh: '常见问题', en: 'FAQ' } },
+    // 768 宽的英文页头再多放一项会把右边的按钮挤出屏幕，所以手册只在 1024 以上显示（页脚里一直有）
+    { href: l.guide, label: { zh: '手册', en: 'Guide' }, wideOnly: true },
   ]
 
   return (
@@ -26,9 +28,9 @@ export function Header({ depth }: { depth: PageDepth }) {
         <nav aria-label={t({ zh: '页面导航', en: 'Page sections' })} className="hidden flex-1 md:block">
           <ul className="flex items-center gap-1">
             {nav.map((item) => (
-              <li key={item.id}>
+              <li key={item.href} className={'wideOnly' in item ? 'hidden lg:block' : undefined}>
                 <a
-                  href={l.section(item.id)}
+                  href={item.href}
                   className="rounded-md px-3 py-1.5 text-[0.93rem] text-ink-2 transition-colors hover:bg-paper-2 hover:text-ink"
                 >
                   {t(item.label)}

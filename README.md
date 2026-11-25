@@ -1,6 +1,6 @@
 # MaClean 官网
 
-MaClean（macOS 磁盘清理应用）的产品官网：首页 + 服务条款 / 隐私政策 / 退款政策，中英双语。
+MaClean（macOS 磁盘清理应用）的产品官网：首页 + 用户手册 + 服务条款 / 隐私政策 / 退款政策，中英双语。
 技术栈：Vite 8 + React 19 + TypeScript + Tailwind CSS v4，多页面静态站点，无后端。
 
 ## 命令
@@ -28,7 +28,7 @@ npm run preview   # 预览构建结果
 ## 结构
 
 ```
-index.html, terms/, privacy/, refund/   各页面入口 HTML（多页面构建，路径干净）
+index.html, guide/, terms/, privacy/, refund/   各页面入口 HTML（多页面构建，路径干净）
 src/site.config.ts      可配置项
 src/i18n.tsx            中英切换（?lang= → 上次选择 → 浏览器语言）
 src/styles.css          设计变量（浅色 / 深色两套）与 Tailwind 主题
@@ -36,7 +36,17 @@ src/components/         页头、页脚、首屏扫描结果示例、按钮与�
 src/pages/Home.tsx      首页各区块
 src/content/legal.ts    三份政策正文（中英）
 src/pages/Legal.tsx     政策页模板
+src/content/guide.ts    用户手册正文（中英）
+src/pages/Guide.tsx     用户手册页模板（/guide/）
 ```
+
+## 用户手册
+
+`/guide/`，页头导航和页脚「产品」一栏有入口。正文在 `src/content/guide.ts`，照应用 1.1.1 写的（`guideVersion`）；应用改了界面文字或操作流程，这里要跟着改。
+
+- 界面上的名字要和应用一致：中文照简体界面写，英文照应用翻译文件里的写法（`../MacleanAPP/MacleanAPP/Localizable.xcstrings`、`../maclean/Localization/Localizable.xcstrings`），不要自己另译
+- 正文里能用的标记只有 `**加粗**`、`` `代码` ``、`[文字](目标)`，目标写 `#锚点`、`{download}`（首页下载区）或完整网址；表格固定两列
+- 「清空前找回文件」一节没有实测过：MaClean 移进废纸篓的文件在访达里有没有「放回原处」还没确认
 
 ## 设计
 

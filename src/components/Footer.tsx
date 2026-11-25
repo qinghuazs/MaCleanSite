@@ -16,6 +16,7 @@ export function Footer({ depth }: { depth: PageDepth }) {
         { href: l.section('how'), label: { zh: '功能', en: 'Features' } },
         { href: l.section('pricing'), label: { zh: '价格', en: 'Pricing' } },
         { href: l.section('faq'), label: { zh: '常见问题', en: 'FAQ' } },
+        { href: l.guide, label: { zh: '用户手册', en: 'User Guide' } },
         { href: l.section('download'), label: { zh: '下载', en: 'Download' } },
       ],
     },

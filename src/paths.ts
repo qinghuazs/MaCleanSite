@@ -1,4 +1,4 @@
-// 页面之间的相对链接：首页在根目录，政策页在 /terms/ 等子目录，用相对路径才能部署到任意子路径下
+// 页面之间的相对链接：首页在根目录，政策页、用户手册在 /terms/、/guide/ 等子目录，用相对路径才能部署到任意子路径下
 export type PageDepth = 0 | 1
 
 export function links(depth: PageDepth) {
@@ -9,5 +9,6 @@ export function links(depth: PageDepth) {
     terms: `${root}terms/`,
     privacy: `${root}privacy/`,
     refund: `${root}refund/`,
+    guide: `${root}guide/`,
   }
 }
