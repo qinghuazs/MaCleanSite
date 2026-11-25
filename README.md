@@ -61,3 +61,8 @@ src/pages/Legal.tsx     政策页模板
 
 顺序不能反：appcast 先上线而 dmg 还没传，用户点更新会下载失败。
 
+两点注意（2026-11-25 发 1.1.1 时遇到）：
+
+- 这个仓库的工作分支和发布标签可能同名（分支 `v1.1.1`，`gh release create v1.1.1` 又建了同名标签），`git push origin v1.1.1` 会报 "matches more than one"。推送时写完整名字：`git push origin refs/heads/v1.1.1:refs/heads/v1.1.1`，上线用 `git push origin refs/heads/v1.1.1:refs/heads/main`
+- 1.1.1 起条目里的更新内容按语言各放一份（`<description xml:lang="en">`、`zh-Hans`、`zh-Hant`），应用里的更新窗口按界面语言挑；这几段由打包脚本从应用仓库的 `Scripts/release-notes/<版本>.<语言>.html` 生成，照原样贴进来就行
+
