@@ -13,6 +13,50 @@
     <description>MaClean 更新</description>
     <language>zh</language>
     <item>
+      <title>MaClean 1.1.1</title>
+      <pubDate>Wed, 25 Nov 2026 01:47:46 +0000</pubDate>
+      <sparkle:version>202611250941</sparkle:version>
+      <sparkle:shortVersionString>1.1.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>26.1</sparkle:minimumSystemVersion>
+      <description xml:lang="en"><![CDATA[
+<h3>What's New</h3>
+<ul>
+<li>A new starry-night look; while scanning, the home screen shows what's being checked and how much has been found</li>
+<li>Scan Results now lists one app per row. Expand an app to see its caches, logs, and other items, sorted by estimated space freed. Cleaning shows progress, and results are grouped by how each item was cleaned</li>
+<li>Redesigned System Data: a capacity bar colored by category, a storage map that goes one level into subfolders, and a detail panel showing the largest folders in the selected category and how much of it Scan Results suggests cleaning</li>
+<li>Recognizes more apps and locations: QQ, WeCom, Telegram, Spotify, QQ Music, NetEase Cloud Music, Lightroom, Final Cut Pro, Android emulators, Ollama and LM Studio models, copies of Mail attachments, Podcasts, unfinished downloads, old versions left after browser updates, and more</li>
+<li>Without Full Disk Access, MaClean now warns before cleaning other apps' sandbox containers and links to System Settings</li>
+<li>The Cleanup History page is temporarily hidden from navigation in this version</li>
+<li>Bug fixes</li>
+</ul>
+      ]]></description>
+      <description xml:lang="zh-Hans"><![CDATA[
+<h3>这个版本的变化</h3>
+<ul>
+<li>界面换成星空风格；首页扫描时会显示正在检查什么、已经发现多少</li>
+<li>扫描结果改为一个应用一行，点开看它的缓存、日志等各项，按预计释放排序；清理时显示进度，结束后按清理方式列出结果</li>
+<li>系统数据页重做：容量条按分类上色，占用空间地图画到子目录一层，右侧列出选中分类里占用最大的目录，以及扫描结果里这一类有多少建议清理</li>
+<li>认得更多软件和位置：QQ、企业微信、Telegram、Spotify、QQ音乐、网易云音乐、Lightroom、Final Cut Pro、Android 模拟器、Ollama 和 LM Studio 的模型、邮件附件的副本、播客、没下完的下载、浏览器更新后留下的旧版本等</li>
+<li>没有完全磁盘访问权限时，清理其他应用的沙盒容器前会先提醒，并给出去系统设置的入口</li>
+<li>「清理记录」页这一版暂时不在导航里显示</li>
+<li>修复了几个问题</li>
+</ul>
+      ]]></description>
+      <description xml:lang="zh-Hant"><![CDATA[
+<h3>這個版本的變化</h3>
+<ul>
+<li>介面換成星空風格；首頁掃描時會顯示正在檢查什麼、已經發現多少</li>
+<li>掃描結果改為一個 App 一列，點開可查看它的快取、記錄等各項，依預計釋放排序；清理時顯示進度，結束後依清理方式列出結果</li>
+<li>系統資料頁重新設計：容量列依分類上色，用量地圖畫到子資料夾一層，右側列出所選分類裡用量最大的資料夾，以及掃描結果裡這一類有多少建議清理</li>
+<li>認得更多軟體和位置：QQ、企業微信、Telegram、Spotify、QQ音樂、網易雲音樂、Lightroom、Final Cut Pro、Android 模擬器、Ollama 和 LM Studio 的模型、郵件附件的副本、Podcast、沒下載完的項目、瀏覽器更新後留下的舊版本等</li>
+<li>沒有完整磁碟取用權限時，清理其他 App 的沙盒容器前會先提醒，並提供前往系統設定的入口</li>
+<li>「清理記錄」頁這一版暫時不在導覽列顯示</li>
+<li>修正了幾個問題</li>
+</ul>
+      ]]></description>
+      <enclosure url="https://github.com/qinghuazs/MaCleanSite/releases/download/v1.1.1/MaClean-1.1.1.dmg" type="application/octet-stream" sparkle:edSignature="2/sz3XNb6jqAl0lDL+euExGLArJX8DG+xz3mdLh3tRge3xvlAnUPZgcuDkq2w2npvqPUz7EztOMaIUBWYFz9DA==" length="16779702" />
+    </item>
+    <item>
       <title>MaClean 1.1.0</title>
       <pubDate>Fri, 06 Nov 2026 04:59:32 +0000</pubDate>
       <sparkle:version>202611061255</sparkle:version>
