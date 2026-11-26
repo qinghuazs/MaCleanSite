@@ -19,7 +19,7 @@ const l = links(0)
 const comingSoon: L = { zh: '即将开放下载', en: 'Download coming soon' }
 
 export function Home() {
-  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用、MCP、四张卡片、价格），带 data-page 的区块就是一页
+  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用、MCP、四张卡片、价格、常见问题），带 data-page 的区块就是一页
   usePagedScroll()
   return (
     <>
@@ -470,7 +470,9 @@ function Pricing() {
 
 function Faq() {
   const { t } = useLang()
+  // 手机上是折叠列表，可以同时展开几个；宽屏上一次只看一个问题的答案
   const [open, setOpen] = useState<Set<number>>(new Set([0]))
+  const [current, setCurrent] = useState(0)
   const more = (href: string, label: L) => (
     <a href={href} className="text-accent underline decoration-1 underline-offset-4">
       {t(label)}
@@ -566,36 +568,72 @@ function Faq() {
   }
 
   return (
-    <section id="faq" className="wrap grid gap-5 pb-14 desk:grid-cols-[minmax(0,450px)_minmax(0,1fr)] desk:gap-0 desk:pb-[86px]">
-      <div>
-        <h2 className="text-[30px] leading-[39px] desk:text-[41px] desk:leading-[53px]">{t({ zh: '常见问题', en: 'FAQ' })}</h2>
-        <p className="mt-2 text-[13px] text-muted desk:text-[14px]">
-          {t({ zh: '具体怎么操作，见', en: 'For step-by-step instructions, see the ' })}
-          {more(l.guide, { zh: '用户手册', en: 'User Guide' })}
-          {t({ zh: '。', en: '.' })}
-        </p>
-      </div>
-      <ul>
-        {items.map((item, i) => {
-          const on = open.has(i)
-          return (
-            <li key={item.q.en} className="border-b border-line">
-              <h3 className="font-sans">
+    <section className="wrap pb-14 desk:pb-[86px]">
+      {/* 常见问题也是一页（用户 2026-11-26 要求占一屏）。十个问题全展开放不进一屏，所以宽屏上改成左边问题、右边答案：
+          左边十行平分这一页的高度，点哪个右边就显示哪个的答案，高度始终不变。手机上还是原来的折叠列表 */}
+      <DemoPage
+        id="faq"
+        fill
+        title={{ zh: '常见问题', en: 'FAQ' }}
+        intro={{
+          zh: (
+            <>
+              具体怎么操作，见{more(l.guide, { zh: '用户手册', en: 'User Guide' })}。
+            </>
+          ),
+          en: <>For step-by-step instructions, see the {more(l.guide, { zh: '用户手册', en: 'User Guide' })}.</>,
+        }}
+      >
+        <div className="hidden desk:grid desk:flex-1 desk:grid-cols-[minmax(0,470px)_minmax(0,1fr)] desk:gap-5">
+          <ul className="flex flex-col gap-1.5">
+            {items.map((item, i) => (
+              <li key={item.q.en} className="flex min-h-10 flex-1">
                 <button
                   type="button"
-                  aria-expanded={on}
-                  onClick={() => toggle(i)}
-                  className="flex w-full items-center justify-between gap-4 px-0.5 py-3.5 text-left text-[15px] leading-[23px] font-bold desk:text-[17px] desk:leading-[26px]"
+                  aria-pressed={i === current}
+                  aria-controls="faq-answer"
+                  onClick={() => setCurrent(i)}
+                  className={`flex w-full items-center justify-between gap-3 rounded-xl px-4 text-left text-[16px] leading-[22px] transition-colors ${
+                    i === current ? 'bg-ink font-bold text-on-accent' : 'font-medium text-muted hover:bg-raised hover:text-ink'
+                  }`}
                 >
                   {t(item.q)}
-                  <ChevronDown aria-hidden="true" className={`size-[18px] shrink-0 text-muted transition-transform ${on ? 'rotate-180' : ''}`} />
+                  <ArrowRight aria-hidden="true" className={`size-4 shrink-0 ${i === current ? '' : 'opacity-0'}`} />
                 </button>
-              </h3>
-              {on && <p className="pb-4 text-[14px] leading-[21px] text-muted desk:text-[15px] desk:leading-[23px]">{t(item.a)}</p>}
-            </li>
-          )
-        })}
-      </ul>
+              </li>
+            ))}
+          </ul>
+          <div id="faq-answer" aria-live="polite" className="flex flex-col justify-center rounded-[20px] border border-line px-10 py-8 xl:px-14">
+            <p className="font-mono text-[13px] text-subtle">
+              {String(current + 1).padStart(2, '0')} / {items.length}
+            </p>
+            <h3 className="mt-3 font-sans text-[26px] leading-[38px] font-bold">{t(items[current].q)}</h3>
+            <p className="mt-4 text-[17px] leading-[31px] text-muted">{t(items[current].a)}</p>
+          </div>
+        </div>
+
+        <ul className="desk:hidden">
+          {items.map((item, i) => {
+            const on = open.has(i)
+            return (
+              <li key={item.q.en} className="border-b border-line">
+                <h3 className="font-sans">
+                  <button
+                    type="button"
+                    aria-expanded={on}
+                    onClick={() => toggle(i)}
+                    className="flex w-full items-center justify-between gap-4 px-0.5 py-3.5 text-left text-[15px] leading-[23px] font-bold"
+                  >
+                    {t(item.q)}
+                    <ChevronDown aria-hidden="true" className={`size-[18px] shrink-0 text-muted transition-transform ${on ? 'rotate-180' : ''}`} />
+                  </button>
+                </h3>
+                {on && <p className="pb-4 text-[14px] leading-[21px] text-muted">{t(item.a)}</p>}
+              </li>
+            )
+          })}
+        </ul>
+      </DemoPage>
     </section>
   )
 }
