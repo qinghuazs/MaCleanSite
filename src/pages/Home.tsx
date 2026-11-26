@@ -136,7 +136,7 @@ function Features() {
   return (
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
       <div className="border-t border-line pt-[23px] desk:pt-[30px]">
-        <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '循图而寻，逐项看清', en: 'Follow the map, check every item' })}</h2>
+        <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' })}</h2>
         <p className="mt-2 text-[14px] leading-6 text-muted desk:text-[17px] desk:leading-[27px]">
           {t({
             zh: '从一张地图找到大目录，点开应用看清每一项。遇到不再使用的软件，也可以把它和留下的数据分开处理。',
