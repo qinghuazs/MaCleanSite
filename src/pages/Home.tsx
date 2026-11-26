@@ -107,10 +107,11 @@ function Hero() {
 /** 功能卡片：左边标题、右边说明，下面是演示 */
 function FeatureCard({ id, title, desc, mobileDesc, extra, children }: { id: string; title: L; desc?: L; mobileDesc?: L; extra?: ReactNode; children: ReactNode }) {
   const { t } = useLang()
-  // 不传 desc 的卡片没有标题栏，里面只有演示（标题留给读屏软件）
+  // 不传 desc 的那一块没有标题栏，也没有外面这层卡片（边框、底色、内边距），演示窗口直接放在页面上、和上面的文字左右对齐；
+  // 标题留给读屏软件
   if (!desc) {
     return (
-      <section id={id} aria-label={t(title)} className="rounded-[24px] border border-line bg-surface px-[13px] py-[13px] desk:px-[30px] desk:py-[30px] xl:px-[71px]">
+      <section id={id} aria-label={t(title)}>
         {children}
       </section>
     )

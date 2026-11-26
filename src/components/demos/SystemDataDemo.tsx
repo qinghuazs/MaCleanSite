@@ -2,7 +2,7 @@ import { ArrowDownRight, ArrowRight } from 'lucide-react'
 import { useState } from 'react'
 import { categories, disk, formatSize, mapSize, mobileMapSize, mobileTiles, tiles, type Category, type CategoryId } from '../../content/demo'
 import { useLang } from '../../i18n'
-import { AppTabs, TrafficLights, WindowFrame } from './chrome'
+import { TrafficLights, WindowFrame } from './chrome'
 
 // 系统数据演示：点地图上的色块或图例切换分类，右边的明细跟着变。
 // 桌面照应用窗口画（容量条、图例、两层地图、明细）；手机上简化成五个色块加明细
@@ -32,11 +32,8 @@ function Desktop({ current, onSelect }: Props) {
 
   return (
     <WindowFrame className="hidden px-[22px] py-[18px] desk:block">
-      <div className="flex items-center justify-between">
-        <TrafficLights className="w-10" />
-        <AppTabs active="system" />
-        <span className="w-10" />
-      </div>
+      {/* 窗口顶上只留红黄绿三个点；应用的页签栏用户让去掉了（2026-11-26），页面标题已经说明这是哪一页 */}
+      <TrafficLights className="w-10" />
 
       <div className="mt-4 flex items-baseline justify-between">
         <p className="text-[25px] leading-[38px] font-bold">{t({ zh: '系统数据', en: 'System Data' })}</p>
