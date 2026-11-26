@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, ChevronDown, Lock, SquareMinus, Trash2 } from 'lucide-react'
+import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, BellRing, ChevronDown, Lock, Scale, SquareTerminal } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import appIcon from '../assets/app-icon.png'
 import { McpDemo } from '../components/demos/McpDemo'
@@ -226,44 +226,57 @@ function Features() {
   )
 }
 
+/**
+ * 上面几页没讲到的四件事（2026-11-26 和用户商量后换的内容；原来的三张卡片讲的是默认不勾选、仅查看、移到废纸篓，
+ * 这些已经写进首屏和扫描结果的介绍里了）。宽屏一行两张。每一条都要和应用、用户手册对得上
+ */
 function Safety() {
   const { t } = useLang()
   const cards = [
     {
-      icon: <SquareMinus aria-hidden="true" className="size-4" />,
-      title: { zh: '从零项勾选开始', en: 'Nothing selected to start' },
+      icon: <SquareTerminal aria-hidden="true" className="size-[18px]" />,
+      title: { zh: '终端待办', en: 'Terminal Tasks' },
       text: {
-        zh: '扫描完成后由你勾选。「全选建议项」只选当前结果中可处理的建议项，待确认的文件要逐项选择。',
-        en: 'You do the selecting once the scan is done. Select All Suggested only picks the suggested items in the current results. Items that need review are selected one at a time.',
+        zh: 'pnpm、Docker、Xcode 模拟器这类东西，要用它们自己的命令清。MaClean 把命令写成脚本，列出会删哪些，由你在终端里按回车执行。这类删除不经过废纸篓。',
+        en: 'Things like pnpm, Docker, and Xcode simulators have to be cleaned with their own commands. MaClean writes the commands into a script and lists what will be deleted, and you run it in Terminal and press Return to confirm. These deletions skip the Trash.',
       },
     },
     {
-      icon: <Lock aria-hidden="true" className="size-4" />,
-      title: { zh: '受保护的文件只能查看', en: 'Protected files are view only' },
+      icon: <BellRing aria-hidden="true" className="size-[18px]" />,
+      title: { zh: '增长监控', en: 'Growth monitoring' },
       text: {
-        zh: '「仅查看」的项目无法勾选。遇到需要先退出的应用，列表会标出名称。',
-        en: 'View only items can’t be selected. When an app has to quit first, the list names it.',
+        zh: '每天记录一次磁盘占用。哪个目录突然变大、可用空间低于你设的值时，发通知提醒你；菜单栏还能显示剩余空间。这些都免费。',
+        en: 'MaClean records disk usage once a day and notifies you when a folder grows or free space drops below the threshold you set. It can also show free space in the menu bar. All of this is free.',
       },
     },
     {
-      icon: <Trash2 aria-hidden="true" className="size-4" />,
-      title: { zh: '默认移到废纸篓', en: 'Moves to the Trash by default' },
+      icon: <Lock aria-hidden="true" className="size-[18px]" />,
+      title: { zh: '文件不出本机', en: 'Nothing leaves your Mac' },
       text: {
-        zh: '默认清理方式会把文件移到废纸篓。清空废纸篓后，空间才真正腾出来。',
-        en: 'By default, cleaning moves files to the Trash. The space is only freed once you empty the Trash.',
+        zh: '扫描和统计都在这台 Mac 上完成，结果不上传。申请「完全磁盘访问」，是为了扫到微信、文稿这些受保护的目录。只在激活、校验许可证和检查更新时联网。',
+        en: 'Scanning and analysis happen on this Mac, and the results are never uploaded. Full Disk Access is needed to reach protected folders such as WeChat and Documents. The app only goes online to activate and verify your license and to check for updates.',
+      },
+    },
+    {
+      icon: <Scale aria-hidden="true" className="size-[18px]" />,
+      title: { zh: '实际能腾出多少', en: 'What you actually get back' },
+      text: {
+        zh: '移到废纸篓只是挪了地方，清空之后空间才腾出来。和别处共用数据的文件、有本地快照的时候，实际腾出的会比占用少，所以预计释放量是单独标出来的。',
+        en: 'Moving files to the Trash only relocates them. The space is freed when you empty the Trash. When files share data with other files, or local snapshots exist, you get back less than they occupy, which is why the estimated space freed is shown separately.',
       },
     },
   ]
   return (
     <section id="safety" className="wrap pb-14 desk:pb-[90px]">
-      <h2 className="text-[29px] leading-[37px] desk:text-[41px] desk:leading-[53px]">{t({ zh: '旧物去留，细思量', en: 'You decide what goes' })}</h2>
-      <ul className="mt-5 grid gap-2.5 desk:mt-[25px] desk:grid-cols-3 desk:gap-5">
+      {/* 标题是临时的，等用户定 */}
+      <h2 className="text-[29px] leading-[37px] desk:text-[41px] desk:leading-[53px]">{t({ zh: '清理之外，还有这些', en: 'Beyond cleaning' })}</h2>
+      <ul className="mt-5 grid gap-2.5 desk:mt-[25px] desk:grid-cols-2 desk:gap-5">
         {cards.map((card) => (
-          <li key={card.title.en} className="flex items-center gap-3.5 rounded-2xl border border-line bg-raised p-3.5 desk:block desk:p-5">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent-wash text-accent">{card.icon}</span>
+          <li key={card.title.en} className="flex items-start gap-3.5 rounded-2xl border border-line bg-raised p-3.5 desk:gap-[18px] desk:p-6">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent-wash text-accent desk:size-10 desk:rounded-[10px]">{card.icon}</span>
             <div>
-              <h3 className="font-sans text-[16px] leading-[26px] font-medium desk:mt-3 desk:text-[18px]">{t(card.title)}</h3>
-              <p className="mt-1 text-[13px] leading-[22px] text-muted">{t(card.text)}</p>
+              <h3 className="font-sans text-[16px] leading-[26px] font-medium desk:text-[19px] desk:leading-[30px] desk:font-bold">{t(card.title)}</h3>
+              <p className="mt-1 text-[13px] leading-[22px] text-muted desk:mt-1.5 desk:text-[15px] desk:leading-[26px]">{t(card.text)}</p>
             </div>
           </li>
         ))}
