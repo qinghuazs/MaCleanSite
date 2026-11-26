@@ -55,20 +55,22 @@ function Hero() {
             <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
             {t({ zh: 'Mac 磁盘清理工具', en: 'Disk cleaner for Mac' })}
           </p>
-          {/* 标题排成一行。中文 9 个字：宽屏 60px 正好是这一列的宽度，手机上字号跟着屏幕宽度缩（390 宽约 36px）。
-              英文字多：宽屏用小一些的字号排一行，手机上一行放不下，在两段之间换行 */}
+          {/* 中文标题「虚室生白」（用户定，2026-11-26；出自《庄子·人间世》，屋子空了才透得进光）：只有四个字，字号放大。
+              英文仍是 “Where did all the space go?”：宽屏排一行，手机上一行放不下，在两段之间换行 */}
           <h1
-            className={`mt-5 desk:mt-[26px] desk:leading-[78px] desk:whitespace-nowrap ${
-              lang === 'en' ? 'text-[44px] leading-[59px] desk:text-[46px]' : 'text-[length:min(44px,9.2vw)] leading-[1.35] whitespace-nowrap desk:text-[60px]'
+            className={`mt-5 desk:mt-[26px] desk:whitespace-nowrap ${
+              lang === 'en'
+                ? 'text-[44px] leading-[59px] desk:text-[46px] desk:leading-[78px]'
+                : 'text-[56px] leading-[1.25] tracking-[0.06em] whitespace-nowrap desk:text-[84px] desk:leading-[1.2]'
             }`}
           >
-            {t({ zh: '磁盘空间', en: 'Where did all ' })}
+            {t({ zh: '虚室', en: 'Where did all ' })}
             {lang === 'en' && <br className="desk:hidden" />}
             {/* 后半句用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色。
                 渐变是「只在字的形状里显示的背景」，背景只铺到这个 span 的盒子为止；行内 span 的盒子高度按第一种字体
                 （Newsreader）算，思源宋体的汉字比它高出约 0.12em，顶上那一截就没有颜色，看着像被削掉。
                 所以改成 inline-block 并上下各加一点内边距把盒子撑高，再用负外边距抵掉，不影响排版 */}
-            <span className="-my-[0.2em] inline-block bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text py-[0.2em] text-transparent">{t({ zh: '都去哪了？', en: 'the space go?' })}</span>
+            <span className="-my-[0.2em] inline-block bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text py-[0.2em] text-transparent">{t({ zh: '生白', en: 'the space go?' })}</span>
           </h1>
           {/* 导语是用户自己写的（2026-11-26）：一句话把产品讲全，最后一句单独一行。
               第一句很长，用 text-balance 让各行差不多宽，免得最后一行只剩两三个字 */}
