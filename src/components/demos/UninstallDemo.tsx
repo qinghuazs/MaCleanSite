@@ -1,8 +1,9 @@
 import { Package, Search } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { formatMb, uninstallApps, type UninstallApp } from '../../content/demo'
 import { useLang } from '../../i18n'
 import { AppTabs, Checkbox, DemoDialog, TrafficLights, WindowFrame } from './chrome'
+import { useFitScreen } from './useFitScreen'
 
 // 卸载应用演示：应用网格、搜索、「90 天未使用」筛选；点应用看卸载清单，
 // 可以选只卸载本体；最后一步是「完成演示」，不执行任何操作
@@ -10,7 +11,10 @@ import { AppTabs, Checkbox, DemoDialog, TrafficLights, WindowFrame } from './chr
 type Dialog = { app: UninstallApp; step: 'list' | 'confirm' } | null
 
 export function UninstallDemo() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
+  // 宽屏上和上面的标题、介绍合起来正好一屏：窗口高度固定，多出来的高度给应用网格，网格放不下时在里面滚动
+  const frame = useRef<HTMLDivElement>(null)
+  useFitScreen(frame, lang, '', { maxExtra: 110 })
   const [query, setQuery] = useState('')
   const [unusedOnly, setUnusedOnly] = useState(false)
   const [counting, setCounting] = useState(false)
@@ -37,20 +41,19 @@ export function UninstallDemo() {
   const button = 'inline-flex h-10 shrink-0 items-center justify-center rounded-lg border border-line bg-raised px-5 text-[13px] font-bold hover:border-line-2'
 
   return (
-    <WindowFrame>
-      <div className="flex items-center justify-center px-3 pt-[13px] desk:justify-between desk:px-6 desk:pt-5">
+    <WindowFrame ref={frame} className="desk:flex desk:flex-col">
+      {/* 宽屏上窗口顶上只留红黄绿三个点和「演示数据」，应用的页签栏和窗口里的标题去掉了（和系统数据、扫描结果一样，2026-11-26）；
+          手机上还是原来的样子，等最后统一改 */}
+      <div className="flex items-center justify-center px-3 pt-[13px] desk:justify-between desk:px-[22px] desk:pt-4">
         <TrafficLights className="hidden w-10 desk:flex" />
         <span className="desk:hidden">
           <AppTabs active="uninstall" size="sm" />
         </span>
-        <span className="hidden desk:block">
-          <AppTabs active="uninstall" />
-        </span>
-        <span className="hidden w-10 desk:block" />
+        <p className="hidden text-[13px] text-win-subtle desk:block">{t({ zh: '演示数据', en: 'Demo data' })}</p>
       </div>
 
-      <div className="px-3 pt-3 pb-4 desk:px-[88px] desk:pt-3 desk:pb-5">
-        <p className="text-[19px] leading-[29px] font-bold desk:text-[23px] desk:leading-[35px]">{t({ zh: '卸载应用', en: 'Uninstall Apps' })}</p>
+      <div className="px-3 pt-3 pb-4 desk:flex desk:flex-1 desk:flex-col desk:px-[88px] desk:pt-1 desk:pb-5">
+        <p className="text-[19px] leading-[29px] font-bold desk:hidden">{t({ zh: '卸载应用', en: 'Uninstall Apps' })}</p>
 
         {leftovers ? (
           <Leftovers onBack={() => setLeftovers(false)} buttonClass={button} />
@@ -87,7 +90,8 @@ export function UninstallDemo() {
               <p className="text-[11px] text-muted desk:text-[12px]">{t({ zh: '仅显示应用本体大小', en: 'App size only' })}</p>
             </div>
 
-            <div className="mt-2 h-[333px] overflow-y-auto pr-1.5 desk:h-[342px]">
+            {/* 宽屏上网格撑满窗口剩下的高度，最少放得下三行 */}
+            <div className="mt-2 h-[333px] overflow-y-auto pr-1.5 desk:h-auto desk:min-h-[306px] desk:flex-1 desk:basis-0 desk:[scrollbar-color:#3a425a_transparent] desk:[scrollbar-width:thin]">
               {apps.length === 0 ? (
                 <p className="pt-16 text-center text-[13px] text-muted">{t({ zh: '没有找到应用', en: 'No apps found' })}</p>
               ) : (

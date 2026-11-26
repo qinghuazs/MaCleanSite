@@ -19,7 +19,7 @@ const l = links(0)
 const comingSoon: L = { zh: '即将开放下载', en: 'Download coming soon' }
 
 export function Home() {
-  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果），带 data-page 的区块就是一页
+  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用），带 data-page 的区块就是一页
   usePagedScroll()
   return (
     <>
@@ -152,7 +152,7 @@ function Features() {
   const { t } = useLang()
   return (
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
-      {/* 系统数据、扫描结果各是一页（2026-11-26 按用户的意思改的）；卸载应用和 MCP 还是原来的卡片，以后再改 */}
+      {/* 系统数据、扫描结果、卸载应用各是一页（2026-11-26 按用户的意思改的）；MCP 还是原来的卡片，以后再改 */}
       <DemoPage
         id="system-data"
         title={{ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' }}
@@ -202,18 +202,19 @@ function Features() {
         <ScanDemo />
       </DemoPage>
 
-      <div className="mt-[18px] space-y-[18px] desk:mt-[22px] desk:space-y-[22px]">
-        <FeatureCard
-          id="uninstall"
-          title={{ zh: '卸载应用', en: 'Uninstall Apps' }}
-          desc={{
-            zh: '按名称找应用，或筛出 90 天未使用的软件。网格显示应用本体大小。点图标，再决定哪些关联文件一起移到废纸篓，也可以只卸载应用本体，把数据留下。',
-            en: 'Find an app by name, or filter for apps unused for 90 days. The grid shows the size of the app itself. Click an icon, then decide which related files go to the Trash with it, or uninstall only the app and keep its data.',
-          }}
-        >
-          <UninstallDemo />
-        </FeatureCard>
+      <DemoPage
+        id="uninstall"
+        title={{ zh: '卸载应用：挥别旧时客，留白待新程', en: 'Uninstall Apps: part with the old, make room for the new' }}
+        // 介绍先沿用原来卡片上的说明，等用户给新的
+        intro={{
+          zh: '按名称找应用，或筛出 90 天未使用的软件。网格显示应用本体大小。点图标，再决定哪些关联文件一起移到废纸篓，也可以只卸载应用本体，把数据留下。',
+          en: 'Find an app by name, or filter for apps unused for 90 days. The grid shows the size of the app itself. Click an icon, then decide which related files go to the Trash with it, or uninstall only the app and keep its data.',
+        }}
+      >
+        <UninstallDemo />
+      </DemoPage>
 
+      <div className="mt-[18px] space-y-[18px] desk:mt-[22px] desk:space-y-[22px]">
         <FeatureCard
           id="mcp"
           title={{ zh: '让 AI 帮你读懂磁盘', en: 'Let AI read your disk' }}
