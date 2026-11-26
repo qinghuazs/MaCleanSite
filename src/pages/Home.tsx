@@ -121,7 +121,8 @@ function DemoPage({ id, title, intro, mobileIntro, children }: { id: string; tit
       {/* 手机上页与页之间用一条线分开；宽屏上是翻页，不需要 */}
       <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
         <h2 className="text-[32px] leading-[41px] desk:text-[36px] desk:leading-[46px]">{t(title)}</h2>
-        <p className={`mt-2 text-muted ${mobileIntro ? 'hidden text-[17px] leading-[28px] desk:block' : 'text-[14px] leading-6 desk:text-[17px] desk:leading-[28px]'}`}>{t(intro)}</p>
+        {/* 介绍折成两行时让两行差不多宽 */}
+        <p className={`mt-2 text-muted desk:text-balance ${mobileIntro ? 'hidden text-[17px] leading-[28px] desk:block' : 'text-[14px] leading-6 desk:text-[17px] desk:leading-[28px]'}`}>{t(intro)}</p>
         {mobileIntro && <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">{t(mobileIntro)}</p>}
       </div>
       <div className="mt-[22px] desk:mt-6">{children}</div>
@@ -185,10 +186,17 @@ function Features() {
       <DemoPage
         id="scan"
         title={{ zh: '扫描结果：一览繁芜，去留从容', en: 'Scan Results: all in view, yours to decide' }}
-        // 介绍先沿用原来卡片上的说明，等用户给新的
+        // 介绍是用户写的（2026-11-26）
         intro={{
-          zh: '点开 Chrome，分别看「建议清理」「待确认」和「仅查看」。缓存清掉后可能重新下载，有些项目还要先退出应用。默认已选 0 项。',
-          en: 'Open Chrome to see what’s Suggested, what needs review, and what’s View only. Caches may be downloaded again after cleaning, and some items need the app to quit first. Nothing is selected by default.',
+          zh: (
+            <>
+              扫描结果按应用归拢，点开才见每一项的底细：删了会自己回来的缓存，归「建议清理」；删了要付代价的——网站
+              {/* 折行别落在「登录」两个字中间 */}
+              <span className="whitespace-nowrap">重新登录</span>
+              、聊天图片打不开——归「待确认」；不该动的数据库和正在使用的文件，只许「查看」。默认一项未选，去留由你逐项勾。
+            </>
+          ),
+          en: 'Scan results are grouped by app, and opening one shows what each item really is. Caches that come back after you delete them are Suggested. Items that cost you something to delete, such as signing in to websites again or chat photos that no longer open, are To review. Databases that shouldn’t be touched and files in use are View only. Nothing is selected by default, and you decide item by item.',
         }}
       >
         <ScanDemo />
