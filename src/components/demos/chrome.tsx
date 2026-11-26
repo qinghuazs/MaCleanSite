@@ -1,19 +1,8 @@
 import { Check, Minus } from 'lucide-react'
-import { useEffect, useLayoutEffect, useRef, type ReactNode, type Ref } from 'react'
-import { useLang, type L } from '../../i18n'
+import { useLayoutEffect, useRef, type ReactNode, type Ref } from 'react'
 
-// 几个演示窗口共用的部件：窗口外框、红黄绿圆点、应用的页签栏、勾选框、「这是演示」提示
-
-export type AppTab = 'overview' | 'scan' | 'system' | 'terminal' | 'uninstall' | 'settings'
-
-const tabs: { id: AppTab; label: L }[] = [
-  { id: 'overview', label: { zh: '概览', en: 'Overview' } },
-  { id: 'scan', label: { zh: '扫描结果', en: 'Scan Results' } },
-  { id: 'system', label: { zh: '系统数据', en: 'System Data' } },
-  { id: 'terminal', label: { zh: '终端待办', en: 'Terminal Tasks' } },
-  { id: 'uninstall', label: { zh: '卸载应用', en: 'Uninstall Apps' } },
-  { id: 'settings', label: { zh: '设置', en: 'Settings' } },
-]
+// 几个演示窗口共用的部件：窗口外框、红黄绿圆点、勾选框、「这是演示」提示。
+// 应用顶上那一排页签原来也画在窗口里，2026-11-26 用户让去掉了（每一页的大标题已经说明是哪个功能）
 
 /** 应用窗口的外框：深色底、星点、圆角描边 */
 export function WindowFrame({ children, className = '', ref }: { children: ReactNode; className?: string; ref?: Ref<HTMLDivElement> }) {
@@ -34,44 +23,6 @@ export function TrafficLights({ className = '' }: { className?: string }) {
   )
 }
 
-/**
- * 应用的页签栏，只是示意当前在哪一页，不能点。
- * 放不下时（手机上的英文）横向滚动，并把当前页签滚到看得见的地方
- */
-export function AppTabs({ active, size = 'md' }: { active: AppTab; size?: 'md' | 'sm' | 'xs' }) {
-  const { t, lang } = useLang()
-  const box = useRef<HTMLDivElement>(null)
-  const current = useRef<HTMLSpanElement>(null)
-
-  useEffect(() => {
-    const el = box.current
-    const tab = current.current
-    if (!el || !tab) return
-    el.scrollLeft = tab.offsetLeft - (el.clientWidth - tab.offsetWidth) / 2
-  }, [lang, active])
-
-  const text = { md: 'text-[14px] leading-[21px]', sm: 'text-[11px] leading-[17px]', xs: 'text-[10px] leading-[15px]' }[size]
-  const pad = { md: 'px-3 py-1.5', sm: 'px-[5px] py-1', xs: 'px-[9px] py-1' }[size]
-  const gap = { md: 'p-[5px]', sm: 'p-1', xs: 'p-[3px]' }[size]
-
-  return (
-    <div ref={box} aria-hidden="true" className={`no-scrollbar relative max-w-full overflow-x-auto rounded-full border border-tab-line bg-tab-bar ${gap}`}>
-      <div className="flex w-max gap-px">
-        {tabs.map((tab) => (
-          <span
-            key={tab.id}
-            ref={tab.id === active ? current : undefined}
-            className={`rounded-full font-medium whitespace-nowrap ${text} ${pad} ${tab.id === active ? 'bg-tab-on text-tab-on-ink' : 'text-win-muted'}`}
-          >
-            {t(tab.label)}
-          </span>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-/** 勾选框：三种状态（没选、选了一部分、全选） */
 export function Checkbox({
   state,
   onChange,

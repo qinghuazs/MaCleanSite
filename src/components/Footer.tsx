@@ -2,6 +2,7 @@ import appIcon from '../assets/app-icon.png'
 import { useLang } from '../i18n'
 import { links, type PageDepth } from '../paths'
 import { site } from '../site.config'
+import { BackToTopLink } from './BackToTop'
 
 // 页脚：产品简介、隐私说明、产品 / 政策 / 联系三栏链接、版权与 Dodo 经销商说明、星云图片署名。
 // Dodo 审核会看这里有没有服务条款、隐私政策、退款政策
@@ -116,6 +117,10 @@ export function Footer({ depth }: { depth: PageDepth }) {
             </a>
             {t({ zh: '，图像处理 T. A. Rector、D. de Martin、M. Zamani', en: '. Image processing: T. A. Rector, D. de Martin, M. Zamani' })}
           </p>
+        </div>
+        {/* 手机上的「返回顶部」（宽一些的屏幕上是浮在右下角的圆形按钮，见 BackToTop） */}
+        <div className="mt-5 flex justify-center sm:hidden">
+          <BackToTopLink />
         </div>
       </div>
     </footer>

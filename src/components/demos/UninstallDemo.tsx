@@ -2,7 +2,7 @@ import { Package, Search } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { formatMb, uninstallApps, type UninstallApp } from '../../content/demo'
 import { useLang } from '../../i18n'
-import { AppTabs, Checkbox, DemoDialog, TrafficLights, WindowFrame } from './chrome'
+import { Checkbox, DemoDialog, TrafficLights, WindowFrame } from './chrome'
 import { useFitScreen } from './useFitScreen'
 
 // 卸载应用演示：应用网格、搜索、「90 天未使用」筛选；点应用看卸载清单，
@@ -42,18 +42,14 @@ export function UninstallDemo() {
 
   return (
     <WindowFrame ref={frame} className="desk:flex desk:flex-col">
-      {/* 宽屏上窗口顶上只留红黄绿三个点和「演示数据」，应用的页签栏和窗口里的标题去掉了（和系统数据、扫描结果一样，2026-11-26）；
-          手机上还是原来的样子，等最后统一改 */}
-      <div className="flex items-center justify-center px-3 pt-[13px] desk:justify-between desk:px-[22px] desk:pt-4">
-        <TrafficLights className="hidden w-10 desk:flex" />
-        <span className="desk:hidden">
-          <AppTabs active="uninstall" size="sm" />
-        </span>
-        <p className="hidden text-[13px] text-win-subtle desk:block">{t({ zh: '演示数据', en: 'Demo data' })}</p>
+      {/* 应用的页签栏和窗口里的标题都去掉了（和系统数据、扫描结果一样，2026-11-26）。
+          宽屏上窗口顶上留红黄绿三个点和「演示数据」；手机上不画这一行，「演示数据」写在应用数量那一行的右边 */}
+      <div className="hidden items-center justify-between px-[22px] pt-4 desk:flex">
+        <TrafficLights className="w-10" />
+        <p className="text-[13px] text-win-subtle">{t({ zh: '演示数据', en: 'Demo data' })}</p>
       </div>
 
-      <div className="px-3 pt-3 pb-4 desk:flex desk:flex-1 desk:flex-col desk:px-[88px] desk:pt-1 desk:pb-5">
-        <p className="text-[19px] leading-[29px] font-bold desk:hidden">{t({ zh: '卸载应用', en: 'Uninstall Apps' })}</p>
+      <div className="px-3 pt-0.5 pb-4 desk:flex desk:flex-1 desk:flex-col desk:px-[88px] desk:pt-1 desk:pb-5">
 
         {leftovers ? (
           <Leftovers onBack={() => setLeftovers(false)} buttonClass={button} />
@@ -87,7 +83,13 @@ export function UninstallDemo() {
                   ? t({ zh: '正在统计应用大小…', en: 'Calculating app sizes…' })
                   : t({ zh: `${apps.length} 个应用`, en: apps.length === 1 ? '1 app' : `${apps.length} apps` })}
               </p>
-              <p className="text-[11px] text-muted desk:text-[12px]">{t({ zh: '仅显示应用本体大小', en: 'App size only' })}</p>
+              <p className="text-[11px] text-muted desk:text-[12px]">
+                {t({ zh: '仅显示应用本体大小', en: 'App size only' })}
+                <span className="desk:hidden">
+                  {'\u2002·\u2002'}
+                  {t({ zh: '演示数据', en: 'Demo data' })}
+                </span>
+              </p>
             </div>
 
             {/* 宽屏上网格撑满窗口剩下的高度，最少放得下三行 */}

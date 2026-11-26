@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, BellRing, Check, ChevronDown, Lock, Scale, SquareTerminal } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { Fragment, useState, type ReactNode } from 'react'
 import { McpDemo } from '../components/demos/McpDemo'
 import { ScanDemo } from '../components/demos/ScanDemo'
 import { SystemDataDemo } from '../components/demos/SystemDataDemo'
@@ -108,26 +108,38 @@ function Hero() {
 }
 
 /**
+ * 标题只在「名称：」后面和逗号后面折行，窄屏上不会从词中间断开。
+ * 「系统数据：一图观全貌，方寸见分明」拆成「系统数据：」和后面的对句：对句一行放得下就排一行，放不下再从逗号处折成两行
+ */
+function TitleText({ text }: { text: string }) {
+  const parts = text.match(/[^：:，,]+[：:，,]?\s*/g) ?? [text]
+  const named = parts.length > 1 && /[：:]\s*$/.test(parts[0])
+  const rest = named ? parts.slice(1) : parts
+  // 英文在标点后面有空格，中文没有
+  const gap = (part: string) => (/\s$/.test(part) ? ' ' : '')
+  return (
+    <>
+      {named && <span className="inline-block">{parts[0].trimEnd()}</span>}
+      {named && gap(parts[0])}
+      <span className="inline-block">
+        {rest.map((part, i) => (
+          <Fragment key={i}>
+            <span className="inline-block">{part.trimEnd()}</span>
+            {gap(part)}
+          </Fragment>
+        ))}
+      </span>
+    </>
+  )
+}
+
+/**
  * 一页：大标题 + 介绍 + 内容，内容直接放在页面上（没有外层卡片）。
  * 宽屏上每一页正好一屏，并且参与「滚一下换一页」（data-page）。内容是演示窗口时，窗口的高度由演示自己的 useFitScreen 算；
  * 内容是别的（比如卡片）时传 fill，让内容撑满这一页剩下的高度。
- * 手机上的演示多半是简化过的，介绍可以另给一段
+ * 手机上是普通的长页面：页与页之间隔 48px、画一条线
  */
-function DemoPage({
-  id,
-  title,
-  intro,
-  mobileIntro,
-  fill,
-  children,
-}: {
-  id: string
-  title: L
-  intro?: { zh: ReactNode; en: ReactNode }
-  mobileIntro?: L
-  fill?: boolean
-  children: ReactNode
-}) {
+function DemoPage({ id, title, intro, fill, children }: { id: string; title: L; intro?: { zh: ReactNode; en: ReactNode }; fill?: boolean; children: ReactNode }) {
   const { t } = useLang()
   return (
     // 宽屏上每一页至少一屏高（视口高度减 77px 的页头）：内容不满一屏的页（比如 MCP）下面留空，不让下一块露出来。
@@ -135,51 +147,44 @@ function DemoPage({
     <div
       id={id}
       data-page
-      className={`mt-[18px] first:mt-0 desk:mt-0 desk:min-h-[calc(100svh-77px)] desk:-scroll-mt-[11px] ${fill ? 'desk:flex desk:flex-col desk:pb-3.5' : ''}`}
+      className={`mt-12 first:mt-0 desk:mt-0 desk:min-h-[calc(100svh-77px)] desk:-scroll-mt-[11px] ${fill ? 'desk:flex desk:flex-col desk:pb-3.5' : ''}`}
     >
       {/* 手机上页与页之间用一条线分开；宽屏上是翻页，不需要 */}
-      <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
-        <h2 className="text-[32px] leading-[41px] desk:text-[36px] desk:leading-[46px]">{t(title)}</h2>
+      <div className="border-t border-line pt-7 desk:border-t-0 desk:pt-6">
+        <h2 className="text-[27px] leading-[38px] desk:text-[36px] desk:leading-[46px]">
+          <TitleText text={t(title)} />
+        </h2>
         {/* 介绍折成两行时让两行差不多宽 */}
-        {intro && (
-          <p className={`mt-2 text-muted desk:text-balance ${mobileIntro ? 'hidden text-[17px] leading-[28px] desk:block' : 'text-[14px] leading-6 desk:text-[17px] desk:leading-[28px]'}`}>{t(intro)}</p>
-        )}
-        {mobileIntro && <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">{t(mobileIntro)}</p>}
+        {intro && <p className="mt-2 text-[14px] leading-6 text-muted desk:text-[17px] desk:leading-[28px] desk:text-balance">{t(intro)}</p>}
       </div>
-      <div className={`mt-[22px] desk:mt-6 ${fill ? 'desk:flex desk:flex-1 desk:flex-col' : ''}`}>{children}</div>
+      <div className={`mt-5 desk:mt-6 ${fill ? 'desk:flex desk:flex-1 desk:flex-col' : ''}`}>{children}</div>
     </div>
   )
 }
 
 function Features() {
   return (
-    <section id="features" className="wrap pb-14 desk:pb-[86px]">
+    <section id="features" className="wrap pb-12 desk:pb-[86px]">
       {/* 系统数据、扫描结果、卸载应用、MCP 各是一页（2026-11-26 按用户的意思改的）。每个演示自己标了「演示数据」 */}
       <DemoPage
         id="system-data"
         title={{ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' }}
-        // 介绍是用户写的：两句各占一行，先说容量条，再说地图
+        // 介绍是用户写的：先说容量条，再说地图。宽屏上两句各占一行，手机上连着排
         intro={{
           zh: (
             <>
               启动磁盘已用多少、还剩多少，应用支持、沙盒容器、缓存和开发工具各占几何，容量条上一目了然。
-              <br />
+              <br className="hidden desk:block" />
               再顺着地图找到大目录，点选色块，看看空间花在了哪里，对应的目录和建议清理量随之变化。
             </>
           ),
           en: (
             <>
               The capacity bar shows at a glance how much of the startup disk is used and how much is left, and how much goes to application support, sandboxed containers, caches, and
-              developer tools.
-              <br />
+              developer tools. <br className="hidden desk:block" />
               Then follow the map to the big folders: click a block to see where the space went, and the folders and the suggested amount update with it.
             </>
           ),
-        }}
-        // 手机上的演示没有容量条，暂时还用原来那段手机版说明，等最后统一改手机端时再定
-        mobileIntro={{
-          zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
-          en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
         }}
       >
         <SystemDataDemo />
@@ -224,7 +229,7 @@ function Features() {
           zh: (
             <>
               通过 MCP 把常用的 AI 助手接到 MaClean，让它读扫描结果、解释占用，再列一份清理方案。
-              <a href={l.section('pricing')} className="font-bold text-accent hover:underline desk:ml-2 desk:whitespace-nowrap">
+              <a href={l.section('pricing')} className="mt-1 block font-bold text-accent hover:underline desk:mt-0 desk:ml-2 desk:inline desk:whitespace-nowrap">
                 只读模式免费，查看 Pro 激活方式
                 <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
               </a>
@@ -233,7 +238,7 @@ function Features() {
           en: (
             <>
               Connect your AI assistant to MaClean over MCP. It can read the scan results, explain what’s using space, and draft a cleanup plan.
-              <a href={l.section('pricing')} className="font-bold text-accent hover:underline desk:ml-2 desk:whitespace-nowrap">
+              <a href={l.section('pricing')} className="mt-1 block font-bold text-accent hover:underline desk:mt-0 desk:ml-2 desk:inline desk:whitespace-nowrap">
                 Read-only mode is free. See how to activate Pro
                 <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
               </a>
@@ -288,7 +293,7 @@ function Safety() {
     },
   ]
   return (
-    <section className="wrap pb-14 desk:pb-[90px]">
+    <section className="wrap pb-12 desk:pb-[90px]">
       {/* 这一块也是一页（用户 2026-11-26 要求占一屏）：四张卡片两行两列，撑满标题下面剩下的高度。
           卡片不另铺底色，和页面背景一样，只靠边框分开（和价格页一致） */}
       <DemoPage id="safety" fill title={{ zh: '清简留余地，细微见用心', en: 'Room to spare, care in the details' }}>
@@ -395,13 +400,14 @@ function Pricing() {
       {items.map((item) => (
         <li key={item.en} className="flex gap-2.5">
           <Check aria-hidden="true" className="mt-[5px] size-3.5 shrink-0 text-good desk:mt-1.5 desk:size-4" strokeWidth={2.4} />
-          <span>{t(item)}</span>
+          {/* 折行时别在最后一行只剩一个字 */}
+          <span className="text-pretty">{t(item)}</span>
         </li>
       ))}
     </ul>
   )
   return (
-    <section className="wrap pb-14 desk:pb-[83px]">
+    <section className="wrap pb-12 desk:pb-[83px]">
       <DemoPage
         id="pricing"
         fill
@@ -417,7 +423,7 @@ function Pricing() {
           ),
           en: (
             <>
-              Scan your disk and see what’s using space for free. You can also connect an AI assistant over MCP to make sense of the results and get suggestions.
+              Scan your disk and see what’s using space for free. You can also connect an AI assistant over MCP to make sense of the results and get suggestions.{' '}
               <br className="hidden desk:block" />
               When you need to clean, uninstall apps, or generate Terminal scripts, choose {site.productName}: a one-time purchase, only when you need it.
             </>
@@ -568,7 +574,7 @@ function Faq() {
   }
 
   return (
-    <section className="wrap pb-14 desk:pb-[86px]">
+    <section className="wrap pb-12 desk:pb-[86px]">
       {/* 常见问题也是一页（用户 2026-11-26 要求占一屏）。十个问题全展开放不进一屏，所以宽屏上改成左边问题、右边答案：
           左边十行平分这一页的高度，点哪个右边就显示哪个的答案，高度始终不变。手机上还是原来的折叠列表 */}
       <DemoPage

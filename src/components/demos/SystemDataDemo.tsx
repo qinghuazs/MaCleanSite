@@ -190,15 +190,23 @@ function Mobile({ current, onSelect }: Props) {
   const { t, lang } = useLang()
   return (
     <div className="rounded-[14px] border border-line bg-canvas p-3 desk:hidden">
+      {/* 和宽屏一样，窗口里不再写「系统数据」标题；开头是启动磁盘的容量条（上面的介绍先讲的就是它） */}
       <div className="flex items-baseline justify-between gap-3 px-0.5">
-        <p className="text-[18px] leading-[27px] font-bold">{t({ zh: '系统数据', en: 'System Data' })}</p>
-        <p className="text-[12px] text-muted">{t({ zh: '启动磁盘\u2002·\u2002演示数据', en: 'Startup Disk\u2002·\u2002Demo data' })}</p>
+        <p className="text-[16px] leading-6 font-bold">{t({ zh: '启动磁盘', en: 'Startup Disk' })}</p>
+        <p className="text-[11px] text-subtle">{t({ zh: '演示数据', en: 'Demo data' })}</p>
       </div>
       <p className="px-0.5 text-[13px] text-muted">
         {t({ zh: `已用 ${disk.used} GB / 总容量 ${disk.total} GB`, en: `Used ${disk.used} GB / Total ${disk.total} GB` })}
       </p>
+      <div aria-hidden="true" className="mx-0.5 mt-2 flex h-2 gap-px overflow-hidden rounded-full">
+        {categories.map((c) => (
+          <span key={c.id} style={{ width: pct(c.gb, disk.total), background: c.color }} />
+        ))}
+        <span style={{ width: pct(disk.otherUsed, disk.total), background: 'var(--cat-other)' }} />
+        <span style={{ width: pct(disk.free, disk.total), background: 'var(--cat-free)' }} />
+      </div>
 
-      <div className="relative mt-1.5" style={{ aspectRatio: `${mobileMapSize.w} / ${mobileMapSize.h}` }}>
+      <div className="relative mt-3" style={{ aspectRatio: `${mobileMapSize.w} / ${mobileMapSize.h}` }}>
         {categories.map((c) => {
           const box = mobileTiles[c.id]
           const on = c.id === current.id
@@ -242,9 +250,13 @@ function Mobile({ current, onSelect }: Props) {
           </li>
         ))}
       </ul>
-      <a href="#scan" className="mt-4 flex h-[43px] items-center justify-between rounded-[9px] bg-raised px-3 text-[14px] font-bold text-accent">
+      {/* 右边带上这一类的建议清理量，换分类时跟着变 */}
+      <a href="#scan" className="mt-4 flex h-[43px] items-center justify-between gap-3 rounded-[9px] bg-raised px-3 text-[14px] font-bold text-accent">
         {t({ zh: '查看扫描结果', en: 'View Scan Results' })}
-        <ArrowRight aria-hidden="true" className="size-4" />
+        <span className="flex items-center gap-2">
+          {current.suggested && <span className="text-[12px] font-medium text-good">{t({ zh: `${current.suggested} 建议清理`, en: `${current.suggested} suggested` })}</span>}
+          <ArrowRight aria-hidden="true" className="size-4" />
+        </span>
       </a>
     </div>
   )

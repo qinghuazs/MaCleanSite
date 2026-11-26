@@ -95,6 +95,7 @@ export function ScanDemo() {
                 en: `${visibleCount} found\u2002·\u2002${visibleSize} total`,
               })}
         </p>
+        <span className="text-[11px] text-win-subtle desk:hidden">{t({ zh: '演示数据', en: 'Demo data' })}</span>
         <span aria-hidden="true" className="hidden h-9 items-center gap-2 rounded-lg border border-win-line bg-win-panel px-3 text-[14px] font-medium desk:inline-flex">
           <RotateCw className="size-3.5" />
           {t({ zh: '重新扫描', en: 'Rescan' })}

@@ -216,11 +216,11 @@ export function McpDemo() {
           <p className="mt-0.5 text-[12px] leading-[18px] text-subtle">{t(current.help)}</p>
         </div>
 
-        {/* 终端命令是一长行，折行显示；配置文件保持原样、放不下时横向滚动。
-            宽屏上这一块撑满面板剩下的高度，放不下时上下也能滚 */}
+        {/* 终端命令是一长行，折行显示。配置文件在宽屏上保持原样（放不下时横向滚动）；手机上太窄，也折行显示，
+            不然 command 那一行只看得到一半。宽屏上这一块撑满面板剩下的高度，放不下时上下也能滚 */}
         <pre
-          className={`no-scrollbar overflow-auto rounded-lg border border-line bg-black px-3 py-2.5 font-mono text-[12px] leading-5 desk:min-h-[84px] desk:flex-1 desk:basis-0 desk:text-[13px] ${
-            current.format === 'shell' ? 'break-all whitespace-pre-wrap' : ''
+          className={`no-scrollbar overflow-auto rounded-lg border border-line bg-black px-3 py-2.5 font-mono text-[12px] leading-5 break-all whitespace-pre-wrap desk:min-h-[84px] desk:flex-1 desk:basis-0 desk:text-[13px] ${
+            current.format === 'shell' ? '' : 'desk:break-normal desk:whitespace-pre'
           }`}
         >
           <code>{config}</code>
