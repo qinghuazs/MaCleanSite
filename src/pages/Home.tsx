@@ -405,7 +405,7 @@ function Pricing() {
       <DemoPage
         id="pricing"
         fill
-        title={{ zh: '先免费扫描', en: 'Scan for free first' }}
+        title={{ zh: '先识繁芜处，再得一身轻', en: 'First see the clutter, then travel light' }}
         // 介绍是用户写的（2026-11-26）：宽屏上两句各占一行
         intro={{
           zh: (
