@@ -105,8 +105,16 @@ function Hero() {
 }
 
 /** 功能卡片：左边标题、右边说明，下面是演示 */
-function FeatureCard({ id, title, desc, mobileDesc, extra, children }: { id: string; title: L; desc: L; mobileDesc?: L; extra?: ReactNode; children: ReactNode }) {
+function FeatureCard({ id, title, desc, mobileDesc, extra, children }: { id: string; title: L; desc?: L; mobileDesc?: L; extra?: ReactNode; children: ReactNode }) {
   const { t } = useLang()
+  // 不传 desc 的卡片没有标题栏，里面只有演示（标题留给读屏软件）
+  if (!desc) {
+    return (
+      <section id={id} aria-label={t(title)} className="rounded-[24px] border border-line bg-surface px-[13px] py-[13px] desk:px-[30px] desk:py-[30px] xl:px-[71px]">
+        {children}
+      </section>
+    )
+  }
   return (
     <section id={id} className="rounded-[24px] border border-line bg-surface px-[13px] py-[13px] desk:px-[30px] desk:py-[30px] xl:px-[71px]">
       <div className="px-0.5 pt-0.5 desk:grid desk:grid-cols-[auto_minmax(0,655px)] desk:items-start desk:justify-between desk:gap-10 desk:px-0 desk:pt-0">
@@ -134,21 +142,24 @@ function Features() {
             en: 'Find the big folders on one map, then open an app to see each item. For apps you no longer use, you can deal with the app and the data it left behind separately.',
           })}
         </p>
+        {/* 紧接着的是系统数据演示的用法（原来写在那张卡片的标题栏里，用户 2026-11-26 让挪到这里，卡片不再有标题栏）。
+            手机上的演示是简化过的，说明也不一样 */}
+        <p className="mt-1.5 hidden text-[17px] leading-[27px] text-muted desk:block">
+          {t({
+            zh: '点选地图上的色块，看看空间花在了哪里。对应的目录和建议清理量会随之变化。一个应用占了多少，与它能腾出多少，是两件事。',
+            en: 'Click a block on the map to see where the space went. The folders and the suggested amount update with it. How much an app takes up and how much it can give back are two different things.',
+          })}
+        </p>
+        <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">
+          {t({
+            zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
+            en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
+          })}
+        </p>
       </div>
 
       <div className="mt-[22px] space-y-[18px] desk:mt-[29px] desk:space-y-[22px]">
-        <FeatureCard
-          id="system-data"
-          title={{ zh: '看清系统数据', en: 'See what’s in System Data' }}
-          desc={{
-            zh: '点选地图上的色块，看看空间花在了哪里。对应的目录和建议清理量会随之变化。一个应用占了多少，与它能腾出多少，是两件事。',
-            en: 'Click a block on the map to see where the space went. The folders and the suggested amount update with it. How much an app takes up and how much it can give back are two different things.',
-          }}
-          mobileDesc={{
-            zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
-            en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
-          }}
-        >
+        <FeatureCard id="system-data" title={{ zh: '看清系统数据', en: 'See what’s in System Data' }}>
           <SystemDataDemo />
         </FeatureCard>
 
