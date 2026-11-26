@@ -41,7 +41,7 @@ function DownloadButton({ className }: { className?: string }) {
 }
 
 function Hero() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   // 首屏占满一屏：高度是窗口高度减去页头（66 / 76 加 1px 底边），内容在里面上下居中。
   // 窗口矮、内容放不下时照内容的高度排；特别高的窗口（竖屏显示器）最多 1400，不让首屏空出一大片
   return (
@@ -55,11 +55,17 @@ function Hero() {
             <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
             {t({ zh: 'Mac 磁盘清理工具', en: 'Disk cleaner for Mac' })}
           </p>
-          <h1 className="mt-5 text-[44px] leading-[59px] desk:mt-[26px] desk:text-[64px] desk:leading-[82px]">
-            {t({ zh: '盘中寸地，', en: 'Where did all' })}
-            <br />
-            {/* 第二行用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色 */}
-            <span className="bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text text-transparent">{t({ zh: '何处寻？', en: 'the space go?' })}</span>
+          {/* 标题排成一行。中文 9 个字：宽屏 60px 正好是这一列的宽度，手机上字号跟着屏幕宽度缩（390 宽约 36px）。
+              英文字多：宽屏用小一些的字号排一行，手机上一行放不下，在两段之间换行 */}
+          <h1
+            className={`mt-5 desk:mt-[26px] desk:leading-[78px] desk:whitespace-nowrap ${
+              lang === 'en' ? 'text-[44px] leading-[59px] desk:text-[46px]' : 'text-[length:min(44px,9.2vw)] leading-[1.35] whitespace-nowrap desk:text-[60px]'
+            }`}
+          >
+            {t({ zh: '磁盘空间', en: 'Where did all ' })}
+            {lang === 'en' && <br className="desk:hidden" />}
+            {/* 后半句用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色 */}
+            <span className="bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text text-transparent">{t({ zh: '都去哪了？', en: 'the space go?' })}</span>
           </h1>
           <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[17px] desk:leading-[30px]">
             {t({
