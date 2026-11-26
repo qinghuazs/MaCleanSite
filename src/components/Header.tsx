@@ -66,19 +66,20 @@ export function Header({ depth }: { depth: PageDepth }) {
 
         <div className="flex items-center gap-1.5 desk:gap-3">
           {langSwitch}
+          {/* 页头的下载按钮做小一号（36 高）、用近白色：淡紫色留给首屏和页面底部的主按钮，一屏里不出现两个 */}
           <a
             href={l.section('download')}
-            className="inline-flex h-10 shrink-0 items-center max-[349px]:hidden gap-[9px] rounded-full bg-accent px-3 text-[14px] font-medium whitespace-nowrap text-on-accent transition-colors hover:bg-white max-[374px]:px-2.5 max-[374px]:text-[13px] desk:h-[50px] desk:px-[19px]"
+            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-ink px-3 text-[14px] font-medium whitespace-nowrap text-canvas transition-colors hover:bg-white max-[374px]:px-2.5 max-[374px]:text-[13px] max-[349px]:hidden desk:px-4"
           >
             {t({ zh: '下载', en: 'Download' })}
-            <ArrowDown aria-hidden="true" className="hidden size-4 desk:block" strokeWidth={2.2} />
+            <ArrowDown aria-hidden="true" className="hidden size-3.5 desk:block" strokeWidth={2.2} />
           </a>
           <button
             type="button"
             aria-expanded={open}
             aria-controls="site-menu"
             onClick={() => setOpen(!open)}
-            className="flex h-11 shrink-0 items-center rounded-[10px] bg-raised px-3 text-[14px] font-bold whitespace-nowrap text-ink max-[374px]:px-2.5 max-[374px]:text-[13px] desk:hidden"
+            className="flex h-9 shrink-0 items-center rounded-[10px] bg-raised px-3 text-[14px] font-bold whitespace-nowrap text-ink max-[374px]:px-2.5 max-[374px]:text-[13px] desk:hidden"
           >
             {open ? t({ zh: '收起', en: 'Close' }) : t({ zh: '菜单', en: 'Menu' })}
           </button>
