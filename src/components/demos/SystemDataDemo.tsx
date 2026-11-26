@@ -13,7 +13,7 @@ const pct = (v: number, total: number) => `${(v / total) * 100}%`
  * 让「区块标题 + 介绍 + 这个窗口」在宽屏上正好占一屏（用户 2026-11-26 要求）。
  * 窗口的高度取视口里剩下的高度，多出来的都给地图；剩下的高度放不下内容时把窗口整体缩小一点（最小 0.8 倍，
  * 再小字就看不清了），还放不下就照内容的高度排、超出一屏。视口特别高时地图也不无限拉长。
- * 「一屏」从区块顶边算起，顶边停在页头下面（锚点跳转时留的那段距离，见 styles.css 的 scroll-padding-top）。
+ * 「一屏」从区块顶边算起，顶边紧贴页头下面。
  */
 function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: string, selected: string) {
   // 内容最少要多高：同一种语言、同一个宽度下只增不减，切换分类时窗口不会忽大忽小
@@ -40,7 +40,8 @@ function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: string, sel
       natural.current.height = Math.max(natural.current.height, el.scrollHeight + 2)
       const need = natural.current.height
       const top = el.getBoundingClientRect().top - section.getBoundingClientRect().top
-      const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 88
+      // 翻到这一页时，区块顶边紧贴页头下面（见 usePagedScroll）
+      const offset = document.querySelector('header')?.getBoundingClientRect().height ?? 77
       const available = window.innerHeight - offset - bottomGap - top
       const zoom = Math.min(1, Math.max(minZoom, available / need))
       el.style.setProperty('zoom', String(zoom))

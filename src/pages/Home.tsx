@@ -8,6 +8,7 @@ import { UninstallDemo } from '../components/demos/UninstallDemo'
 import { HeroNebula } from '../components/nebula/HeroNebula'
 import { StarSky } from '../components/nebula/StarSky'
 import { ButtonLink } from '../components/ui'
+import { usePagedScroll } from '../components/usePagedScroll'
 import { useLang, type L } from '../i18n'
 import { links } from '../paths'
 import { macs, purchaseUrl, site } from '../site.config'
@@ -18,6 +19,8 @@ const l = links(0)
 const comingSoon: L = { zh: '即将开放下载', en: 'Download coming soon' }
 
 export function Home() {
+  // 宽屏上首屏和系统数据两页之间「滚一下换一页」，带 data-page 的区块就是一页
+  usePagedScroll()
   return (
     <>
       <Hero />
@@ -46,7 +49,7 @@ function Hero() {
   // 窗口矮、内容放不下时照内容的高度排；特别高的窗口（竖屏显示器）最多 1400，不让首屏空出一大片
   return (
     // 自己带底色、单独成一层：星云用滤色叠在星空上，要有不透明的底才叠得对
-    <div className="relative isolate overflow-hidden bg-canvas">
+    <div data-page className="relative isolate overflow-hidden bg-canvas">
       {/* 整块星空铺满首屏（左右到窗口边），到底边渐渐淡出，和下面的页面底色接上 */}
       <StarSky className="absolute inset-0 -z-10 size-full [mask-image:linear-gradient(to_bottom,#000_76%,transparent)]" />
       <section className="wrap grid min-h-[min(calc(100svh-67px),1400px)] content-center items-center gap-10 pt-11 pb-12 desk:min-h-[min(calc(100svh-77px),1400px)] desk:grid-cols-[minmax(0,540px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-12 desk:pb-[84px]">
@@ -135,42 +138,48 @@ function Features() {
   const { t } = useLang()
   return (
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
-      <div className="border-t border-line pt-[23px] desk:pt-6">
-        <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' })}</h2>
-        {/* 系统数据的介绍（用户写的，2026-11-26）：两句各占一行，先说容量条，再说地图。
-            手机上的演示是简化过的（没有容量条），暂时还用原来那段手机版说明，等最后统一改手机端时再定 */}
-        <p className="mt-2 hidden text-[17px] leading-[28px] text-muted desk:block">
-          {t({
-            zh: (
-              <>
-                启动磁盘已用多少、还剩多少，应用支持、沙盒容器、缓存和开发工具各占几何，容量条上一目了然。
-                <br />
-                再顺着地图找到大目录，点选色块，看看空间花在了哪里，对应的目录和建议清理量随之变化。
-              </>
-            ),
-            en: (
-              <>
-                The capacity bar shows at a glance how much of the startup disk is used and how much is left, and how much goes to application support, sandboxed containers, caches, and
-                developer tools.
-                <br />
-                Then follow the map to the big folders: click a block to see where the space went, and the folders and the suggested amount update with it.
-              </>
-            ),
-          })}
-        </p>
-        <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">
-          {t({
-            zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
-            en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
-          })}
-        </p>
+      {/* 第二页：标题 + 介绍 + 系统数据窗口，宽屏上正好一屏（窗口的高度由 SystemDataDemo 里的 useFitScreen 算）。
+          宽屏上和首屏之间是翻页，不需要分隔线 */}
+      <div data-page>
+        <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
+          <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' })}</h2>
+          {/* 系统数据的介绍（用户写的，2026-11-26）：两句各占一行，先说容量条，再说地图。
+              手机上的演示是简化过的（没有容量条），暂时还用原来那段手机版说明，等最后统一改手机端时再定 */}
+          <p className="mt-2 hidden text-[17px] leading-[28px] text-muted desk:block">
+            {t({
+              zh: (
+                <>
+                  启动磁盘已用多少、还剩多少，应用支持、沙盒容器、缓存和开发工具各占几何，容量条上一目了然。
+                  <br />
+                  再顺着地图找到大目录，点选色块，看看空间花在了哪里，对应的目录和建议清理量随之变化。
+                </>
+              ),
+              en: (
+                <>
+                  The capacity bar shows at a glance how much of the startup disk is used and how much is left, and how much goes to application support, sandboxed containers, caches, and
+                  developer tools.
+                  <br />
+                  Then follow the map to the big folders: click a block to see where the space went, and the folders and the suggested amount update with it.
+                </>
+              ),
+            })}
+          </p>
+          <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">
+            {t({
+              zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
+              en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
+            })}
+          </p>
+        </div>
+
+        <div className="mt-[22px] desk:mt-6">
+          <FeatureCard id="system-data" title={{ zh: '看清系统数据', en: 'See what’s in System Data' }}>
+            <SystemDataDemo />
+          </FeatureCard>
+        </div>
       </div>
 
-      {/* 宽屏上「标题 + 介绍 + 系统数据窗口」正好占一屏，窗口的高度由 SystemDataDemo 里的 useFitScreen 算 */}
-      <div className="mt-[22px] space-y-[18px] desk:mt-6 desk:space-y-[22px]">
-        <FeatureCard id="system-data" title={{ zh: '看清系统数据', en: 'See what’s in System Data' }}>
-          <SystemDataDemo />
-        </FeatureCard>
+      <div className="mt-[18px] space-y-[18px] desk:mt-[22px] desk:space-y-[22px]">
 
         <FeatureCard
           id="scan"
