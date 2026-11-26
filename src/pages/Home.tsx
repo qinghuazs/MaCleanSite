@@ -55,22 +55,23 @@ function Hero() {
             <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
             {t({ zh: 'Mac 磁盘清理工具', en: 'Disk cleaner for Mac' })}
           </p>
-          {/* 中文标题「虚室生白」（用户定，2026-11-26；出自《庄子·人间世》，屋子空了才透得进光）：只有四个字，字号放大。
-              英文仍是 “Where did all the space go?”：宽屏排一行，手机上一行放不下，在两段之间换行 */}
+          {/* 中文标题是用户写的两句题词「星风一拂浮尘散，玫瑰深处见清辉」（2026-11-26 定；之前试过「虚室生白」
+              「磁盘空间都去哪了？」）：上下两行，手机上字号跟着屏幕宽度缩，保证每句不折行。
+              英文不逐字译，取两句的意思各一行 */}
           <h1
-            className={`mt-5 desk:mt-[26px] desk:whitespace-nowrap ${
+            className={`mt-5 whitespace-nowrap desk:mt-[26px] ${
               lang === 'en'
-                ? 'text-[44px] leading-[59px] desk:text-[46px] desk:leading-[78px]'
-                : 'text-[56px] leading-[1.25] tracking-[0.06em] whitespace-nowrap desk:text-[84px] desk:leading-[1.2]'
+                ? 'text-[40px] leading-[54px] desk:text-[60px] desk:leading-[76px]'
+                : 'text-[length:min(44px,10.4vw)] leading-[1.3] desk:text-[60px] desk:leading-[82px]'
             }`}
           >
-            {t({ zh: '虚室', en: 'Where did all ' })}
-            {lang === 'en' && <br className="desk:hidden" />}
-            {/* 后半句用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色。
+            {t({ zh: '星风一拂浮尘散，', en: 'The dust clears.' })}
+            <br />
+            {/* 第二句用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色。
                 渐变是「只在字的形状里显示的背景」，背景只铺到这个 span 的盒子为止；行内 span 的盒子高度按第一种字体
                 （Newsreader）算，思源宋体的汉字比它高出约 0.12em，顶上那一截就没有颜色，看着像被削掉。
                 所以改成 inline-block 并上下各加一点内边距把盒子撑高，再用负外边距抵掉，不影响排版 */}
-            <span className="-my-[0.2em] inline-block bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text py-[0.2em] text-transparent">{t({ zh: '生白', en: 'the space go?' })}</span>
+            <span className="-my-[0.2em] inline-block bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text py-[0.2em] text-transparent">{t({ zh: '玫瑰深处见清辉', en: 'The rose glows.' })}</span>
           </h1>
           {/* 导语是用户自己写的（2026-11-26）：一句话把产品讲全，最后一句单独一行。
               第一句很长，用 text-balance 让各行差不多宽，免得最后一行只剩两三个字 */}
