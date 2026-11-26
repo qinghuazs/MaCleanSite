@@ -307,7 +307,7 @@ function Safety() {
   )
 }
 
-/** 怎样激活许可证：手机上竖着排；宽屏上是一条横栏，左边标题和切换，右边几步并排 */
+/** 怎样激活许可证：手机上竖着排；宽屏上是一条横栏，第一行标题和切换，第二行几步并排、占满整行 */
 function Activation() {
   const { t } = useLang()
   const [tab, setTab] = useState<'first' | 'move'>('first')
@@ -330,31 +330,36 @@ function Activation() {
     { id: 'move', label: { zh: '换一台 Mac', en: 'Moving to another Mac' } },
   ]
   return (
-    <div className="rounded-2xl border border-line bg-surface p-3.5 desk:grid desk:grid-cols-[auto_minmax(0,1fr)] desk:items-center desk:gap-9 desk:rounded-[20px] desk:px-7 desk:py-5">
-      <div>
+    <div className="rounded-2xl border border-line bg-surface p-3.5 desk:rounded-[20px] desk:px-7 desk:py-4">
+      <div className="desk:flex desk:items-center desk:gap-5">
         <h3 className="font-sans text-[17px] leading-[27px] font-bold desk:text-[18px] desk:leading-[28px]">{t({ zh: '怎样激活许可证？', en: 'How do I activate a license?' })}</h3>
-        <div role="group" className="mt-2.5 flex flex-wrap gap-1.5 desk:mt-2">
+        <div role="group" className="mt-2.5 flex flex-wrap gap-1.5 desk:mt-0">
           {tabs.map((x) => (
             <button
               key={x.id}
               type="button"
               aria-pressed={tab === x.id}
               onClick={() => setTab(x.id)}
-              className={`h-10 rounded-lg px-4 text-[13px] transition-colors desk:h-9 desk:px-3.5 desk:text-[14px] ${tab === x.id ? 'bg-accent font-bold text-on-accent' : 'bg-raised text-muted hover:text-ink'}`}
+              className={`h-10 rounded-lg px-4 text-[13px] transition-colors desk:h-8 desk:px-3.5 desk:text-[14px] ${tab === x.id ? 'bg-accent font-bold text-on-accent' : 'bg-raised text-muted hover:text-ink'}`}
             >
               {t(x.label)}
             </button>
           ))}
         </div>
       </div>
-      <ol className="mt-3 space-y-2.5 text-[13px] leading-[21px] desk:mt-0 desk:grid desk:grid-cols-3 desk:gap-7 desk:space-y-0 desk:text-[14px] desk:leading-[23px]">
+      {/* 宽屏上有几步就分几栏，每一步的说明尽量一行放下，不在右边空出一块 */}
+      <ol
+        className={`mt-3 space-y-2.5 text-[13px] leading-[21px] desk:mt-3 desk:grid desk:gap-6 desk:space-y-0 desk:text-[14px] desk:leading-[23px] ${
+          steps[tab].length === 3 ? 'desk:grid-cols-3' : 'desk:grid-cols-2'
+        }`}
+      >
         {steps[tab].map((step, i) => (
           <li key={step.label.en} className="grid grid-cols-[60px_minmax(0,1fr)] gap-2.5 desk:block">
             <p className="font-bold text-accent">
               <span className="hidden desk:inline">{i + 1}.{'\u2002'}</span>
               {t(step.label)}
             </p>
-            <p className="desk:mt-1 desk:text-muted">{t(step.text)}</p>
+            <p className="desk:mt-0.5 desk:text-muted">{t(step.text)}</p>
           </li>
         ))}
       </ol>
