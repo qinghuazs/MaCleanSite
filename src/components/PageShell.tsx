@@ -2,6 +2,7 @@ import { StrictMode, useEffect, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { LangProvider, type L } from '../i18n'
 import type { PageDepth } from '../paths'
+import { BackToTop } from './BackToTop'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import '@fontsource-variable/newsreader/opsz.css'
@@ -9,7 +10,7 @@ import '@fontsource-variable/instrument-sans/wght.css'
 import '@fontsource/noto-serif-sc/600.css'
 import '../styles.css'
 
-// 每个页面入口调用它挂载：双语上下文 + 页头 + 内容 + 页脚
+// 每个页面入口调用它挂载：双语上下文 + 页头 + 内容 + 页脚 + 右下角的「返回顶部」
 export function mountPage({ title, depth, children }: { title: L; depth: PageDepth; children: ReactNode }) {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -23,6 +24,7 @@ export function mountPage({ title, depth, children }: { title: L; depth: PageDep
         <Header depth={depth} />
         <main id="main">{children}</main>
         <Footer depth={depth} />
+        <BackToTop />
         <ScrollToHash />
       </LangProvider>
     </StrictMode>,
