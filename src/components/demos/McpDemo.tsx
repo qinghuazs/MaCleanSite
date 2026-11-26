@@ -1,6 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useLang, type L } from '../../i18n'
+import { useFitScreen } from './useFitScreen'
 
 // MCP 一块：左边是一段问答示意（数字和扫描结果演示一致），右边是接入配置。
 // 配置的写法和应用「设置 → AI 助手」里生成的一样，选好客户端和权限可以直接复制
@@ -76,7 +77,7 @@ function snippet(format: Format, args: string[]): string {
 }
 
 export function McpDemo() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const [client, setClient] = useState(0)
   const [mode, setMode] = useState<Mode>('safe')
   const [feedback, setFeedback] = useState<{ result: 'copied' | 'failed' } | null>(null)
@@ -106,7 +107,12 @@ export function McpDemo() {
     }
   }
 
-  const panel = 'rounded-[14px] border border-line bg-canvas p-3.5 desk:p-5'
+  // 宽屏上两个面板一样高、高度固定（换客户端时不跳）：比最少需要的高度多出一截留给配置原文，正好放下最长的那段 JSON。
+  // 这一页的内容不多，不硬撑满一屏，面板下面留空
+  const frame = useRef<HTMLDivElement>(null)
+  useFitScreen(frame, lang, String(client), { maxExtra: 112 })
+  // 面板直接放在页面上（没有外层卡片），底色、边框和前几页的演示窗口一样
+  const panel = 'rounded-[14px] border border-win-line bg-win p-3.5 desk:p-5'
   const apps: [L, string][] = [
     [{ zh: 'Chrome', en: 'Chrome' }, '5.2 GB'],
     [{ zh: 'QQ 音乐', en: 'QQ Music' }, '3.7 GB'],
@@ -114,15 +120,18 @@ export function McpDemo() {
   ]
 
   return (
-    <div className="grid gap-3 desk:grid-cols-[minmax(0,470fr)_minmax(0,572fr)] desk:gap-4">
+    <div ref={frame} className="grid gap-3 desk:grid-cols-[minmax(0,470fr)_minmax(0,572fr)] desk:gap-4">
       {/* 问答示意 */}
       <div className={`${panel} flex flex-col gap-3`}>
         <div className="flex items-center justify-between">
           <p className="text-[13px] font-medium text-muted">{t({ zh: 'AI 助手', en: 'AI assistant' })}</p>
-          <p className="flex items-center gap-1.5 rounded-full bg-raised px-[9px] py-[3px] text-[11px] leading-[17px] text-muted">
-            <span aria-hidden="true" className="size-1.5 rounded-full bg-good" />
-            {t({ zh: '已连接 MaClean', en: 'Connected to MaClean' })}
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-[13px] text-win-subtle">{t({ zh: '演示数据', en: 'Demo data' })}</p>
+            <p className="flex items-center gap-1.5 rounded-full bg-raised px-[9px] py-[3px] text-[11px] leading-[17px] text-muted">
+              <span aria-hidden="true" className="size-1.5 rounded-full bg-good" />
+              {t({ zh: '已连接 MaClean', en: 'Connected to MaClean' })}
+            </p>
+          </div>
         </div>
         <p className="rounded-xl bg-raised px-3 py-2.5 text-[14px] leading-[22px]">
           {t({ zh: '哪些应用的缓存占得最多？清掉以后，还会重新生成吗？', en: 'Which apps have the biggest caches? Will they come back after I clear them?' })}
@@ -207,9 +216,10 @@ export function McpDemo() {
           <p className="mt-0.5 text-[12px] leading-[18px] text-subtle">{t(current.help)}</p>
         </div>
 
-        {/* 终端命令是一长行，折行显示；配置文件保持原样、放不下时横向滚动 */}
+        {/* 终端命令是一长行，折行显示；配置文件保持原样、放不下时横向滚动。
+            宽屏上这一块撑满面板剩下的高度，放不下时上下也能滚 */}
         <pre
-          className={`no-scrollbar overflow-x-auto rounded-lg border border-line bg-black px-3 py-2.5 font-mono text-[12px] leading-5 desk:text-[13px] ${
+          className={`no-scrollbar overflow-auto rounded-lg border border-line bg-black px-3 py-2.5 font-mono text-[12px] leading-5 desk:min-h-[84px] desk:flex-1 desk:basis-0 desk:text-[13px] ${
             current.format === 'shell' ? 'break-all whitespace-pre-wrap' : ''
           }`}
         >

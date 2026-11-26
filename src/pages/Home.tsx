@@ -19,7 +19,7 @@ const l = links(0)
 const comingSoon: L = { zh: '即将开放下载', en: 'Download coming soon' }
 
 export function Home() {
-  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用），带 data-page 的区块就是一页
+  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用、MCP），带 data-page 的区块就是一页
   usePagedScroll()
   return (
     <>
@@ -115,9 +115,9 @@ function Hero() {
 function DemoPage({ id, title, intro, mobileIntro, children }: { id: string; title: L; intro: { zh: ReactNode; en: ReactNode }; mobileIntro?: L; children: ReactNode }) {
   const { t } = useLang()
   return (
-    // 宽屏上页与页之间留 14px：上一页对齐时，这一页正好从屏幕底边开始。
-    // 点链接跳到这一页时和翻页停在同一个位置（顶边紧贴 77px 高的页头；全站的 scroll-padding-top 是 88px，这里抵掉 11px）
-    <div id={id} data-page className="mt-[18px] first:mt-0 desk:mt-3.5 desk:-scroll-mt-[11px]">
+    // 宽屏上每一页至少一屏高（视口高度减 77px 的页头）：内容不满一屏的页（比如 MCP）下面留空，不让下一块露出来。
+    // 点链接跳到这一页时和翻页停在同一个位置（顶边紧贴页头；全站的 scroll-padding-top 是 88px，这里抵掉 11px）
+    <div id={id} data-page className="mt-[18px] first:mt-0 desk:mt-0 desk:min-h-[calc(100svh-77px)] desk:-scroll-mt-[11px]">
       {/* 手机上页与页之间用一条线分开；宽屏上是翻页，不需要 */}
       <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
         <h2 className="text-[32px] leading-[41px] desk:text-[36px] desk:leading-[46px]">{t(title)}</h2>
@@ -130,29 +130,10 @@ function DemoPage({ id, title, intro, mobileIntro, children }: { id: string; tit
   )
 }
 
-/** 功能卡片：左边标题、右边说明，下面是演示 */
-function FeatureCard({ id, title, desc, mobileDesc, extra, children }: { id: string; title: L; desc: L; mobileDesc?: L; extra?: ReactNode; children: ReactNode }) {
-  const { t } = useLang()
-  return (
-    <section id={id} className="rounded-[24px] border border-line bg-surface px-[13px] py-[13px] desk:px-[30px] desk:py-[30px] xl:px-[71px]">
-      <div className="px-0.5 pt-0.5 desk:grid desk:grid-cols-[auto_minmax(0,655px)] desk:items-start desk:justify-between desk:gap-10 desk:px-0 desk:pt-0">
-        <h3 className="font-sans text-[19px] leading-7 font-medium desk:pt-0.5 desk:text-[30px] desk:leading-[45px] desk:font-bold desk:whitespace-nowrap">{t(title)}</h3>
-        <div className="mt-1.5 desk:mt-0">
-          <p className={`text-[13px] leading-[22px] text-muted desk:text-[16px] desk:leading-[27px] ${mobileDesc ? 'hidden desk:block' : ''}`}>{t(desc)}</p>
-          {mobileDesc && <p className="text-[13px] leading-[22px] text-muted desk:hidden">{t(mobileDesc)}</p>}
-          {extra}
-        </div>
-      </div>
-      <div className="mt-[15px] desk:mt-[22px]">{children}</div>
-    </section>
-  )
-}
-
 function Features() {
-  const { t } = useLang()
   return (
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
-      {/* 系统数据、扫描结果、卸载应用各是一页（2026-11-26 按用户的意思改的）；MCP 还是原来的卡片，以后再改 */}
+      {/* 系统数据、扫描结果、卸载应用、MCP 各是一页（2026-11-26 按用户的意思改的）。每个演示自己标了「演示数据」 */}
       <DemoPage
         id="system-data"
         title={{ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' }}
@@ -214,26 +195,33 @@ function Features() {
         <UninstallDemo />
       </DemoPage>
 
-      <div className="mt-[18px] space-y-[18px] desk:mt-[22px] desk:space-y-[22px]">
-        <FeatureCard
-          id="mcp"
-          title={{ zh: '让 AI 帮你读懂磁盘', en: 'Let AI read your disk' }}
-          desc={{
-            zh: '通过 MCP 把常用的 AI 助手接到 MaClean，让它读扫描结果、解释占用，再列一份清理方案。',
-            en: 'Connect your AI assistant to MaClean over MCP. It can read the scan results, explain what’s using space, and draft a cleanup plan.',
-          }}
-          extra={
-            <a href={l.section('pricing')} className="mt-1 inline-block py-[5px] text-[14px] font-bold text-accent hover:underline">
-              {t({ zh: '只读模式免费，查看 Pro 激活方式', en: 'Read-only mode is free. See how to activate Pro' })}
-              <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
-            </a>
-          }
-        >
-          <McpDemo />
-        </FeatureCard>
-      </div>
-
-      <p className="mt-2.5 text-[11px] text-subtle">{t({ zh: '界面示意\u2002·\u2002使用演示数据', en: 'Interface preview\u2002·\u2002demo data' })}</p>
+      <DemoPage
+        id="mcp"
+        title={{ zh: 'MCP 支持：试问方寸事，智能解纷繁', en: 'MCP Support: ask about your disk, let AI untangle it' }}
+        // 介绍先沿用原来卡片上的说明和那条链接，等用户给新的
+        intro={{
+          zh: (
+            <>
+              通过 MCP 把常用的 AI 助手接到 MaClean，让它读扫描结果、解释占用，再列一份清理方案。
+              <a href={l.section('pricing')} className="ml-2 font-bold whitespace-nowrap text-accent hover:underline">
+                只读模式免费，查看 Pro 激活方式
+                <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
+              </a>
+            </>
+          ),
+          en: (
+            <>
+              Connect your AI assistant to MaClean over MCP. It can read the scan results, explain what’s using space, and draft a cleanup plan.
+              <a href={l.section('pricing')} className="ml-2 font-bold whitespace-nowrap text-accent hover:underline">
+                Read-only mode is free. See how to activate Pro
+                <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
+              </a>
+            </>
+          ),
+        }}
+      >
+        <McpDemo />
+      </DemoPage>
     </section>
   )
 }
