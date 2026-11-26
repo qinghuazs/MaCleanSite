@@ -340,7 +340,7 @@ function Activation() {
               type="button"
               aria-pressed={tab === x.id}
               onClick={() => setTab(x.id)}
-              className={`h-10 rounded-lg px-4 text-[13px] transition-colors desk:h-8 desk:px-3.5 desk:text-[14px] ${tab === x.id ? 'bg-accent font-bold text-on-accent' : 'bg-raised text-muted hover:text-ink'}`}
+              className={`h-10 rounded-lg px-4 text-[13px] transition-colors desk:h-8 desk:px-3.5 desk:text-[14px] ${tab === x.id ? 'bg-ink font-bold text-on-accent' : 'bg-raised text-muted hover:text-ink'}`}
             >
               {t(x.label)}
             </button>
@@ -415,7 +415,7 @@ function Pricing() {
             <p className="mt-2 text-[38px] leading-[43px] font-bold tracking-[-0.01em] desk:text-[46px] desk:leading-[52px]">{t({ zh: '免费', en: 'Free' })}</p>
             {list(free)}
             <div className="mt-4 desk:mt-auto desk:pt-5">
-              <ButtonLink href={site.downloadUrl || null} download variant="secondary" disabledLabel={t(comingSoon)}>
+              <ButtonLink href={site.downloadUrl || null} download disabledLabel={t(comingSoon)}>
                 {t({ zh: `下载 ${site.name}`, en: `Download ${site.name}` })}
                 <ArrowDown aria-hidden="true" className="size-4" strokeWidth={2.2} />
               </ButtonLink>
