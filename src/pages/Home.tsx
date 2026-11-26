@@ -41,8 +41,10 @@ function DownloadButton({ className }: { className?: string }) {
 
 function Hero() {
   const { t } = useLang()
+  // 首屏占满一屏：高度是窗口高度减去页头（66 / 76 加 1px 底边），内容在里面上下居中。
+  // 窗口矮、内容放不下时照内容的高度排；特别高的窗口（竖屏显示器）最多 1400，不让首屏空出一大片
   return (
-    <section className="wrap grid items-center gap-10 overflow-x-clip pt-11 pb-12 desk:grid-cols-[minmax(0,480px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-[60px] desk:pb-[60px]">
+    <section className="wrap grid min-h-[min(calc(100svh-67px),1400px)] content-center items-center gap-10 overflow-x-clip pt-11 pb-12 desk:min-h-[min(calc(100svh-77px),1400px)] desk:grid-cols-[minmax(0,480px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-12 desk:pb-[84px]">
       <div>
         <p className="flex items-center gap-2.5 text-[12px] font-medium tracking-[0.06em] text-accent">
           <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
