@@ -1,18 +1,19 @@
 @import "tailwindcss";
 
-/* 设计变量：只有深色一套（玫瑰星云风格，与应用界面一致）。组件里只用语义色名 */
+/* 设计变量：只有深色一套（玫瑰星云风格，与应用界面一致）。组件里只用语义色名。
+   文字、主按钮、强调色取自应用的配色（近白、冰蓝），整页只有星云是暖色 */
 :root {
   --canvas: #090b13;      /* 页面底色 */
   --surface: #101420;     /* 卡片 */
   --raised: #151a29;      /* 卡片里再抬一层：按钮、气泡、选中项 */
   --line: #2a3042;        /* 细边框 */
   --line-2: #3a425a;      /* 强调边框 */
-  --ink: #f5f2fa;         /* 标题与正文 */
+  --ink: #f1f3fa;         /* 标题与正文；主按钮的底色（应用里的浅色胶囊） */
   --muted: #b6bdd0;       /* 次要文字 */
   --subtle: #8892ab;      /* 说明文字 */
-  --accent: #ebcbff;      /* 强调色：主按钮、链接、选中 */
-  --on-accent: #231332;   /* 强调色上的文字 */
-  --accent-wash: rgb(235 203 255 / 0.12);
+  --accent: #d4e3ff;      /* 强调色：链接、选中、勾选（应用里「已勾选」的冰蓝） */
+  --on-accent: #17233a;   /* 主按钮和强调色上的文字 */
+  --accent-wash: rgb(212 227 255 / 0.12);
   --good: #a4e3cc;        /* 建议清理、可释放 */
   --good-wash: #1b2b2b;
   --good-line: #4d7772;
@@ -134,7 +135,7 @@
   }
   p { text-wrap: pretty; }
   button { cursor: pointer; }
-  ::selection { background: rgb(235 203 255 / 0.28); }
+  ::selection { background: rgb(212 227 255 / 0.28); }
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;

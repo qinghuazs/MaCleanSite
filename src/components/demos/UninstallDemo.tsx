@@ -185,7 +185,7 @@ function Review({
       {total}
     </p>
   )
-  const primary = 'inline-flex h-10 items-center justify-center rounded-lg bg-accent px-5 text-[13px] font-bold text-on-accent hover:bg-white'
+  const primary = 'inline-flex h-10 items-center justify-center rounded-lg bg-ink px-5 text-[13px] font-bold text-on-accent hover:bg-white'
 
   if (step === 'confirm') {
     return (

@@ -81,11 +81,11 @@ export function Header({ depth }: { depth: PageDepth }) {
             </a>
           )}
           {/* 下载：点了直接下载安装包（还没有下载地址时退回到首页的下载区）。
-              做小一号（36 高）、用近白色：淡紫色留给首屏和页面底部的主按钮，一屏里不出现两个 */}
+              做小一号（36 高），颜色和首屏的主按钮一样是近白色 */}
           <a
             href={site.downloadUrl || l.section('download')}
             {...(site.downloadUrl ? { download: '' } : {})}
-            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-ink px-3 text-[14px] font-medium whitespace-nowrap text-canvas transition-colors hover:bg-white max-[374px]:px-2.5 max-[374px]:text-[13px] max-[349px]:hidden desk:px-4"
+            className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-ink px-3 text-[14px] font-medium whitespace-nowrap text-on-accent transition-colors hover:bg-white max-[374px]:px-2.5 max-[374px]:text-[13px] max-[349px]:hidden desk:px-4"
           >
             {t({ zh: '下载', en: 'Download' })}
             <ArrowDown aria-hidden="true" className="hidden size-3.5 desk:block" strokeWidth={2.2} />

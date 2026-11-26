@@ -18,7 +18,7 @@ type ButtonProps = {
 const base = 'inline-flex shrink-0 items-center justify-center gap-[9px] rounded-full font-medium whitespace-nowrap transition-colors duration-150'
 const sizes = { md: 'h-[50px] px-[19px] text-[14px]', sm: 'h-10 px-3.5 text-[14px]' }
 const variants = {
-  primary: 'bg-accent text-on-accent hover:bg-white',
+  primary: 'bg-ink text-on-accent hover:bg-white',
   secondary: 'border border-line bg-surface text-ink hover:border-line-2 hover:bg-raised',
 }
 

@@ -49,7 +49,7 @@ function Hero() {
     <div className="relative isolate overflow-hidden bg-canvas">
       {/* 整块星空铺满首屏（左右到窗口边），到底边渐渐淡出，和下面的页面底色接上 */}
       <StarSky className="absolute inset-0 -z-10 size-full [mask-image:linear-gradient(to_bottom,#000_76%,transparent)]" />
-      <section className="wrap grid min-h-[min(calc(100svh-67px),1400px)] content-center items-center gap-10 pt-11 pb-12 desk:min-h-[min(calc(100svh-77px),1400px)] desk:grid-cols-[minmax(0,480px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-12 desk:pb-[84px]">
+      <section className="wrap grid min-h-[min(calc(100svh-67px),1400px)] content-center items-center gap-10 pt-11 pb-12 desk:min-h-[min(calc(100svh-77px),1400px)] desk:grid-cols-[minmax(0,540px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-12 desk:pb-[84px]">
         <div>
           <p className="flex items-center gap-2.5 text-[12px] font-medium tracking-[0.06em] text-accent">
             <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
@@ -58,12 +58,20 @@ function Hero() {
           <h1 className="mt-5 text-[44px] leading-[59px] desk:mt-[26px] desk:text-[64px] desk:leading-[82px]">
             {t({ zh: '盘中寸地，', en: 'Where did all' })}
             <br />
-            <span className="text-accent">{t({ zh: '何处寻？', en: 'the space go?' })}</span>
+            {/* 第二行用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色 */}
+            <span className="bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text text-transparent">{t({ zh: '何处寻？', en: 'the space go?' })}</span>
           </h1>
-          <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[18px] desk:leading-[29px]">
+          <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[17px] desk:leading-[30px]">
             {t({
-              zh: '沿着空间地图，找到把 Mac 填满的目录。再翻开每个应用的清单，看看哪些缓存可以重建，哪些文件值得留下。',
-              en: 'Follow the storage map to the folders filling up your Mac. Then open each app’s list to see which caches can be rebuilt and which files are worth keeping.',
+              // 宽屏上在句号后换行，两句各占一行
+              zh: (
+                <>
+                  顺着空间地图，找到把 Mac 填满的目录。
+                  <br className="hidden desk:block" />
+                  再翻开每个应用的清单，看看哪些缓存可以重建，哪些文件值得留下。
+                </>
+              ),
+              en: <>Follow the storage map to the folders filling up your Mac. Then open each app’s list to see which caches can be rebuilt and which files are worth keeping.</>,
             })}
           </p>
           <div className="mt-6 flex flex-wrap gap-3 desk:mt-7">

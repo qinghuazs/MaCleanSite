@@ -241,7 +241,7 @@ export function ScanDemo() {
           type="button"
           disabled={selectedItems.length === 0}
           onClick={() => setNotice(true)}
-          className="ml-auto rounded-full bg-accent px-3 py-1.5 text-[12px] leading-4 font-medium text-on-accent disabled:cursor-default disabled:bg-[#828996] disabled:text-[#4f5d75] desk:px-4 desk:text-[14px] desk:leading-5"
+          className="ml-auto rounded-full bg-ink px-3 py-1.5 text-[12px] leading-4 font-medium text-on-accent disabled:cursor-default disabled:bg-[#828996] disabled:text-[#4f5d75] desk:px-4 desk:text-[14px] desk:leading-5"
         >
           {t({ zh: '清理', en: 'Clean' })}
         </button>
