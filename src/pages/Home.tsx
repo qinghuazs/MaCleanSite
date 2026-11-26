@@ -6,6 +6,7 @@ import { ScanDemo } from '../components/demos/ScanDemo'
 import { SystemDataDemo } from '../components/demos/SystemDataDemo'
 import { UninstallDemo } from '../components/demos/UninstallDemo'
 import { HeroNebula } from '../components/nebula/HeroNebula'
+import { StarSky } from '../components/nebula/StarSky'
 import { ButtonLink } from '../components/ui'
 import { useLang, type L } from '../i18n'
 import { links } from '../paths'
@@ -44,37 +45,42 @@ function Hero() {
   // 首屏占满一屏：高度是窗口高度减去页头（66 / 76 加 1px 底边），内容在里面上下居中。
   // 窗口矮、内容放不下时照内容的高度排；特别高的窗口（竖屏显示器）最多 1400，不让首屏空出一大片
   return (
-    <section className="wrap grid min-h-[min(calc(100svh-67px),1400px)] content-center items-center gap-10 overflow-x-clip pt-11 pb-12 desk:min-h-[min(calc(100svh-77px),1400px)] desk:grid-cols-[minmax(0,480px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-12 desk:pb-[84px]">
-      <div>
-        <p className="flex items-center gap-2.5 text-[12px] font-medium tracking-[0.06em] text-accent">
-          <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
-          {t({ zh: 'Mac 磁盘清理工具', en: 'Disk cleaner for Mac' })}
-        </p>
-        <h1 className="mt-5 text-[44px] leading-[59px] desk:mt-[26px] desk:text-[64px] desk:leading-[82px]">
-          {t({ zh: '盘中寸地，', en: 'Where did all' })}
-          <br />
-          <span className="text-accent">{t({ zh: '何处寻？', en: 'the space go?' })}</span>
-        </h1>
-        <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[18px] desk:leading-[29px]">
-          {t({
-            zh: '沿着空间地图，找到把 Mac 填满的目录。再翻开每个应用的清单，看看哪些缓存可以重建，哪些文件值得留下。',
-            en: 'Follow the storage map to the folders filling up your Mac. Then open each app’s list to see which caches can be rebuilt and which files are worth keeping.',
-          })}
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3 desk:mt-7">
-          <DownloadButton />
-          <ButtonLink href={l.section('features')} variant="secondary">
-            {t({ zh: '了解功能', en: 'See features' })}
-            <ArrowDownRight aria-hidden="true" className="size-4" strokeWidth={2.2} />
-          </ButtonLink>
+    // 自己带底色、单独成一层：星云用滤色叠在星空上，要有不透明的底才叠得对
+    <div className="relative isolate overflow-hidden bg-canvas">
+      {/* 整块星空铺满首屏（左右到窗口边），到底边渐渐淡出，和下面的页面底色接上 */}
+      <StarSky className="absolute inset-0 -z-10 size-full [mask-image:linear-gradient(to_bottom,#000_76%,transparent)]" />
+      <section className="wrap grid min-h-[min(calc(100svh-67px),1400px)] content-center items-center gap-10 pt-11 pb-12 desk:min-h-[min(calc(100svh-77px),1400px)] desk:grid-cols-[minmax(0,480px)_minmax(0,1fr)] desk:gap-[52px] desk:pt-12 desk:pb-[84px]">
+        <div>
+          <p className="flex items-center gap-2.5 text-[12px] font-medium tracking-[0.06em] text-accent">
+            <span aria-hidden="true" className="size-[5px] rounded-full bg-accent" />
+            {t({ zh: 'Mac 磁盘清理工具', en: 'Disk cleaner for Mac' })}
+          </p>
+          <h1 className="mt-5 text-[44px] leading-[59px] desk:mt-[26px] desk:text-[64px] desk:leading-[82px]">
+            {t({ zh: '盘中寸地，', en: 'Where did all' })}
+            <br />
+            <span className="text-accent">{t({ zh: '何处寻？', en: 'the space go?' })}</span>
+          </h1>
+          <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[18px] desk:leading-[29px]">
+            {t({
+              zh: '沿着空间地图，找到把 Mac 填满的目录。再翻开每个应用的清单，看看哪些缓存可以重建，哪些文件值得留下。',
+              en: 'Follow the storage map to the folders filling up your Mac. Then open each app’s list to see which caches can be rebuilt and which files are worth keeping.',
+            })}
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 desk:mt-7">
+            <DownloadButton />
+            <ButtonLink href={l.section('features')} variant="secondary">
+              {t({ zh: '了解功能', en: 'See features' })}
+              <ArrowDownRight aria-hidden="true" className="size-4" strokeWidth={2.2} />
+            </ButtonLink>
+          </div>
+          <p className="mt-4 text-[12px] text-subtle">
+            {t({ zh: `免费扫描\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Apple 公证`, en: `Free to scan\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Notarized by Apple` })}
+          </p>
         </div>
-        <p className="mt-4 text-[12px] text-subtle">
-          {t({ zh: `免费扫描\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Apple 公证`, en: `Free to scan\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Notarized by Apple` })}
-        </p>
-      </div>
 
-      <HeroNebula />
-    </section>
+        <HeroNebula />
+      </section>
+    </div>
   )
 }
 

@@ -165,7 +165,7 @@
     .wrap, .wrap-wide { max-width: 1280px; padding-inline: 40px; }
   }
 
-  /* 演示窗口和首屏星空里的星点 */
+  /* 演示窗口里的星点（首屏的星空是画布画的，见 components/nebula/StarSky.tsx） */
   .stars {
     background-image:
       radial-gradient(1px 1px at 8% 14%, rgb(255 255 255 / 0.55) 50%, transparent 51%),
