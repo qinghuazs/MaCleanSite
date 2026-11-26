@@ -137,18 +137,25 @@ function Features() {
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
       <div className="border-t border-line pt-[23px] desk:pt-[30px]">
         <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' })}</h2>
-        <p className="mt-2 text-[14px] leading-6 text-muted desk:text-[17px] desk:leading-[27px]">
+        {/* 系统数据的介绍（用户写的，2026-11-26）：两句各占一行，先说容量条，再说地图。
+            手机上的演示是简化过的（没有容量条），暂时还用原来那段手机版说明，等最后统一改手机端时再定 */}
+        <p className="mt-2 hidden text-[17px] leading-[28px] text-muted desk:block">
           {t({
-            zh: '从一张地图找到大目录，点开应用看清每一项。遇到不再使用的软件，也可以把它和留下的数据分开处理。',
-            en: 'Find the big folders on one map, then open an app to see each item. For apps you no longer use, you can deal with the app and the data it left behind separately.',
-          })}
-        </p>
-        {/* 紧接着的是系统数据演示的用法（原来写在那张卡片的标题栏里，用户 2026-11-26 让挪到这里，卡片不再有标题栏）。
-            手机上的演示是简化过的，说明也不一样 */}
-        <p className="mt-1.5 hidden text-[17px] leading-[27px] text-muted desk:block">
-          {t({
-            zh: '点选地图上的色块，看看空间花在了哪里。对应的目录和建议清理量会随之变化。一个应用占了多少，与它能腾出多少，是两件事。',
-            en: 'Click a block on the map to see where the space went. The folders and the suggested amount update with it. How much an app takes up and how much it can give back are two different things.',
+            zh: (
+              <>
+                启动磁盘已用多少、还剩多少，应用支持、沙盒容器、缓存和开发工具各占几何，容量条上一目了然。
+                <br />
+                再顺着地图找到大目录，点选色块，看看空间花在了哪里，对应的目录和建议清理量随之变化。
+              </>
+            ),
+            en: (
+              <>
+                The capacity bar shows at a glance how much of the startup disk is used and how much is left, and how much goes to application support, sandboxed containers, caches, and
+                developer tools.
+                <br />
+                Then follow the map to the big folders: click a block to see where the space went, and the folders and the suggested amount update with it.
+              </>
+            ),
           })}
         </p>
         <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">
