@@ -1,13 +1,7 @@
 import { useEffect, useRef, type RefObject } from 'react'
 import { createNebulaRenderer } from './renderer'
 
-export const scanDuration = 3200
-
-export function NebulaCanvas({ imageRef, scanStart, onAvailability }: {
-  imageRef: RefObject<HTMLImageElement | null>
-  scanStart: RefObject<number | null>
-  onAvailability: (available: boolean) => void
-}) {
+export function NebulaCanvas({ imageRef }: { imageRef: RefObject<HTMLImageElement | null> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
@@ -34,8 +28,7 @@ export function NebulaCanvas({ imageRef, scanStart, onAvailability }: {
       if (previous === undefined || now - previous >= 32) {
         if (previous !== undefined) elapsed += now - previous
         previous = now
-        const scan = scanStart.current === null ? -1 : now - scanStart.current
-        renderer?.draw(elapsed * 0.0007, scan >= 0 && scan < scanDuration ? scan / 1000 : -1)
+        renderer?.draw(elapsed * 0.0007 % 18)
         canvas.style.visibility = 'visible'
       }
       frame = window.requestAnimationFrame(draw)
@@ -50,10 +43,8 @@ export function NebulaCanvas({ imageRef, scanStart, onAvailability }: {
     const sync = () => {
       if (reduced.matches || document.hidden || !inView) {
         stop()
-        if (reduced.matches) {
-          canvas.style.visibility = 'hidden'
-          onAvailability(false)
-        }
+        image.style.animationPlayState = 'paused'
+        if (reduced.matches) canvas.style.visibility = 'hidden'
         return
       }
       if (!attempted && image.complete && image.naturalWidth > 0) {
@@ -61,10 +52,8 @@ export function NebulaCanvas({ imageRef, scanStart, onAvailability }: {
         resize()
         renderer = createNebulaRenderer(canvas, image)
       }
-      if (renderer && !frame) {
-        onAvailability(true)
-        frame = window.requestAnimationFrame(draw)
-      }
+      image.style.animationPlayState = renderer ? 'paused' : 'running'
+      if (renderer && !frame) frame = window.requestAnimationFrame(draw)
     }
 
     const loseContext = (event: Event) => {
@@ -72,7 +61,7 @@ export function NebulaCanvas({ imageRef, scanStart, onAvailability }: {
       stop()
       renderer = null
       canvas.style.visibility = 'hidden'
-      onAvailability(false)
+      sync()
     }
     const restoreContext = () => {
       attempted = false
@@ -106,7 +95,7 @@ export function NebulaCanvas({ imageRef, scanStart, onAvailability }: {
       canvas.removeEventListener('webglcontextlost', loseContext)
       canvas.removeEventListener('webglcontextrestored', restoreContext)
     }
-  }, [imageRef, scanStart, onAvailability])
+  }, [imageRef])
 
   return <canvas ref={canvasRef} aria-hidden="true" className="invisible absolute inset-0 size-full" />
 }

@@ -165,7 +165,7 @@
     .wrap, .wrap-wide { max-width: 1280px; padding-inline: 40px; }
   }
 
-  /* 演示窗口和首屏预览里的星点 */
+  /* 演示窗口和首屏星空里的星点 */
   .stars {
     background-image:
       radial-gradient(1px 1px at 8% 14%, rgb(255 255 255 / 0.55) 50%, transparent 51%),
@@ -178,6 +178,13 @@
       radial-gradient(1px 1px at 94% 47%, rgb(255 255 255 / 0.3) 50%, transparent 51%),
       radial-gradient(1px 1px at 15% 90%, rgb(255 255 255 / 0.3) 50%, transparent 51%),
       radial-gradient(1px 1px at 45% 44%, rgb(255 255 255 / 0.25) 50%, transparent 51%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .nebula-image { animation: nebula-drift 14s ease-in-out infinite alternate; }
+  }
+  @keyframes nebula-drift {
+    from { transform: translate3d(-1%, 0.5%, 0) scale(1.01); }
+    to { transform: translate3d(1%, -0.5%, 0) scale(1.04); }
   }
   /* 不显示滚动条的横向滚动区（页签栏、配置原文） */
   .no-scrollbar { scrollbar-width: none; }

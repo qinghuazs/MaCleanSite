@@ -2,10 +2,10 @@ import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, ChevronDown, Lock,
 import { useState, type ReactNode } from 'react'
 import appIcon from '../assets/app-icon.png'
 import { McpDemo } from '../components/demos/McpDemo'
-import { OverviewDemo } from '../components/demos/OverviewDemo'
 import { ScanDemo } from '../components/demos/ScanDemo'
 import { SystemDataDemo } from '../components/demos/SystemDataDemo'
 import { UninstallDemo } from '../components/demos/UninstallDemo'
+import { HeroNebula } from '../components/nebula/HeroNebula'
 import { ButtonLink } from '../components/ui'
 import { useLang, type L } from '../i18n'
 import { links } from '../paths'
@@ -71,7 +71,7 @@ function Hero() {
         </p>
       </div>
 
-      <OverviewDemo />
+      <HeroNebula />
     </section>
   )
 }
