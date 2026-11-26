@@ -19,7 +19,7 @@ const l = links(0)
 const comingSoon: L = { zh: '即将开放下载', en: 'Download coming soon' }
 
 export function Home() {
-  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用、MCP），带 data-page 的区块就是一页
+  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果、卸载应用、MCP、四张卡片那页），带 data-page 的区块就是一页
   usePagedScroll()
   return (
     <>
@@ -108,24 +108,45 @@ function Hero() {
 }
 
 /**
- * 一页演示：大标题 + 介绍 + 演示窗口，窗口直接放在页面上（没有外层卡片）。
- * 宽屏上这三样合起来正好一屏（窗口的高度由演示自己的 useFitScreen 算），并且参与「滚一下换一页」（data-page）。
+ * 一页：大标题 + 介绍 + 内容，内容直接放在页面上（没有外层卡片）。
+ * 宽屏上每一页正好一屏，并且参与「滚一下换一页」（data-page）。内容是演示窗口时，窗口的高度由演示自己的 useFitScreen 算；
+ * 内容是别的（比如卡片）时传 fill，让内容撑满这一页剩下的高度。
  * 手机上的演示多半是简化过的，介绍可以另给一段
  */
-function DemoPage({ id, title, intro, mobileIntro, children }: { id: string; title: L; intro: { zh: ReactNode; en: ReactNode }; mobileIntro?: L; children: ReactNode }) {
+function DemoPage({
+  id,
+  title,
+  intro,
+  mobileIntro,
+  fill,
+  children,
+}: {
+  id: string
+  title: L
+  intro?: { zh: ReactNode; en: ReactNode }
+  mobileIntro?: L
+  fill?: boolean
+  children: ReactNode
+}) {
   const { t } = useLang()
   return (
     // 宽屏上每一页至少一屏高（视口高度减 77px 的页头）：内容不满一屏的页（比如 MCP）下面留空，不让下一块露出来。
     // 点链接跳到这一页时和翻页停在同一个位置（顶边紧贴页头；全站的 scroll-padding-top 是 88px，这里抵掉 11px）
-    <div id={id} data-page className="mt-[18px] first:mt-0 desk:mt-0 desk:min-h-[calc(100svh-77px)] desk:-scroll-mt-[11px]">
+    <div
+      id={id}
+      data-page
+      className={`mt-[18px] first:mt-0 desk:mt-0 desk:min-h-[calc(100svh-77px)] desk:-scroll-mt-[11px] ${fill ? 'desk:flex desk:flex-col desk:pb-3.5' : ''}`}
+    >
       {/* 手机上页与页之间用一条线分开；宽屏上是翻页，不需要 */}
       <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
         <h2 className="text-[32px] leading-[41px] desk:text-[36px] desk:leading-[46px]">{t(title)}</h2>
         {/* 介绍折成两行时让两行差不多宽 */}
-        <p className={`mt-2 text-muted desk:text-balance ${mobileIntro ? 'hidden text-[17px] leading-[28px] desk:block' : 'text-[14px] leading-6 desk:text-[17px] desk:leading-[28px]'}`}>{t(intro)}</p>
+        {intro && (
+          <p className={`mt-2 text-muted desk:text-balance ${mobileIntro ? 'hidden text-[17px] leading-[28px] desk:block' : 'text-[14px] leading-6 desk:text-[17px] desk:leading-[28px]'}`}>{t(intro)}</p>
+        )}
         {mobileIntro && <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">{t(mobileIntro)}</p>}
       </div>
-      <div className="mt-[22px] desk:mt-6">{children}</div>
+      <div className={`mt-[22px] desk:mt-6 ${fill ? 'desk:flex desk:flex-1 desk:flex-col' : ''}`}>{children}</div>
     </div>
   )
 }
@@ -234,7 +255,7 @@ function Safety() {
   const { t } = useLang()
   const cards = [
     {
-      icon: <SquareTerminal aria-hidden="true" className="size-[18px]" />,
+      icon: <SquareTerminal aria-hidden="true" className="size-[18px] desk:size-6" />,
       title: { zh: '终端待办', en: 'Terminal Tasks' },
       text: {
         zh: 'pnpm、Docker、Xcode 模拟器这类东西，要用它们自己的命令清。MaClean 把命令写成脚本，列出会删哪些，由你在终端里按回车执行。这类删除不经过废纸篓。',
@@ -242,7 +263,7 @@ function Safety() {
       },
     },
     {
-      icon: <BellRing aria-hidden="true" className="size-[18px]" />,
+      icon: <BellRing aria-hidden="true" className="size-[18px] desk:size-6" />,
       title: { zh: '增长监控', en: 'Growth monitoring' },
       text: {
         zh: '每天记录一次磁盘占用。哪个目录突然变大、可用空间低于你设的值时，发通知提醒你；菜单栏还能显示剩余空间。这些都免费。',
@@ -250,7 +271,7 @@ function Safety() {
       },
     },
     {
-      icon: <Lock aria-hidden="true" className="size-[18px]" />,
+      icon: <Lock aria-hidden="true" className="size-[18px] desk:size-6" />,
       title: { zh: '文件不出本机', en: 'Nothing leaves your Mac' },
       text: {
         zh: '扫描和统计都在这台 Mac 上完成，结果不上传。申请「完全磁盘访问」，是为了扫到微信、文稿这些受保护的目录。只在激活、校验许可证和检查更新时联网。',
@@ -258,7 +279,7 @@ function Safety() {
       },
     },
     {
-      icon: <Scale aria-hidden="true" className="size-[18px]" />,
+      icon: <Scale aria-hidden="true" className="size-[18px] desk:size-6" />,
       title: { zh: '实际能腾出多少', en: 'What you actually get back' },
       text: {
         zh: '移到废纸篓只是挪了地方，清空之后空间才腾出来。和别处共用数据的文件、有本地快照的时候，实际腾出的会比占用少，所以预计释放量是单独标出来的。',
@@ -267,20 +288,21 @@ function Safety() {
     },
   ]
   return (
-    <section id="safety" className="wrap pb-14 desk:pb-[90px]">
-      {/* 标题是临时的，等用户定 */}
-      <h2 className="text-[29px] leading-[37px] desk:text-[41px] desk:leading-[53px]">{t({ zh: '清理之外，还有这些', en: 'Beyond cleaning' })}</h2>
-      <ul className="mt-5 grid gap-2.5 desk:mt-[25px] desk:grid-cols-2 desk:gap-5">
-        {cards.map((card) => (
-          <li key={card.title.en} className="flex items-start gap-3.5 rounded-2xl border border-line bg-raised p-3.5 desk:gap-[18px] desk:p-6">
-            <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent-wash text-accent desk:size-10 desk:rounded-[10px]">{card.icon}</span>
-            <div>
-              <h3 className="font-sans text-[16px] leading-[26px] font-medium desk:text-[19px] desk:leading-[30px] desk:font-bold">{t(card.title)}</h3>
-              <p className="mt-1 text-[13px] leading-[22px] text-muted desk:mt-1.5 desk:text-[15px] desk:leading-[26px]">{t(card.text)}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+    <section className="wrap pb-14 desk:pb-[90px]">
+      {/* 这一块也是一页（用户 2026-11-26 要求占一屏）：四张卡片两行两列，撑满标题下面剩下的高度 */}
+      <DemoPage id="safety" fill title={{ zh: '清简留余地，细微见用心', en: 'Room to spare, care in the details' }}>
+        <ul className="grid gap-2.5 desk:flex-1 desk:grid-cols-2 desk:grid-rows-2 desk:gap-5">
+          {cards.map((card) => (
+            <li key={card.title.en} className="flex items-start gap-3.5 rounded-2xl border border-line bg-raised p-3.5 desk:items-center desk:gap-5 desk:rounded-[20px] desk:px-7 desk:py-5 xl:gap-6 xl:px-9 xl:py-6">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent-wash text-accent desk:size-12 desk:rounded-xl xl:size-[52px] xl:rounded-[14px]">{card.icon}</span>
+              <div>
+                <h3 className="font-sans text-[16px] leading-[26px] font-medium desk:text-[22px] desk:leading-[33px] desk:font-bold xl:text-[24px] xl:leading-[36px]">{t(card.title)}</h3>
+                <p className="mt-1 text-[13px] leading-[22px] text-muted desk:mt-2 desk:text-[16px] desk:leading-[28px] xl:text-[17px] xl:leading-[30px]">{t(card.text)}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </DemoPage>
     </section>
   )
 }
