@@ -32,11 +32,10 @@ function Desktop({ current, onSelect }: Props) {
 
   return (
     <WindowFrame className="hidden px-[22px] py-[18px] desk:block">
-      {/* 窗口顶上只留红黄绿三个点；应用的页签栏用户让去掉了（2026-11-26），页面标题已经说明这是哪一页 */}
-      <TrafficLights className="w-10" />
-
-      <div className="mt-4 flex items-baseline justify-between">
-        <p className="text-[25px] leading-[38px] font-bold">{t({ zh: '系统数据', en: 'System Data' })}</p>
+      {/* 窗口顶上只留红黄绿三个点和「演示数据」；应用的页签栏和窗口里的「系统数据」标题用户让去掉了（2026-11-26），
+          上面的区块标题已经说明这是哪一页 */}
+      <div className="flex items-center justify-between">
+        <TrafficLights className="w-10" />
         <p className="text-[13px] text-win-subtle">{demoData}</p>
       </div>
 
