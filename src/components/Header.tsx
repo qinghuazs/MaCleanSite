@@ -1,9 +1,9 @@
-import { ArrowDown, ArrowDownRight, ArrowRight } from 'lucide-react'
+import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
 import appIcon from '../assets/app-icon.png'
 import { useLang } from '../i18n'
 import { links, type PageDepth } from '../paths'
-import { site } from '../site.config'
+import { purchaseUrl, site } from '../site.config'
 
 // 页头：应用图标 + 名称、导航、语言切换、下载按钮。
 // 1080 以上导航横排；以下收进「菜单」，点开后逐项列出首页各区块和用户手册
@@ -12,6 +12,8 @@ export function Header({ depth }: { depth: PageDepth }) {
   const { t, lang, setLang } = useLang()
   const [open, setOpen] = useState(false)
   const l = links(depth)
+  // Dodo 的付款页；还没配产品 ID 时不显示购买入口
+  const buyUrl = purchaseUrl()
   // 首页的内容列在窄屏上最宽 480，页头跟着收窄；手册页、政策页用满宽度。
   // 英文「Download」「Menu」比中文长，360 宽的手机上要再收一点才不会顶到名称；
   // 再窄（320）就不显示页头的下载按钮，首屏里还有一个
@@ -32,6 +34,7 @@ export function Header({ depth }: { depth: PageDepth }) {
     { href: l.section('faq'), label: { zh: '常见问题', en: 'FAQ' } },
     { href: l.guide, label: { zh: '用户手册', en: 'User Guide' }, page: true },
   ]
+  const buyLabel = { zh: '购买', en: 'Buy' }
 
   const langSwitch = (
     <button
@@ -66,9 +69,22 @@ export function Header({ depth }: { depth: PageDepth }) {
 
         <div className="flex items-center gap-1.5 desk:gap-3">
           {langSwitch}
-          {/* 页头的下载按钮做小一号（36 高）、用近白色：淡紫色留给首屏和页面底部的主按钮，一屏里不出现两个 */}
+          {/* 购买：新窗口打开 Dodo 的付款页。窄屏的页头放不下，收在「菜单」里 */}
+          {buyUrl && (
+            <a
+              href={buyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden h-9 shrink-0 items-center rounded-full border border-line-2 bg-raised px-4 text-[14px] font-medium whitespace-nowrap text-ink transition-colors hover:border-accent hover:text-accent desk:inline-flex"
+            >
+              {t(buyLabel)}
+            </a>
+          )}
+          {/* 下载：点了直接下载安装包（还没有下载地址时退回到首页的下载区）。
+              做小一号（36 高）、用近白色：淡紫色留给首屏和页面底部的主按钮，一屏里不出现两个 */}
           <a
-            href={l.section('download')}
+            href={site.downloadUrl || l.section('download')}
+            {...(site.downloadUrl ? { download: '' } : {})}
             className="inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full bg-ink px-3 text-[14px] font-medium whitespace-nowrap text-canvas transition-colors hover:bg-white max-[374px]:px-2.5 max-[374px]:text-[13px] max-[349px]:hidden desk:px-4"
           >
             {t({ zh: '下载', en: 'Download' })}
@@ -105,6 +121,20 @@ export function Header({ depth }: { depth: PageDepth }) {
                 </a>
               </li>
             ))}
+            {buyUrl && (
+              <li>
+                <a
+                  href={buyUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  className="flex h-[45px] items-center justify-between rounded-md bg-surface px-3.5 text-[15px] font-bold text-ink"
+                >
+                  {t({ zh: `购买 ${site.productName}`, en: `Buy ${site.productName}` })}
+                  <ArrowUpRight aria-hidden="true" className="size-4 text-accent" />
+                </a>
+              </li>
+            )}
           </ul>
         </nav>
       )}
