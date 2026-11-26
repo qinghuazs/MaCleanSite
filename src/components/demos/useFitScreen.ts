@@ -35,7 +35,7 @@ export function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: stri
       const cacheKey = `${lang}:${el.parentElement!.clientWidth}`
       if (natural.current.key !== cacheKey) natural.current = { key: cacheKey, height: 0 }
       const scrolled = window.scrollY
-      const before = el.getBoundingClientRect()
+      const pageBefore = page.getBoundingClientRect()
       const measured = measure || natural.current.height === 0
       if (measured) {
         // 按 1 倍、高度收到 0 量出内容最少要多高（加上下两条边框）
@@ -51,11 +51,12 @@ export function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: stri
       el.style.setProperty('zoom', String(zoom))
       el.style.height = `${Math.min(Math.max(available / zoom, need), need + maxExtra)}px`
       if (measured) {
-        // 量的那一下会把页面的滚动位置带跑，放回去。窗口整个在视口上方时，它的高度变了多少，页面就跟着挪多少，
-        // 这样正在看的内容不动
-        const above = before.bottom <= header
-        const target = scrolled + (above ? el.getBoundingClientRect().height - before.height : 0)
-        if (Math.abs(window.scrollY - target) > 0.5) window.scrollTo({ top: target, behavior: 'instant' })
+        // 量的那一下会把页面的滚动位置带跑，先放回去
+        if (window.scrollY !== scrolled) window.scrollTo({ top: scrolled, behavior: 'instant' })
+        // 这一页整个在视口上方时，它的底边挪了多少，下面的内容就挪了多少：页面跟着挪，正在看的内容不动。
+        // （按这一页的底边算，不按窗口的高度算：页有最小高度，窗口变高不一定把下面顶下去）
+        const shift = page.getBoundingClientRect().bottom - pageBefore.bottom
+        if (pageBefore.bottom <= header && Math.abs(shift) > 0.5) window.scrollTo({ top: scrolled + shift, behavior: 'instant' })
       }
     }
     fit(true)

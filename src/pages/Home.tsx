@@ -330,7 +330,7 @@ function Activation() {
     { id: 'move', label: { zh: '换一台 Mac', en: 'Moving to another Mac' } },
   ]
   return (
-    <div className="rounded-2xl border border-line bg-surface p-3.5 desk:rounded-[20px] desk:px-7 desk:py-4">
+    <div className="rounded-2xl border border-line p-3.5 desk:rounded-[20px] desk:px-7 desk:py-3.5">
       <div className="desk:flex desk:items-center desk:gap-5">
         <h3 className="font-sans text-[17px] leading-[27px] font-bold desk:text-[18px] desk:leading-[28px]">{t({ zh: '怎样激活许可证？', en: 'How do I activate a license?' })}</h3>
         <div role="group" className="mt-2.5 flex flex-wrap gap-1.5 desk:mt-0">
@@ -387,9 +387,10 @@ function Pricing() {
     { zh: '生成终端脚本', en: 'Terminal scripts' },
     { zh: 'MCP 安全模式和完全模式', en: 'MCP Safe and Full modes' },
   ]
-  const card = 'flex flex-col rounded-2xl border bg-raised p-3.5 desk:rounded-[20px] desk:px-8 desk:py-6'
+  // 卡片不另铺底色，和页面背景一样，只靠边框分开（用户 2026-11-26 要求）
+  const card = 'flex flex-col rounded-2xl border p-3.5 desk:rounded-[20px] desk:px-8 desk:py-5'
   const list = (items: L[]) => (
-    <ul className="mt-3 space-y-2 text-[13px] leading-[22px] desk:mt-4 desk:space-y-2 desk:text-[16px] desk:leading-[26px]">
+    <ul className="mt-3 space-y-2 text-[13px] leading-[22px] desk:mt-3 desk:space-y-2 desk:text-[16px] desk:leading-[26px]">
       {items.map((item) => (
         <li key={item.en} className="flex gap-2.5">
           <Check aria-hidden="true" className="mt-[5px] size-3.5 shrink-0 text-good desk:mt-1.5 desk:size-4" strokeWidth={2.4} />
@@ -404,17 +405,30 @@ function Pricing() {
         id="pricing"
         fill
         title={{ zh: '先免费扫描', en: 'Scan for free first' }}
+        // 介绍是用户写的（2026-11-26）：宽屏上两句各占一行
         intro={{
-          zh: '扫描、查看系统数据和扫描结果都免费。也可以通过 MCP 让 AI 助手分析占用，先列一份清理方案。',
-          en: 'Scanning, System Data and Scan Results are all free. You can also have an AI assistant analyze your disk over MCP and draft a cleanup plan first.',
+          zh: (
+            <>
+              免费扫描磁盘、查看空间占用，也可通过 MCP 连接 AI 助手，读懂结果、梳理建议。
+              <br className="hidden desk:block" />
+              需要清理、卸载应用或生成终端脚本时，再选择 {site.productName}，一次买断，按需升级。
+            </>
+          ),
+          en: (
+            <>
+              Scan your disk and see what’s using space for free. You can also connect an AI assistant over MCP to make sense of the results and get suggestions.
+              <br className="hidden desk:block" />
+              When you need to clean, uninstall apps, or generate Terminal scripts, choose {site.productName}: a one-time purchase, only when you need it.
+            </>
+          ),
         }}
       >
         <div className="grid gap-2.5 desk:flex-1 desk:grid-cols-2 desk:gap-5">
           <div className={`${card} border-line`}>
             <p className="text-[16px] font-semibold text-muted desk:text-[18px]">{t({ zh: '不需要许可证', en: 'No license needed' })}</p>
-            <p className="mt-2 text-[38px] leading-[43px] font-bold tracking-[-0.01em] desk:text-[46px] desk:leading-[52px]">{t({ zh: '免费', en: 'Free' })}</p>
+            <p className="mt-2 text-[38px] leading-[43px] font-bold tracking-[-0.01em] desk:mt-1.5 desk:text-[42px] desk:leading-[48px]">{t({ zh: '免费', en: 'Free' })}</p>
             {list(free)}
-            <div className="mt-4 desk:mt-auto desk:pt-5">
+            <div className="mt-4 desk:mt-auto desk:pt-4">
               <ButtonLink href={site.downloadUrl || null} download disabledLabel={t(comingSoon)}>
                 {t({ zh: `下载 ${site.name}`, en: `Download ${site.name}` })}
                 <ArrowDown aria-hidden="true" className="size-4" strokeWidth={2.2} />
@@ -424,14 +438,14 @@ function Pricing() {
 
           <div className={`${card} border-accent/45`}>
             <p className="text-[16px] font-semibold text-accent desk:text-[18px]">{site.productName}</p>
-            <p className="mt-2 flex flex-wrap items-baseline gap-x-3">
-              <span className="text-[38px] leading-[43px] font-bold tracking-[-0.03em] desk:text-[46px] desk:leading-[52px]">{t(site.price)}</span>
+            <p className="mt-2 flex flex-wrap items-baseline gap-x-3 desk:mt-1.5">
+              <span className="text-[38px] leading-[43px] font-bold tracking-[-0.03em] desk:text-[42px] desk:leading-[48px]">{t(site.price)}</span>
               <span className="text-[13px] whitespace-nowrap text-muted desk:text-[14px]">{t({ zh: '一次买断', en: 'one-time purchase' })}</span>
             </p>
-            <p className="mt-3 text-[13px] text-muted desk:mt-4 desk:text-[15px]">{t({ zh: '激活许可证后解锁：', en: 'A license unlocks:' })}</p>
-            <div className="-mt-1.5 desk:-mt-2">{list(pro)}</div>
+            <p className="mt-3 text-[13px] text-muted desk:text-[15px]">{t({ zh: '激活许可证后解锁：', en: 'A license unlocks:' })}</p>
+            <div className="-mt-1.5 desk:-mt-1">{list(pro)}</div>
             {/* 按钮和两句说明排在一行，放不下时说明折到下面 */}
-            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2.5 desk:mt-auto desk:pt-5">
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2.5 desk:mt-auto desk:pt-4">
               <ButtonLink href={buy} external disabledLabel={t({ zh: '即将开放购买', en: 'Purchasing opens soon' })}>
                 {t({ zh: `购买 ${site.productName}`, en: `Buy ${site.productName}` })}
                 <ArrowUpRight aria-hidden="true" className="size-4" strokeWidth={2.2} />
@@ -445,7 +459,7 @@ function Pricing() {
           </div>
         </div>
 
-        <div className="mt-2.5 desk:mt-5">
+        <div className="mt-2.5 desk:mt-4">
           <Activation />
         </div>
       </DemoPage>
