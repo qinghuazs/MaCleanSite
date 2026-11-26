@@ -1,5 +1,5 @@
 import { Check, Minus } from 'lucide-react'
-import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode, type Ref } from 'react'
 import { useLang, type L } from '../../i18n'
 
 // 几个演示窗口共用的部件：窗口外框、红黄绿圆点、应用的页签栏、勾选框、「这是演示」提示
@@ -16,8 +16,12 @@ const tabs: { id: AppTab; label: L }[] = [
 ]
 
 /** 应用窗口的外框：深色底、星点、圆角描边 */
-export function WindowFrame({ children, className = '' }: { children: ReactNode; className?: string }) {
-  return <div className={`stars relative overflow-hidden rounded-[14px] border border-win-line bg-win text-win-ink ${className}`}>{children}</div>
+export function WindowFrame({ children, className = '', ref }: { children: ReactNode; className?: string; ref?: Ref<HTMLDivElement> }) {
+  return (
+    <div ref={ref} className={`stars relative overflow-hidden rounded-[14px] border border-win-line bg-win text-win-ink ${className}`}>
+      {children}
+    </div>
+  )
 }
 
 export function TrafficLights({ className = '' }: { className?: string }) {

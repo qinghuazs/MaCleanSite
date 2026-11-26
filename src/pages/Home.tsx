@@ -135,7 +135,7 @@ function Features() {
   const { t } = useLang()
   return (
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
-      <div className="border-t border-line pt-[23px] desk:pt-[30px]">
+      <div className="border-t border-line pt-[23px] desk:pt-6">
         <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' })}</h2>
         {/* 系统数据的介绍（用户写的，2026-11-26）：两句各占一行，先说容量条，再说地图。
             手机上的演示是简化过的（没有容量条），暂时还用原来那段手机版说明，等最后统一改手机端时再定 */}
@@ -166,7 +166,8 @@ function Features() {
         </p>
       </div>
 
-      <div className="mt-[22px] space-y-[18px] desk:mt-[29px] desk:space-y-[22px]">
+      {/* 宽屏上「标题 + 介绍 + 系统数据窗口」正好占一屏，窗口的高度由 SystemDataDemo 里的 useFitScreen 算 */}
+      <div className="mt-[22px] space-y-[18px] desk:mt-6 desk:space-y-[22px]">
         <FeatureCard id="system-data" title={{ zh: '看清系统数据', en: 'See what’s in System Data' }}>
           <SystemDataDemo />
         </FeatureCard>

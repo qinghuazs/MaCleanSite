@@ -1,5 +1,5 @@
 import { ArrowDownRight, ArrowRight } from 'lucide-react'
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState, type RefObject } from 'react'
 import { categories, disk, formatSize, mapSize, mobileMapSize, mobileTiles, tiles, type Category, type CategoryId } from '../../content/demo'
 import { useLang } from '../../i18n'
 import { TrafficLights, WindowFrame } from './chrome'
@@ -8,6 +8,58 @@ import { TrafficLights, WindowFrame } from './chrome'
 // 桌面照应用窗口画（容量条、图例、两层地图、明细）；手机上简化成五个色块加明细
 
 const pct = (v: number, total: number) => `${(v / total) * 100}%`
+
+/**
+ * 让「区块标题 + 介绍 + 这个窗口」在宽屏上正好占一屏（用户 2026-11-26 要求）。
+ * 窗口的高度取视口里剩下的高度，多出来的都给地图；剩下的高度放不下内容时把窗口整体缩小一点（最小 0.8 倍，
+ * 再小字就看不清了），还放不下就照内容的高度排、超出一屏。视口特别高时地图也不无限拉长。
+ * 「一屏」从区块顶边算起，顶边停在页头下面（锚点跳转时留的那段距离，见 styles.css 的 scroll-padding-top）。
+ */
+function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: string, selected: string) {
+  // 内容最少要多高：同一种语言、同一个宽度下只增不减，切换分类时窗口不会忽大忽小
+  const natural = useRef({ key: '', height: 0 })
+  useLayoutEffect(() => {
+    const el = frame.current
+    const section = document.getElementById('features')
+    if (!el || !section) return
+    const minZoom = 0.8
+    const bottomGap = 14 // 窗口底边离屏幕底边留一点空
+    const maxExtra = 240 // 比内容最少的高度最多再高这么多
+    const fit = () => {
+      if (el.offsetParent === null) {
+        // 手机版式下这个窗口不显示
+        el.style.removeProperty('zoom')
+        el.style.removeProperty('height')
+        return
+      }
+      const cacheKey = `${lang}:${el.parentElement!.clientWidth}`
+      if (natural.current.key !== cacheKey) natural.current = { key: cacheKey, height: 0 }
+      // 先按 1 倍、高度收到 0 量出内容最少要多高（加上下两条边框）
+      el.style.setProperty('zoom', '1')
+      el.style.height = '0px'
+      natural.current.height = Math.max(natural.current.height, el.scrollHeight + 2)
+      const need = natural.current.height
+      const top = el.getBoundingClientRect().top - section.getBoundingClientRect().top
+      const offset = parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 88
+      const available = window.innerHeight - offset - bottomGap - top
+      const zoom = Math.min(1, Math.max(minZoom, available / need))
+      el.style.setProperty('zoom', String(zoom))
+      el.style.height = `${Math.min(Math.max(available / zoom, need), need + maxExtra)}px`
+    }
+    fit()
+    window.addEventListener('resize', fit)
+    // 上面的标题、介绍折行变了（换语言、字体加载完），窗口能用的高度也跟着变
+    const header = section.firstElementChild
+    const observer = 'ResizeObserver' in window && header ? new ResizeObserver(fit) : null
+    if (observer && header) observer.observe(header)
+    document.fonts?.ready.then(fit)
+    return () => {
+      window.removeEventListener('resize', fit)
+      observer?.disconnect()
+    }
+    // 换了分类，明细的内容高度可能变，重新量一次
+  }, [frame, lang, selected])
+}
 
 export function SystemDataDemo() {
   const [selected, setSelected] = useState<CategoryId>('support')
@@ -29,9 +81,11 @@ function Desktop({ current, onSelect }: Props) {
   const legendLabel = `block text-[13px] leading-[18px] text-win-muted ${lang === 'zh' ? 'whitespace-nowrap' : ''}`
   const demoData = t({ zh: '演示数据', en: 'Demo data' })
   const panel = 'rounded-xl border border-win-line bg-win-panel'
+  const frame = useRef<HTMLDivElement>(null)
+  useFitScreen(frame, lang, current.id)
 
   return (
-    <WindowFrame className="hidden px-[22px] py-[18px] desk:block">
+    <WindowFrame ref={frame} className="hidden flex-col px-[22px] py-4 desk:flex">
       {/* 窗口顶上只留红黄绿三个点和「演示数据」；应用的页签栏和窗口里的「系统数据」标题用户让去掉了（2026-11-26），
           上面的区块标题已经说明这是哪一页 */}
       <div className="flex items-center justify-between">
@@ -40,7 +94,7 @@ function Desktop({ current, onSelect }: Props) {
       </div>
 
       {/* 启动磁盘：容量条 + 图例（图例也是切换分类的按钮） */}
-      <div className={`${panel} mt-4 p-3.5`}>
+      <div className={`${panel} mt-3 p-3`}>
         <div className="flex items-baseline justify-between">
           <p className="text-[18px] leading-7 font-bold">{t({ zh: '启动磁盘', en: 'Startup Disk' })}</p>
           <p className="text-[14px] text-win-muted">
@@ -89,16 +143,17 @@ function Desktop({ current, onSelect }: Props) {
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-[minmax(0,1.53fr)_minmax(0,1fr)] gap-3">
+      {/* 下面这一排撑满窗口剩下的高度；地图没有固定的长宽比，这一排多高它就多高 */}
+      <div className="mt-3 grid flex-1 grid-cols-[minmax(0,1.53fr)_minmax(0,1fr)] gap-3">
         {/* 占用空间地图 */}
-        <div className={`${panel} p-3`}>
+        <div className={`${panel} flex flex-col p-3`}>
           <div className="flex items-baseline justify-between gap-3">
             <p className="text-[17px] leading-7 font-bold">{t({ zh: '占用空间地图', en: 'Storage Map' })}</p>
             <p className="font-mono text-[12px] text-win-muted">
               {t({ zh: `合计 ${disk.mapped} GB\u2002·\u2002占已用 ${disk.mappedShare}%`, en: `Total ${disk.mapped} GB\u2002·\u2002${disk.mappedShare}% of used` })}
             </p>
           </div>
-          <div className="relative mt-2" style={{ aspectRatio: `${mapSize.w} / ${mapSize.h}` }}>
+          <div className="relative mt-2 min-h-[230px] flex-1">
             {tiles.map((tile, i) => {
               const cat = categories.find((c) => c.id === tile.cat)!
               const on = tile.cat === current.id
@@ -132,7 +187,7 @@ function Desktop({ current, onSelect }: Props) {
         </div>
 
         {/* 所选分类的明细 */}
-        <div className={`${panel} flex flex-col p-3.5`}>
+        <div className={`${panel} flex flex-col p-3`}>
           <div className="flex items-baseline justify-between gap-3">
             <p className="flex min-w-0 items-baseline gap-2 text-[17px] leading-7 font-bold">
               <span aria-hidden="true" className="size-2 shrink-0 -translate-y-0.5 rounded-full" style={{ background: current.color }} />
@@ -143,8 +198,8 @@ function Desktop({ current, onSelect }: Props) {
           <p className="mt-1 text-[14px] leading-[21px] text-win-muted">{t(current.desc)}</p>
           {current.path && <p className="mt-1 font-mono text-[12.5px] text-win-subtle">{current.path}</p>}
 
-          <p className="mt-3 border-t border-win-line pt-3 text-[13.5px] text-win-muted">{t({ zh: '占用最大的目录', en: 'Largest folders' })}</p>
-          <ul className="mt-1.5 space-y-1.5 text-[13.5px]">
+          <p className="mt-2.5 border-t border-win-line pt-2.5 text-[13.5px] text-win-muted">{t({ zh: '占用最大的目录', en: 'Largest folders' })}</p>
+          <ul className="mt-1.5 space-y-1 text-[13.5px]">
             {[...current.dirs.map((d) => ({ name: t(d.name), gb: d.gb, rest: false })), ...(current.rest ? [{ name: t({ zh: '其余', en: 'Other' }), gb: current.rest, rest: true }] : [])].map(
               (d) => (
                 <li key={d.name} className="grid grid-cols-[minmax(0,1fr)_96px_64px] items-center gap-2">
@@ -161,7 +216,7 @@ function Desktop({ current, onSelect }: Props) {
             )}
           </ul>
 
-          <div className="mt-auto flex items-center justify-between gap-3 border-t border-win-line pt-3">
+          <div className="mt-auto flex items-center justify-between gap-3 border-t border-win-line pt-2.5">
             <p className={`text-[13px] ${current.suggested ? 'text-good' : 'text-win-subtle'}`}>
               {current.suggested
                 ? t({ zh: `${current.suggested} 建议清理`, en: `${current.suggested} suggested` })
