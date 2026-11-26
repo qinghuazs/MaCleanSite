@@ -224,7 +224,7 @@ function Features() {
           zh: (
             <>
               通过 MCP 把常用的 AI 助手接到 MaClean，让它读扫描结果、解释占用，再列一份清理方案。
-              <a href={l.section('pricing')} className="ml-2 font-bold whitespace-nowrap text-accent hover:underline">
+              <a href={l.section('pricing')} className="font-bold text-accent hover:underline desk:ml-2 desk:whitespace-nowrap">
                 只读模式免费，查看 Pro 激活方式
                 <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
               </a>
@@ -233,7 +233,7 @@ function Features() {
           en: (
             <>
               Connect your AI assistant to MaClean over MCP. It can read the scan results, explain what’s using space, and draft a cleanup plan.
-              <a href={l.section('pricing')} className="ml-2 font-bold whitespace-nowrap text-accent hover:underline">
+              <a href={l.section('pricing')} className="font-bold text-accent hover:underline desk:ml-2 desk:whitespace-nowrap">
                 Read-only mode is free. See how to activate Pro
                 <ArrowRight aria-hidden="true" className="ml-1.5 inline size-4 -translate-y-px" />
               </a>
