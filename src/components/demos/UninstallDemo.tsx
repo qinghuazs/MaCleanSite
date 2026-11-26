@@ -27,7 +27,8 @@ export function UninstallDemo() {
 
   const q = query.trim().toLowerCase()
   const apps = uninstallApps.filter(
-    (app) => (!unusedOnly || app.unused) && (!q || app.name.zh.toLowerCase().includes(q) || app.name.en.toLowerCase().includes(q) || app.path.toLowerCase().includes(q)),
+    (app) => (!unusedOnly || app.unused) &&
+      [app.name.zh, app.name.en, app.path, app.bundleId].some((value) => value.toLowerCase().includes(q)),
   )
   const open = (app: UninstallApp) => {
     setKeepData(false)
@@ -161,7 +162,7 @@ function Review({
   // 苹果自带的应用不能卸载
   if (!app.mb) {
     return (
-      <DemoDialog label={name} onClose={close}>
+      <DemoDialog label={t({ zh: `不能卸载 ${name}`, en: `Can’t uninstall ${name}` })} onClose={close}>
         {head(t({ zh: `不能卸载 ${name}`, en: `Can’t uninstall ${name}` }))}
         <p className="mt-4 text-[14px] leading-[22px] text-muted">
           {t({ zh: '此应用受保护，无法通过 MaClean 卸载。', en: 'This app is protected and can’t be uninstalled with MaClean.' })}
@@ -188,7 +189,7 @@ function Review({
 
   if (step === 'confirm') {
     return (
-      <DemoDialog label={name} onClose={close}>
+      <DemoDialog key={step} label={t({ zh: `确认卸载 ${name}`, en: `Confirm uninstall of ${name}` })} onClose={close}>
         {head(t({ zh: `卸载 ${name}？`, en: `Uninstall ${name}?` }))}
         <p className="mt-4 text-[14px] leading-[22px]">
           {keepData
@@ -214,7 +215,7 @@ function Review({
     ...(keepData ? [] : [{ label: t({ zh: '应用缓存', en: 'App Caches' }), size: formatMb(app.cacheMb ?? 0), status: t({ zh: '已选择', en: 'Selected' }) }]),
   ]
   return (
-    <DemoDialog label={name} onClose={close}>
+    <DemoDialog key={step} label={t({ zh: `卸载 ${name}`, en: `Uninstall ${name}` })} onClose={close}>
       {head(t({ zh: `卸载 ${name}`, en: `Uninstall ${name}` }))}
       <div className="mt-4">{toTrash}</div>
       <div aria-hidden="true" className="mt-2 h-1 rounded-full bg-good" />

@@ -1,9 +1,8 @@
 import { ArrowDown, ArrowDownRight, ArrowRight, ArrowUpRight, ChevronDown, Lock, SquareMinus, Trash2 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import appIcon from '../assets/app-icon.png'
-import rosette from '../assets/rosette.jpg'
-import { AppTabs, TrafficLights, WindowFrame } from '../components/demos/chrome'
 import { McpDemo } from '../components/demos/McpDemo'
+import { OverviewDemo } from '../components/demos/OverviewDemo'
 import { ScanDemo } from '../components/demos/ScanDemo'
 import { SystemDataDemo } from '../components/demos/SystemDataDemo'
 import { UninstallDemo } from '../components/demos/UninstallDemo'
@@ -72,38 +71,7 @@ function Hero() {
         </p>
       </div>
 
-      {/* 应用的概览页：玫瑰星云和「开始扫描」，点了跳到下面的系统数据演示 */}
-      <div className="relative">
-        <div aria-hidden="true" className="absolute inset-[-8%] bg-[radial-gradient(ellipse_at_58%_52%,rgb(200_92_72/0.16),transparent_62%)] blur-2xl" />
-        <WindowFrame className="mx-auto max-w-[600px] rounded-[18px]">
-          <div className="relative" style={{ aspectRatio: '600 / 378' }}>
-            <img
-              src={rosette}
-              alt=""
-              width={756}
-              height={538}
-              className="absolute top-[9%] left-1/2 w-[68%] -translate-x-1/2"
-              style={{ maskImage: 'radial-gradient(ellipse 50% 50% at center, #000 58%, transparent 100%)' }}
-            />
-            <TrafficLights className="absolute top-[4%] left-[2.5%] scale-75 desk:scale-100" />
-            <div className="absolute top-[3.4%] right-[3%] left-[15%] flex justify-center desk:inset-x-[9%]">
-              <AppTabs active="overview" size="xs" />
-            </div>
-            <a
-              href={l.section('system-data')}
-              className="absolute bottom-[5.5%] left-1/2 inline-flex h-[30px] -translate-x-1/2 items-center gap-1.5 rounded-full border border-[#39415a] bg-[#1b2132] px-4 text-[11px] font-medium text-win-ink whitespace-nowrap hover:bg-[#252c42] desk:h-[33px] desk:text-[12px]"
-            >
-              {t({ zh: '开始扫描', en: 'Start Scan' })}
-              <ArrowRight aria-hidden="true" className="size-3.5" />
-            </a>
-          </div>
-        </WindowFrame>
-        <p className="relative mt-3 text-center text-[11px] text-subtle">
-          {site.name} {site.version}
-          {'\u2002·\u2002'}
-          {t({ zh: '概览', en: 'Overview' })}
-        </p>
-      </div>
+      <OverviewDemo />
     </section>
   )
 }

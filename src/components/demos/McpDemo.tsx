@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLang, type L } from '../../i18n'
 
 // MCP 一块：左边是一段问答示意（数字和扫描结果演示一致），右边是接入配置。
@@ -79,23 +79,30 @@ export function McpDemo() {
   const { t } = useLang()
   const [client, setClient] = useState(0)
   const [mode, setMode] = useState<Mode>('safe')
-  const [copied, setCopied] = useState(false)
+  const [feedback, setFeedback] = useState<{ result: 'copied' | 'failed' } | null>(null)
+  const copyRequest = useRef(0)
   const current = clients[client]
   const currentMode = modes.find((m) => m.id === mode)!
   const config = snippet(current.format, currentMode.args)
 
   useEffect(() => {
-    if (!copied) return
-    const timer = window.setTimeout(() => setCopied(false), 1600)
+    if (feedback?.result !== 'copied') return
+    const timer = window.setTimeout(() => setFeedback(null), 1600)
     return () => window.clearTimeout(timer)
-  }, [copied])
+  }, [feedback])
+
+  const clearCopyFeedback = () => {
+    copyRequest.current += 1
+    setFeedback(null)
+  }
 
   const copy = async () => {
+    const request = ++copyRequest.current
     try {
       await navigator.clipboard.writeText(config)
-      setCopied(true)
+      if (request === copyRequest.current) setFeedback({ result: 'copied' })
     } catch {
-      // 剪贴板不可用时不提示成功，用户可以手动选中复制
+      if (request === copyRequest.current) setFeedback({ result: 'failed' })
     }
   }
 
@@ -146,7 +153,7 @@ export function McpDemo() {
         <div className="flex items-center justify-between gap-3">
           <p className="text-[15px] leading-[23px] font-bold">{t({ zh: '接入配置', en: 'Configuration' })}</p>
           <button type="button" onClick={copy} className="rounded-lg bg-ink px-3.5 py-[7px] text-[13px] leading-5 font-bold text-canvas hover:bg-white">
-            {copied ? t({ zh: '已复制', en: 'Copied' }) : t({ zh: '复制配置', en: 'Copy Configuration' })}
+            {feedback?.result === 'copied' ? t({ zh: '已复制', en: 'Copied' }) : t({ zh: '复制配置', en: 'Copy Configuration' })}
           </button>
         </div>
 
@@ -156,7 +163,11 @@ export function McpDemo() {
               key={c.name}
               type="button"
               aria-pressed={i === client}
-              onClick={() => setClient(i)}
+              onClick={() => {
+                if (i === client) return
+                clearCopyFeedback()
+                setClient(i)
+              }}
               className={`rounded-[7px] px-2.5 py-[5px] text-[13px] leading-5 transition-colors ${i === client ? 'bg-raised font-bold text-ink' : 'font-medium text-muted hover:text-ink'}`}
             >
               {c.name}
@@ -170,7 +181,10 @@ export function McpDemo() {
             <span className="relative">
               <select
                 value={mode}
-                onChange={(e) => setMode(e.target.value as Mode)}
+                onChange={(e) => {
+                  clearCopyFeedback()
+                  setMode(e.target.value as Mode)
+                }}
                 className="cursor-pointer appearance-none rounded-lg border border-line bg-surface py-[5px] pr-8 pl-2.5 text-[13px] leading-5 font-medium text-ink"
               >
                 {modes.map((m) => (
@@ -201,6 +215,10 @@ export function McpDemo() {
         >
           <code>{config}</code>
         </pre>
+        <p role="status" className={feedback?.result === 'failed' ? 'text-[12px] text-warn' : 'sr-only'}>
+          {feedback?.result === 'copied' && t({ zh: '配置已复制', en: 'Configuration copied' })}
+          {feedback?.result === 'failed' && t({ zh: '无法访问剪贴板，请选中上方配置手动复制。', en: 'Clipboard unavailable. Select the configuration above to copy it manually.' })}
+        </p>
 
         <p className="text-[12px] leading-[18px] text-subtle">
           {t({

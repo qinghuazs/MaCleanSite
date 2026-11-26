@@ -16,37 +16,49 @@ const statusLabel: Record<ScanItem['kind'], L> = {
   view: { zh: '仅查看', en: 'View only' },
 }
 const statusColor: Record<ScanItem['kind'], string> = { suggested: 'text-good', review: 'text-warn', view: 'text-win-subtle' }
+const totalSize = (items: ScanItem[]) => items.reduce((total, item) => total + item.gb, 0)
 
 export function ScanDemo() {
   const { t } = useLang()
-  const [expanded, setExpanded] = useState<Set<string>>(new Set())
+  const [expanded, setExpanded] = useState<Map<string, boolean>>(new Map())
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [onlySuggested, setOnlySuggested] = useState(false)
   const [query, setQuery] = useState('')
   const [notice, setNotice] = useState(false)
 
-  // 当前看得到的应用和项：按搜索词和「只看建议项」筛
+  // 先筛每一项，再按应用分组。列表、汇总和批量勾选共用同一筛选结果。
   const q = query.trim().toLowerCase()
   const visible = scanApps
-    .map((app) => ({ app, items: app.items.map((item, i) => ({ item, id: key(app, i) })).filter(({ item }) => !onlySuggested || item.kind === 'suggested') }))
-    .filter(({ app, items }) => items.length > 0 && (!q || t(app.name).toLowerCase().includes(q) || items.some(({ item }) => t(item.name).toLowerCase().includes(q))))
+    .map((app) => {
+      const appMatches = t(app.name).toLowerCase().includes(q)
+      const items = app.items.map((item, i) => ({ item, id: key(app, i) })).filter(({ item }) =>
+        (!onlySuggested || item.kind === 'suggested') &&
+        (appMatches || t(item.name).toLowerCase().includes(q) || item.path.toLowerCase().includes(q)),
+      )
+      const suggested = items.filter(({ item }) => item.kind === 'suggested')
+      return {
+        app, items, suggested,
+        occupied: totalSize(items.map(({ item }) => item)),
+        estimated: totalSize(suggested.map(({ item }) => item)),
+      }
+    })
+    .filter(({ items }) => items.length > 0)
+    .sort((a, b) => b.estimated - a.estimated || b.occupied - a.occupied)
 
-  const allItems = scanApps.flatMap((app) => app.items)
-  const suggestedItems = allItems.filter((i) => i.kind === 'suggested')
-  const sum = (items: ScanItem[]) => formatSize(items.reduce((n, i) => n + i.gb, 0))
+  const visibleCount = visible.reduce((count, group) => count + group.items.length, 0)
+  const visibleSize = formatSize(visible.reduce((size, group) => size + group.occupied, 0))
   const selectedItems = scanApps.flatMap((app) => app.items.filter((_, i) => selected.has(key(app, i))))
+  const eligible = visible.flatMap(({ app, suggested }) => app.needsQuit ? [] : suggested)
+  const heldCount = visible.reduce((count, { app, suggested }) =>
+    count + (app.needsQuit ? suggested.filter(({ id }) => !selected.has(id)).length : 0), 0)
 
-  const toggle = (set: Set<string>, id: string) => {
-    const next = new Set(set)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    return next
-  }
   const quitFirst = t({ zh: '需先退出', en: 'Quit first' })
-  const selectSuggested = () => {
-    const next = new Set(selected)
-    for (const { items } of visible) for (const { item, id } of items) if (item.kind === 'suggested') next.add(id)
-    setSelected(next)
+  const setSelection = (ids: string[], pick: boolean) => {
+    setSelected((current) => {
+      const next = new Set(current)
+      for (const id of ids) pick ? next.add(id) : next.delete(id)
+      return next
+    })
   }
 
   return (
@@ -60,10 +72,10 @@ export function ScanDemo() {
       <div className="flex items-center justify-between gap-3 px-0.5 desk:mt-4 desk:px-0">
         <p className="text-[13px] font-medium text-win-muted desk:text-[16px]">
           {onlySuggested
-            ? t({ zh: `找到 ${suggestedItems.length} 项建议清理\u2002·\u2002${sum(suggestedItems)}`, en: `${suggestedItems.length} suggested items\u2002·\u2002${sum(suggestedItems)}` })
+            ? t({ zh: `找到 ${visibleCount} 项建议清理\u2002·\u2002${visibleSize}`, en: `${visibleCount} suggested\u2002·\u2002${visibleSize}` })
             : t({
-                zh: `找到 ${allItems.length} 项\u2002·\u2002共占用 ${formatSize(scanApps.reduce((n, a) => n + a.gb, 0))}`,
-                en: `${allItems.length} found\u2002·\u2002${formatSize(scanApps.reduce((n, a) => n + a.gb, 0))} total`,
+                zh: `找到 ${visibleCount} 项\u2002·\u2002共占用 ${visibleSize}`,
+                en: `${visibleCount} found\u2002·\u2002${visibleSize} total`,
               })}
         </p>
         <div className="hidden items-center gap-3 desk:flex">
@@ -81,7 +93,10 @@ export function ScanDemo() {
           <input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              if (Boolean(q) !== Boolean(e.target.value.trim())) setExpanded(new Map())
+              setQuery(e.target.value)
+            }}
             placeholder={t({ zh: '搜索文件、软件或路径', en: 'Search files, apps, or paths' })}
             className="w-full bg-transparent text-[15px] outline-none placeholder:text-win-subtle"
           />
@@ -105,10 +120,9 @@ export function ScanDemo() {
         </div>
 
         <ul className="mt-1 desk:mt-2">
-          {visible.map(({ app, items }) => {
-            const open = expanded.has(app.id) || q !== ''
-            const sug = items.filter(({ item }) => item.kind === 'suggested')
-            const picked = sug.filter(({ id }) => selected.has(id)).length
+          {visible.map(({ app, items, suggested, occupied, estimated }) => {
+            const open = expanded.get(app.id) ?? Boolean(q)
+            const picked = suggested.filter(({ id }) => selected.has(id)).length
             const count = (kind: ScanItem['kind']) => items.filter(({ item }) => item.kind === kind).length
             const parts = (short: boolean) =>
               [
@@ -118,20 +132,17 @@ export function ScanDemo() {
               ]
                 .filter(Boolean)
                 .join(short ? ' · ' : '\u2002·\u2002')
-            const free = formatSize(sug.reduce((n, { item }) => n + item.gb, 0))
             return (
               <li key={app.id} className="border-b border-[#2b3244] last:border-b-0">
-                <div className="flex cursor-pointer items-center gap-2.5 py-2 desk:gap-4 desk:py-2.5" onClick={() => setExpanded(toggle(expanded, app.id))}>
-                  <span className="hidden desk:block">
-                    <Checkbox
-                      state={picked === 0 ? 'off' : picked === sug.length ? 'on' : 'some'}
-                      label={t({ zh: `勾选 ${t(app.name)} 的建议项`, en: `Select ${t(app.name)}’s suggested items` })}
-                      onChange={() => {
-                        const next = new Set(selected)
-                        for (const { id } of sug) picked === sug.length ? next.delete(id) : next.add(id)
-                        setSelected(next)
-                      }}
-                    />
+                <div className="flex cursor-pointer items-center gap-2.5 py-2 desk:gap-4 desk:py-2.5" onClick={() => setExpanded((current) => new Map(current).set(app.id, !open))}>
+                  <span className="hidden w-4 shrink-0 desk:block">
+                    {!app.needsQuit && suggested.length > 0 && (
+                      <Checkbox
+                        state={picked === 0 ? 'off' : picked === suggested.length ? 'on' : 'some'}
+                        label={t({ zh: `勾选 ${t(app.name)} 的建议项`, en: `Select ${t(app.name)}’s suggested items` })}
+                        onChange={() => setSelection(suggested.map(({ id }) => id), picked !== suggested.length)}
+                      />
+                    )}
                   </span>
                   {app.icon ? (
                     <img src={app.icon} alt="" className="size-[27px] desk:size-[33px]" />
@@ -151,11 +162,11 @@ export function ScanDemo() {
                       {app.needsQuit && <span className="hidden font-medium text-warn desk:inline">{quitFirst}</span>}
                     </p>
                   </div>
-                  <p className="hidden w-[84px] text-right font-mono text-[15px] desk:block">{formatSize(app.gb)}</p>
+                  <p className="hidden w-[84px] text-right font-mono text-[15px] desk:block">{formatSize(occupied)}</p>
                   <p className="text-right font-mono text-[13px] leading-[19px] text-good desk:w-[150px] desk:text-[15px]">
                     <span className="block font-sans text-[10px] leading-[14px] text-win-subtle desk:hidden">{t({ zh: '可释放', en: 'Est. Freed' })}</span>
                     <span className="hidden desk:inline">{t({ zh: '可释放 ', en: 'Can free ' })}</span>
-                    {free}
+                    {formatSize(estimated)}
                   </p>
                   <button
                     type="button"
@@ -170,11 +181,11 @@ export function ScanDemo() {
                 {open && (
                   <ul className="mb-2 rounded-md bg-win-row px-2.5 py-1 desk:ml-[30px] desk:rounded-lg desk:px-3">
                     {items.map(({ item, id }) => (
-                      <li key={id} className="flex items-center gap-2.5 py-1.5 desk:gap-3">
+                      <li key={id} title={item.path} className="flex items-center gap-2.5 py-1.5 desk:gap-3">
                         {item.kind === 'view' ? (
                           <Ban aria-hidden="true" className="mx-px size-3.5 shrink-0 text-win-subtle" />
                         ) : (
-                          <Checkbox state={selected.has(id) ? 'on' : 'off'} label={t(item.name)} onChange={() => setSelected(toggle(selected, id))} />
+                          <Checkbox state={selected.has(id) ? 'on' : 'off'} label={t(item.name)} onChange={() => setSelection([id], !selected.has(id))} />
                         )}
                         <div className="min-w-0 flex-1">
                           <p className={`text-[12px] leading-[18px] font-medium desk:text-[14px] desk:leading-[21px] ${item.kind === 'view' ? 'text-win-muted' : ''}`}>{t(item.name)}</p>
@@ -199,8 +210,9 @@ export function ScanDemo() {
       <div className="mt-2 flex flex-wrap items-center gap-1.5 desk:mt-3 desk:flex-nowrap desk:gap-2.5">
         <button
           type="button"
-          onClick={selectSuggested}
-          className="rounded-md border border-good-line bg-good-wash px-2 py-1.5 text-[11px] leading-4 font-medium text-good desk:px-3 desk:text-[14px] desk:leading-5"
+          onClick={() => setSelection(eligible.map(({ id }) => id), true)}
+          disabled={!eligible.some(({ id }) => !selected.has(id))}
+          className="rounded-md border border-good-line bg-good-wash px-2 py-1.5 text-[11px] leading-4 font-medium text-good disabled:cursor-default disabled:opacity-60 desk:px-3 desk:text-[14px] desk:leading-5"
         >
           {t({ zh: '全选建议项', en: 'Select All Suggested' })}
         </button>
@@ -213,7 +225,7 @@ export function ScanDemo() {
         </button>
         <p className="order-last basis-full px-0.5 text-[12px] font-medium desk:order-none desk:min-w-0 desk:flex-1 desk:basis-0 desk:truncate desk:px-1 desk:text-[15px]">
           {selectedItems.length > 0
-            ? t({ zh: `已选 ${selectedItems.length} 项\u2002·\u2002预计释放 ${sum(selectedItems)}`, en: `${selectedItems.length} selected\u2002·\u2002Est. freed ${sum(selectedItems)}` })
+            ? t({ zh: `已选 ${selectedItems.length} 项\u2002·\u2002预计释放 ${formatSize(totalSize(selectedItems))}`, en: `${selectedItems.length} selected\u2002·\u2002Est. freed ${formatSize(totalSize(selectedItems))}` })
             : t({ zh: '已选 0 项', en: '0 selected' })}
         </p>
         <button
@@ -225,6 +237,14 @@ export function ScanDemo() {
           {t({ zh: '清理', en: 'Clean' })}
         </button>
       </div>
+      {heldCount > 0 && (
+        <p className="mt-1 text-[11px] text-win-muted desk:text-[13px]">
+          {t({
+            zh: `另有 ${heldCount} 项建议因应用正在运行，批量勾选会跳过。`,
+            en: heldCount === 1 ? 'Select All Suggested skips 1 item from a running app.' : `Select All Suggested skips ${heldCount} items from running apps.`,
+          })}
+        </p>
+      )}
 
       {notice && (
         <DemoDialog label={t({ zh: '这是演示', en: 'This is a demo' })} onClose={() => setNotice(false)}>

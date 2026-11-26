@@ -1,5 +1,5 @@
 import { Check, Minus } from 'lucide-react'
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { useLang, type L } from '../../i18n'
 
 // 几个演示窗口共用的部件：窗口外框、红黄绿圆点、应用的页签栏、勾选框、「这是演示」提示
@@ -101,18 +101,32 @@ export function Checkbox({
   )
 }
 
-/** 盖在演示窗口上的小弹窗：背景压暗，点背景关闭 */
+/** 用浏览器的模态弹窗接管键盘焦点，内容保持演示窗口的配色。 */
 export function DemoDialog({ children, onClose, label }: { children: ReactNode; onClose: () => void; label: string }) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+
+  useLayoutEffect(() => {
+    const dialog = dialogRef.current!
+    dialog.showModal()
+    return () => dialog.close()
+  }, [])
+
   return (
-    <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#05060a]/70 p-3" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-label={label}
-        onClick={(e) => e.stopPropagation()}
-        className="max-h-full w-full max-w-[420px] overflow-y-auto rounded-2xl border border-line bg-surface p-[18px] text-ink shadow-2xl desk:p-6"
-      >
+    <dialog
+      ref={dialogRef}
+      aria-label={label}
+      onCancel={(event) => {
+        event.preventDefault()
+        onClose()
+      }}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
+      className="fixed inset-0 m-auto h-fit max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-[420px] overflow-y-auto rounded-2xl border-0 bg-transparent p-0 text-ink backdrop:bg-canvas/70"
+    >
+      <div className="rounded-2xl border border-line bg-surface p-[18px] desk:p-6">
         {children}
       </div>
-    </div>
+    </dialog>
   )
 }

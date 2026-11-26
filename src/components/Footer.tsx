@@ -51,8 +51,8 @@ export function Footer({ depth }: { depth: PageDepth }) {
             </p>
             <p className="mt-3 text-[13px] leading-[21px] text-subtle">
               {t({
-                zh: '扫描结果只保存在你的 Mac 上，不会上传；只在激活、校验许可证和检查更新时联网。',
-                en: 'Scan results stay on your Mac and are never uploaded. The app only goes online to activate and verify your license and to check for updates.',
+                zh: 'MaClean 在本机完成扫描，不主动上传扫描结果。接入第三方 AI 助手后，助手读取的路径和占用信息可能发送给对应服务。',
+                en: 'MaClean scans on your Mac and does not upload scan results. If you connect a third-party AI assistant, it may send the paths and disk usage details it reads to its provider.',
               })}
             </p>
           </div>

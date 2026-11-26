@@ -163,18 +163,20 @@ export const mobileTiles: Record<CategoryId, { x: number; y: number; w: number; 
 
 export type ScanItem = {
   name: L
+  path: string
   /** 删了会怎样 */
   note: L
   gb: number
   kind: 'suggested' | 'review' | 'view'
 }
 
-export type ScanApp = { id: string; name: L; icon?: string; gb: number; needsQuit?: boolean; items: ScanItem[] }
+export type ScanApp = { id: string; name: L; icon?: string; needsQuit?: boolean; items: ScanItem[] }
 
-const s = (zh: string, en: string, noteZh: string, noteEn: string, gb: number, kind: ScanItem['kind'] = 'suggested'): ScanItem => ({
+const s = (zh: string, en: string, noteZh: string, noteEn: string, gb: number, path: string, kind: ScanItem['kind'] = 'suggested'): ScanItem => ({
   name: { zh, en },
   note: { zh: noteZh, en: noteEn },
   gb,
+  path,
   kind,
 })
 
@@ -183,68 +185,62 @@ export const scanApps: ScanApp[] = [
     id: 'chrome',
     name: same('Chrome'),
     icon: chrome,
-    gb: 7.4,
     needsQuit: true,
     items: [
-      s('网页资源缓存', 'Web resource cache', '下次打开网页时重新下载', 'Downloaded again the next time you open the pages', 3.6),
-      s('浏览器运行缓存', 'Browser runtime cache', '浏览器用到时重新生成', 'Rebuilt when the browser needs it', 1.6),
-      s('网站数据', 'Website data', '删除后部分网站要重新登录', 'Some sites will ask you to sign in again', 2, 'review'),
-      s('扩展程序', 'Extensions', '扩展本体，不提供清理', 'The extensions themselves; not offered for cleaning', 0.2, 'view'),
+      s('网页资源缓存', 'Web resource cache', '下次打开网页时重新下载', 'Downloaded again the next time you open the pages', 3.6, '~/Library/Caches/Google/Chrome/Default/Cache'),
+      s('浏览器运行缓存', 'Browser runtime cache', '浏览器用到时重新生成', 'Rebuilt when the browser needs it', 1.6, '~/Library/Caches/Google/Chrome/Default/Code Cache'),
+      s('网站数据', 'Website data', '删除后部分网站要重新登录', 'Some sites will ask you to sign in again', 2, '~/Library/Application Support/Google/Chrome/Default/Local Storage', 'review'),
+      s('扩展程序', 'Extensions', '扩展本体，不提供清理', 'The extensions themselves; not offered for cleaning', 0.2, '~/Library/Application Support/Google/Chrome/Default/Extensions', 'view'),
     ],
   },
   {
     id: 'qqmusic',
     name: { zh: 'QQ 音乐', en: 'QQ Music' },
     icon: qqmusic,
-    gb: 3.7,
     items: [
-      s('音乐缓存', 'Music cache', '再听这些歌时重新下载', 'Downloaded again when you play the songs', 3.1),
-      s('封面缓存', 'Cover art cache', '封面图片，用到时重新下载', 'Cover images; downloaded again when needed', 0.6),
+      s('音乐缓存', 'Music cache', '再听这些歌时重新下载', 'Downloaded again when you play the songs', 3.1, '~/Library/Containers/com.tencent.QQMusicMac/Data/Library/Caches/Music'),
+      s('封面缓存', 'Cover art cache', '封面图片，用到时重新下载', 'Cover images; downloaded again when needed', 0.6, '~/Library/Containers/com.tencent.QQMusicMac/Data/Library/Caches/Cover'),
     ],
   },
   {
     id: 'wechat',
     name: { zh: '微信', en: 'WeChat' },
     icon: wechat,
-    gb: 10.8,
     needsQuit: true,
     items: [
-      s('应用缓存', 'App cache', '用到时重新生成', 'Rebuilt when needed', 2.4),
-      s('临时文件', 'Temporary files', '删除后不影响聊天记录', 'Deleting them doesn’t affect chat history', 1),
-      s('聊天媒体', 'Chat media', '删除后聊天里的图片视频打不开', 'Photos and videos in chats will no longer open', 6.9, 'review'),
-      s('本地数据库', 'Local database', '聊天记录本身，不提供清理', 'The chat history itself; not offered for cleaning', 0.5, 'view'),
+      s('应用缓存', 'App cache', '用到时重新生成', 'Rebuilt when needed', 2.4, '~/Library/Containers/com.tencent.xinWeChat/Data/Library/Caches'),
+      s('临时文件', 'Temporary files', '删除后不影响聊天记录', 'Deleting them doesn’t affect chat history', 1, '~/Library/Containers/com.tencent.xinWeChat/Data/tmp'),
+      s('聊天媒体', 'Chat media', '删除后聊天里的图片视频打不开', 'Photos and videos in chats will no longer open', 6.9, '~/Library/Containers/com.tencent.xinWeChat/Data/Documents/Media', 'review'),
+      s('本地数据库', 'Local database', '聊天记录本身，不提供清理', 'The chat history itself; not offered for cleaning', 0.5, '~/Library/Containers/com.tencent.xinWeChat/Data/Documents/DB', 'view'),
     ],
   },
   {
     id: 'xcode',
     name: same('Xcode'),
     icon: xcode,
-    gb: 12.9,
     items: [
-      s('编译缓存\u2002·\u2002DerivedData', 'Build cache\u2002·\u2002DerivedData', '下次编译时重新生成，首次变慢', 'Rebuilt on the next build; the first one is slower', 1.8),
-      s('构建日志与索引', 'Build logs and index', '打开项目时重新建立索引', 'Re-indexed when you open the project', 1),
-      s('构建归档', 'Archives', '删除后旧版本无法再导出', 'Older builds can no longer be exported', 7.4, 'review'),
-      s('设备支持文件', 'Device support files', '正在用的系统版本，不提供清理', 'For the OS version in use; not offered for cleaning', 2.7, 'view'),
+      s('编译缓存\u2002·\u2002DerivedData', 'Build cache\u2002·\u2002DerivedData', '下次编译时重新生成，首次变慢', 'Rebuilt on the next build; the first one is slower', 1.8, '~/Library/Developer/Xcode/DerivedData'),
+      s('构建日志与索引', 'Build logs and index', '打开项目时重新建立索引', 'Re-indexed when you open the project', 1, '~/Library/Developer/Xcode/DerivedData/Index.noindex'),
+      s('构建归档', 'Archives', '删除后旧版本无法再导出', 'Older builds can no longer be exported', 7.4, '~/Library/Developer/Xcode/Archives', 'review'),
+      s('设备支持文件', 'Device support files', '正在用的系统版本，不提供清理', 'For the OS version in use; not offered for cleaning', 2.7, '~/Library/Developer/Xcode/iOS DeviceSupport', 'view'),
     ],
   },
   {
     id: 'npm',
     name: same('npm'),
-    gb: 1.75,
     items: [
-      s('下载缓存', 'Download cache', 'npm install 时重新下载', 'Downloaded again on npm install', 1.35),
-      s('缓存索引', 'Cache index', '下次安装时重新生成', 'Rebuilt on the next install', 0.4),
+      s('下载缓存', 'Download cache', 'npm install 时重新下载', 'Downloaded again on npm install', 1.35, '~/.npm/_cacache/content-v2'),
+      s('缓存索引', 'Cache index', '下次安装时重新生成', 'Rebuilt on the next install', 0.4, '~/.npm/_cacache/index-v5'),
     ],
   },
   {
     id: 'firefox',
     name: same('Firefox'),
     icon: firefox,
-    gb: 1.4,
     items: [
-      s('网页资源缓存', 'Web resource cache', '下次打开网页时重新下载', 'Downloaded again the next time you open the pages', 0.85),
-      s('着色器缓存', 'Shader cache', '浏览器用到时重新生成', 'Rebuilt when the browser needs it', 0.25),
-      s('离线网站数据', 'Offline website data', '删除后部分网站要重新登录', 'Some sites will ask you to sign in again', 0.3, 'review'),
+      s('网页资源缓存', 'Web resource cache', '下次打开网页时重新下载', 'Downloaded again the next time you open the pages', 0.85, '~/Library/Caches/Firefox/Profiles/demo/cache2'),
+      s('着色器缓存', 'Shader cache', '浏览器用到时重新生成', 'Rebuilt when the browser needs it', 0.25, '~/Library/Caches/Firefox/Profiles/demo/shader-cache'),
+      s('离线网站数据', 'Offline website data', '删除后部分网站要重新登录', 'Some sites will ask you to sign in again', 0.3, '~/Library/Application Support/Firefox/Profiles/demo/storage', 'review'),
     ],
   },
 ]
@@ -259,6 +255,7 @@ export function formatSize(gb: number): string {
 
 export type UninstallApp = {
   id: string
+  bundleId: string
   name: L
   icon: string
   path: string
@@ -270,8 +267,9 @@ export type UninstallApp = {
   unused?: boolean
 }
 
-const u = (id: string, zh: string, en: string, icon: string, file: string, mb?: number, cacheMb?: number, unused?: boolean): UninstallApp => ({
+const u = (id: string, zh: string, en: string, icon: string, file: string, bundleId: string, mb?: number, cacheMb?: number, unused?: boolean): UninstallApp => ({
   id,
+  bundleId,
   name: { zh, en },
   icon,
   path: `/Applications/${file}.app`,
@@ -281,24 +279,24 @@ const u = (id: string, zh: string, en: string, icon: string, file: string, mb?: 
 })
 
 export const uninstallApps: UninstallApp[] = [
-  u('idea', 'IntelliJ IDEA', 'IntelliJ IDEA', idea, 'IntelliJ IDEA', 3800, 180),
-  u('xcode', 'Xcode', 'Xcode', xcode, 'Xcode'),
-  u('datagrip', 'DataGrip', 'DataGrip', datagrip, 'DataGrip', 2400, 200),
-  u('lark', '飞书', 'Lark', lark, 'Lark', 2200, 210),
-  u('capcut', '剪映专业版', 'CapCut', capcut, 'VideoFusion-macOS', 2050, 220, true),
-  u('doubao', '豆包工作', 'Doubao', doubao, 'DoubaoWork', 1850, 230),
-  u('chrome', 'Google Chrome', 'Google Chrome', chrome, 'Google Chrome', 1600, 240),
-  u('yds', 'YDS Code', 'YDS Code', yds, 'YDS Code', 1480, 250, true),
-  u('chatgpt', 'ChatGPT', 'ChatGPT', chatgpt, 'ChatGPT', 1400, 260),
-  u('wps', 'WPS Office', 'WPS Office', wps, 'wpsoffice', 1320, 270),
-  u('trae', 'TRAE CN', 'TRAE CN', trae, 'Trae CN', 1250, 280, true),
-  u('qq', 'QQ', 'QQ', qq, 'QQ', 1180, 290),
-  u('douyin', '抖音直播伴侣', 'Douyin Live', douyin, 'Douyin Webcast Mate', 1100, 300),
-  u('workbuddy', 'WorkBuddy', 'WorkBuddy', workbuddy, 'WorkBuddy', 980, 310, true),
-  u('playground', 'Swift Playground', 'Swift Playground', playground, 'Swift Playground', undefined, undefined, true),
-  u('wechat', '微信', 'WeChat', wechat, 'WeChat', 860, 330),
-  u('qqmusic', 'QQ 音乐', 'QQ Music', qqmusic, 'QQMusic', 420, 340),
-  u('firefox', 'Firefox', 'Firefox', firefox, 'Firefox', 160, 480),
+  u('idea', 'IntelliJ IDEA', 'IntelliJ IDEA', idea, 'IntelliJ IDEA', 'com.jetbrains.intellij', 3800, 180),
+  u('xcode', 'Xcode', 'Xcode', xcode, 'Xcode', 'com.apple.dt.Xcode'),
+  u('datagrip', 'DataGrip', 'DataGrip', datagrip, 'DataGrip', 'com.jetbrains.datagrip', 2400, 200),
+  u('lark', '飞书', 'Lark', lark, 'Lark', 'com.bytedance.macos.feishu', 2200, 210),
+  u('capcut', '剪映专业版', 'CapCut', capcut, 'VideoFusion-macOS', 'com.lemon.lvpro', 2050, 220, true),
+  u('doubao', '豆包工作', 'Doubao', doubao, 'DoubaoWork', 'com.work.pc.doubao', 1850, 230),
+  u('chrome', 'Google Chrome', 'Google Chrome', chrome, 'Google Chrome', 'com.google.Chrome', 1600, 240),
+  u('yds', 'YDS Code', 'YDS Code', yds, 'YDS Code', 'com.yonyou.YDSCode', 1480, 250, true),
+  u('chatgpt', 'ChatGPT', 'ChatGPT', chatgpt, 'ChatGPT', 'com.openai.chat', 1400, 260),
+  u('wps', 'WPS Office', 'WPS Office', wps, 'wpsoffice', 'com.kingsoft.wpsoffice.mac', 1320, 270),
+  u('trae', 'TRAE CN', 'TRAE CN', trae, 'Trae CN', 'cn.trae.app', 1250, 280, true),
+  u('qq', 'QQ', 'QQ', qq, 'QQ', 'com.tencent.qq', 1180, 290),
+  u('douyin', '抖音直播伴侣', 'Douyin Live', douyin, 'Douyin Webcast Mate', 'com.bytedance.webcastmate.mac', 1100, 300),
+  u('workbuddy', 'WorkBuddy', 'WorkBuddy', workbuddy, 'WorkBuddy', 'com.tencent.workbuddy.mac', 980, 310, true),
+  u('playground', 'Swift Playground', 'Swift Playground', playground, 'Swift Playground', 'com.apple.PlaygroundsMac', undefined, undefined, true),
+  u('wechat', '微信', 'WeChat', wechat, 'WeChat', 'com.tencent.xinWeChat', 860, 330),
+  u('qqmusic', 'QQ 音乐', 'QQ Music', qqmusic, 'QQMusic', 'com.tencent.QQMusicMac', 420, 340),
+  u('firefox', 'Firefox', 'Firefox', firefox, 'Firefox', 'org.mozilla.firefox', 160, 480),
 ]
 
 /** 卸载页的大小写法：应用本体保留两位小数（3.80 GB），合计去掉多余的零（2.6 GB） */
