@@ -289,11 +289,12 @@ function Safety() {
   ]
   return (
     <section className="wrap pb-14 desk:pb-[90px]">
-      {/* 这一块也是一页（用户 2026-11-26 要求占一屏）：四张卡片两行两列，撑满标题下面剩下的高度 */}
+      {/* 这一块也是一页（用户 2026-11-26 要求占一屏）：四张卡片两行两列，撑满标题下面剩下的高度。
+          卡片不另铺底色，和页面背景一样，只靠边框分开（和价格页一致） */}
       <DemoPage id="safety" fill title={{ zh: '清简留余地，细微见用心', en: 'Room to spare, care in the details' }}>
         <ul className="grid gap-2.5 desk:flex-1 desk:grid-cols-2 desk:grid-rows-2 desk:gap-5">
           {cards.map((card) => (
-            <li key={card.title.en} className="flex items-start gap-3.5 rounded-2xl border border-line bg-raised p-3.5 desk:items-center desk:gap-5 desk:rounded-[20px] desk:px-7 desk:py-5 xl:gap-6 xl:px-9 xl:py-6">
+            <li key={card.title.en} className="flex items-start gap-3.5 rounded-2xl border border-line p-3.5 desk:items-center desk:gap-5 desk:rounded-[20px] desk:px-7 desk:py-5 xl:gap-6 xl:px-9 xl:py-6">
               <span className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-accent/25 bg-accent-wash text-accent desk:size-12 desk:rounded-xl xl:size-[52px] xl:rounded-[14px]">{card.icon}</span>
               <div>
                 <h3 className="font-sans text-[16px] leading-[26px] font-medium desk:text-[22px] desk:leading-[33px] desk:font-bold xl:text-[24px] xl:leading-[36px]">{t(card.title)}</h3>
