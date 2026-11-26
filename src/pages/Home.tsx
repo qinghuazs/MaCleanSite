@@ -70,18 +70,18 @@ function Hero() {
                 所以改成 inline-block 并上下各加一点内边距把盒子撑高，再用负外边距抵掉，不影响排版 */}
             <span className="-my-[0.2em] inline-block bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text py-[0.2em] text-transparent">{t({ zh: '都去哪了？', en: 'the space go?' })}</span>
           </h1>
-          <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[17px] desk:leading-[30px]">
-            {t({
-              // 宽屏上在句号后换行，两句各占一行
-              zh: (
-                <>
-                  顺着空间地图，找到把 Mac 填满的目录。
-                  <br className="hidden desk:block" />
-                  再翻开每个应用的清单，看看哪些缓存可以重建，哪些文件值得留下。
-                </>
-              ),
-              en: <>Follow the storage map to the folders filling up your Mac. Then open each app’s list to see which caches can be rebuilt and which files are worth keeping.</>,
-            })}
+          {/* 导语是用户自己写的（2026-11-26）：一句话把产品讲全，最后一句单独一行。
+              第一句很长，用 text-balance 让各行差不多宽，免得最后一行只剩两三个字 */}
+          <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[16px] desk:leading-[28px]">
+            <span className="block text-balance">
+              {t({
+                zh: 'MaClean 是一款把去留决定权交给你的 Mac 清理工具：用空间地图看清「系统数据」，按应用逐项核对扫描结果，卸载时让应用本体和留下的数据分开处理，还可以通过 MCP 让 AI 助手帮你解读占用、拟一份清理方案。',
+                en: 'MaClean is a Mac cleaner that leaves the decisions to you: map what’s in System Data, review scan results app by app, uninstall an app separately from the data it leaves behind, and let an AI assistant explain your usage and draft a cleanup plan over MCP.',
+              })}
+            </span>
+            <span className="block">
+              {t({ zh: '默认一项不选，清理时默认移到废纸篓。', en: 'By default nothing is selected, and cleaning moves files to the Trash.' })}
+            </span>
           </p>
           <div className="mt-6 flex flex-wrap gap-3 desk:mt-7">
             <DownloadButton />
