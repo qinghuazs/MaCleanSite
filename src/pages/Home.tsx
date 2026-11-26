@@ -94,7 +94,7 @@ function Hero() {
             </ButtonLink>
           </div>
           <p className="mt-4 text-[12px] text-subtle">
-            {t({ zh: `免费扫描\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Apple 公证`, en: `Free to scan\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Notarized by Apple` })}
+            {t({ zh: `免费扫描\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002已通过 Apple 公证`, en: `Free to scan\u2002·\u2002macOS ${site.minMacOS}+\u2002·\u2002Notarized by Apple` })}
           </p>
         </div>
 
