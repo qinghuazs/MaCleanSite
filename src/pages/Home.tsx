@@ -64,8 +64,11 @@ function Hero() {
           >
             {t({ zh: '磁盘空间', en: 'Where did all ' })}
             {lang === 'en' && <br className="desk:hidden" />}
-            {/* 后半句用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色 */}
-            <span className="bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text text-transparent">{t({ zh: '都去哪了？', en: 'the space go?' })}</span>
+            {/* 后半句用星云里的暖色做渐变，和右边的星云呼应；整页其余的强调色都是冷色。
+                渐变是「只在字的形状里显示的背景」，背景只铺到这个 span 的盒子为止；行内 span 的盒子高度按第一种字体
+                （Newsreader）算，思源宋体的汉字比它高出约 0.12em，顶上那一截就没有颜色，看着像被削掉。
+                所以改成 inline-block 并上下各加一点内边距把盒子撑高，再用负外边距抵掉，不影响排版 */}
+            <span className="-my-[0.2em] inline-block bg-linear-to-r from-[#ffe9c4] via-[#ffc48d] to-[#ff9d80] bg-clip-text py-[0.2em] text-transparent">{t({ zh: '都去哪了？', en: 'the space go?' })}</span>
           </h1>
           <p className="mt-5 text-[14px] leading-[26px] text-muted desk:mt-6 desk:text-[17px] desk:leading-[30px]">
             {t({
