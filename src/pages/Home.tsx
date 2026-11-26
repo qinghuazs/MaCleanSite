@@ -641,22 +641,23 @@ function Faq() {
 function Download() {
   const { t } = useLang()
   return (
-    // 最后一页（用户 2026-11-26 要求占一屏，去掉卡片底色和应用图标；只有三行字太空，又让把会动的玫瑰星云放到标题上方）。
-    // 内容放在这一屏正中，略微偏上。这一页不用 DemoPage（那是标题在左上角的版式），自己带 data-page 接进翻页；
-    // 翻过它就是页脚，普通滚动。星云要叠在不透明的底色上，所以这一块自己带底色并单独成一层。
+    // 最后一页（用户 2026-11-26 定的）：占一屏；没有卡片底色和应用图标；背景是和首屏一样的星空，标题上方是会动的玫瑰星云，
+    // 首尾呼应。内容放在这一屏正中，略微偏上。这一页不用 DemoPage（那是标题在左上角的版式），自己带 data-page 接进翻页；
+    // 翻过它就是页脚，普通滚动。
+    // 外面这层左右铺到窗口边，自己带底色并单独成一层：星云用滤色叠在星空上，要有不透明的底才叠得对。
     // 手机上和上一块之间用一条线分开
-    <section
-      id="download"
-      data-page
-      className="wrap isolate flex flex-col items-center justify-center overflow-hidden border-t border-line bg-canvas py-12 text-center desk:min-h-[calc(100svh-77px)] desk:-scroll-mt-[11px] desk:border-t-0 desk:pt-0 desk:pb-[6vh]"
-    >
-      {/* 星云的图比它占的位置大一圈（四周是渐隐的），下面留出这一圈的距离 */}
-      <HeroNebula className="mb-7 max-w-[250px] desk:mb-12 desk:max-w-[400px]" />
-      <h2 className="text-[30px] leading-[40px] desk:text-[52px] desk:leading-[68px]">{t({ zh: '给 Mac 留一点余地', en: 'Give your Mac some room' })}</h2>
-      <DownloadButton className="mt-5 desk:mt-9" />
-      <p className="mt-4 text-[11px] text-subtle desk:mt-5 desk:text-[13px]">
-        {t({ zh: `${site.name} ${site.version}\u2002·\u2002macOS ${site.minMacOS} 或更新版本`, en: `${site.name} ${site.version}\u2002·\u2002macOS ${site.minMacOS} or later` })}
-      </p>
-    </section>
+    <div id="download" data-page className="relative isolate overflow-hidden border-t border-line bg-canvas desk:-scroll-mt-[11px] desk:border-t-0">
+      {/* 星空上下两头渐隐，和上一页、页脚接上 */}
+      <StarSky className="absolute inset-0 -z-10 size-full [mask-image:linear-gradient(to_bottom,transparent,#000_18%,#000_82%,transparent)]" />
+      <section className="wrap flex flex-col items-center justify-center py-12 text-center desk:min-h-[calc(100svh-77px)] desk:pt-0 desk:pb-[6vh]">
+        {/* 星云的图比它占的位置大一圈（四周是渐隐的），下面留出这一圈的距离 */}
+        <HeroNebula className="mb-7 max-w-[250px] desk:mb-12 desk:max-w-[400px]" />
+        <h2 className="text-[30px] leading-[40px] desk:text-[52px] desk:leading-[68px]">{t({ zh: '给 Mac 留一点余地', en: 'Give your Mac some room' })}</h2>
+        <DownloadButton className="mt-5 desk:mt-9" />
+        <p className="mt-4 text-[11px] text-subtle desk:mt-5 desk:text-[13px]">
+          {t({ zh: `${site.name} ${site.version}\u2002·\u2002macOS ${site.minMacOS} 或更新版本`, en: `${site.name} ${site.version}\u2002·\u2002macOS ${site.minMacOS} or later` })}
+        </p>
+      </section>
+    </div>
   )
 }
