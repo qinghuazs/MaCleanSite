@@ -35,6 +35,7 @@ export function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: stri
       const cacheKey = `${lang}:${el.parentElement!.clientWidth}`
       if (natural.current.key !== cacheKey) natural.current = { key: cacheKey, height: 0 }
       const scrolled = window.scrollY
+      const before = el.getBoundingClientRect()
       const measured = measure || natural.current.height === 0
       if (measured) {
         // 按 1 倍、高度收到 0 量出内容最少要多高（加上下两条边框）
@@ -49,8 +50,13 @@ export function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: stri
       const zoom = Math.min(1, Math.max(minZoom, available / need))
       el.style.setProperty('zoom', String(zoom))
       el.style.height = `${Math.min(Math.max(available / zoom, need), need + maxExtra)}px`
-      // 量的那一下如果把页面的滚动位置带跑了，放回去
-      if (measured && window.scrollY !== scrolled) window.scrollTo({ top: scrolled, behavior: 'instant' })
+      if (measured) {
+        // 量的那一下会把页面的滚动位置带跑，放回去。窗口整个在视口上方时，它的高度变了多少，页面就跟着挪多少，
+        // 这样正在看的内容不动
+        const above = before.bottom <= header
+        const target = scrolled + (above ? el.getBoundingClientRect().height - before.height : 0)
+        if (Math.abs(window.scrollY - target) > 0.5) window.scrollTo({ top: target, behavior: 'instant' })
+      }
     }
     fit(true)
     const onResize = () => fit(false)
