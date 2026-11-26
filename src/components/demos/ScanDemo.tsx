@@ -25,6 +25,8 @@ export function ScanDemo() {
   const [onlySuggested, setOnlySuggested] = useState(false)
   const [query, setQuery] = useState('')
   const [notice, setNotice] = useState(false)
+  // 点「全选建议项」时因应用正在运行而跳过的项；和应用一样，点过才提示，「全不选」后不再提示
+  const [held, setHeld] = useState<Set<string>>(new Set())
 
   // 先筛每一项，再按应用分组。列表、汇总和批量勾选共用同一筛选结果。
   const q = query.trim().toLowerCase()
@@ -48,9 +50,10 @@ export function ScanDemo() {
   const visibleCount = visible.reduce((count, group) => count + group.items.length, 0)
   const visibleSize = formatSize(visible.reduce((size, group) => size + group.occupied, 0))
   const selectedItems = scanApps.flatMap((app) => app.items.filter((_, i) => selected.has(key(app, i))))
+  // 「全选建议项」只勾不用先退出应用的；要先退出的留给用户自己勾（应用行前面的勾选框照常能用）
   const eligible = visible.flatMap(({ app, suggested }) => app.needsQuit ? [] : suggested)
-  const heldCount = visible.reduce((count, { app, suggested }) =>
-    count + (app.needsQuit ? suggested.filter(({ id }) => !selected.has(id)).length : 0), 0)
+  const skipped = visible.flatMap(({ app, suggested }) => app.needsQuit ? suggested : [])
+  const heldItems = scanApps.flatMap((app) => app.items.filter((_, i) => held.has(key(app, i)) && !selected.has(key(app, i))))
 
   const quitFirst = t({ zh: '需先退出', en: 'Quit first' })
   const setSelection = (ids: string[], pick: boolean) => {
@@ -136,7 +139,7 @@ export function ScanDemo() {
               <li key={app.id} className="border-b border-[#2b3244] last:border-b-0">
                 <div className="flex cursor-pointer items-center gap-2.5 py-2 desk:gap-4 desk:py-2.5" onClick={() => setExpanded((current) => new Map(current).set(app.id, !open))}>
                   <span className="hidden w-4 shrink-0 desk:block">
-                    {!app.needsQuit && suggested.length > 0 && (
+                    {suggested.length > 0 && (
                       <Checkbox
                         state={picked === 0 ? 'off' : picked === suggested.length ? 'on' : 'some'}
                         label={t({ zh: `勾选 ${t(app.name)} 的建议项`, en: `Select ${t(app.name)}’s suggested items` })}
@@ -210,7 +213,10 @@ export function ScanDemo() {
       <div className="mt-2 flex flex-wrap items-center gap-1.5 desk:mt-3 desk:flex-nowrap desk:gap-2.5">
         <button
           type="button"
-          onClick={() => setSelection(eligible.map(({ id }) => id), true)}
+          onClick={() => {
+            setSelection(eligible.map(({ id }) => id), true)
+            if (skipped.length > 0) setHeld(new Set(skipped.map(({ id }) => id)))
+          }}
           disabled={!eligible.some(({ id }) => !selected.has(id))}
           className="rounded-md border border-good-line bg-good-wash px-2 py-1.5 text-[11px] leading-4 font-medium text-good disabled:cursor-default disabled:opacity-60 desk:px-3 desk:text-[14px] desk:leading-5"
         >
@@ -218,7 +224,10 @@ export function ScanDemo() {
         </button>
         <button
           type="button"
-          onClick={() => setSelected(new Set())}
+          onClick={() => {
+            setSelected(new Set())
+            setHeld(new Set())
+          }}
           className="rounded-md border border-[#2a3040] bg-[#151822] px-2 py-1.5 text-[11px] leading-4 font-medium text-win-muted desk:px-3 desk:text-[14px] desk:leading-5"
         >
           {t({ zh: '全不选', en: 'Deselect All' })}
@@ -237,11 +246,15 @@ export function ScanDemo() {
           {t({ zh: '清理', en: 'Clean' })}
         </button>
       </div>
-      {heldCount > 0 && (
-        <p className="mt-1 text-[11px] text-win-muted desk:text-[13px]">
+      {/* 这句是应用底栏里的原话（应用里后面还有「查看」，演示里不做） */}
+      {heldItems.length > 0 && (
+        <p role="status" className="mt-1 px-0.5 text-[11px] leading-4 text-warn desk:px-0 desk:text-[13px] desk:leading-5">
           {t({
-            zh: `另有 ${heldCount} 项建议因应用正在运行，批量勾选会跳过。`,
-            en: heldCount === 1 ? 'Select All Suggested skips 1 item from a running app.' : `Select All Suggested skips ${heldCount} items from running apps.`,
+            zh: `另有 ${heldItems.length} 个建议项（${formatSize(totalSize(heldItems))}）因应用正在运行没勾选`,
+            en:
+              heldItems.length === 1
+                ? `1 more suggested item (${formatSize(totalSize(heldItems))}) not selected because its app is running`
+                : `${heldItems.length} more suggested items (${formatSize(totalSize(heldItems))}) not selected because their apps are running`,
           })}
         </p>
       )}
