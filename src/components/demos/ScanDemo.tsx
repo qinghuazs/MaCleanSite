@@ -1,10 +1,11 @@
 import { ArrowDown, Ban, ChevronDown, ChevronRight, RotateCw, Search, SquareTerminal } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { formatSize, scanApps, type ScanApp, type ScanItem } from '../../content/demo'
 import { useLang, type L } from '../../i18n'
 import { site } from '../../site.config'
 import { ButtonLink } from '../ui'
-import { AppTabs, Checkbox, DemoDialog, TrafficLights, WindowFrame } from './chrome'
+import { Checkbox, DemoDialog, TrafficLights, WindowFrame } from './chrome'
+import { useFitScreen } from './useFitScreen'
 
 // 扫描结果演示：一个应用一行，点开看每一项是什么、删了会怎样；可以勾选，
 // 点「清理」只弹出「这是演示」的提示，不执行任何操作
@@ -19,7 +20,10 @@ const statusColor: Record<ScanItem['kind'], string> = { suggested: 'text-good', 
 const totalSize = (items: ScanItem[]) => items.reduce((total, item) => total + item.gb, 0)
 
 export function ScanDemo() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
+  // 宽屏上和上面的标题、介绍合起来正好一屏：窗口高度固定，应用列表在窗口里面滚动（和应用一样）
+  const frame = useRef<HTMLDivElement>(null)
+  useFitScreen(frame, lang, '', { maxExtra: 120 })
   const [expanded, setExpanded] = useState<Map<string, boolean>>(new Map())
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [onlySuggested, setOnlySuggested] = useState(false)
@@ -56,6 +60,16 @@ export function ScanDemo() {
   const heldItems = scanApps.flatMap((app) => app.items.filter((_, i) => held.has(key(app, i)) && !selected.has(key(app, i))))
 
   const quitFirst = t({ zh: '需先退出', en: 'Quit first' })
+  // 这句是应用底栏里的原话（应用里后面还有「查看」，演示里不做）
+  const heldNote =
+    heldItems.length > 0 &&
+    t({
+      zh: `另有 ${heldItems.length} 个建议项（${formatSize(totalSize(heldItems))}）因应用正在运行没勾选`,
+      en:
+        heldItems.length === 1
+          ? `1 more suggested item (${formatSize(totalSize(heldItems))}) not selected because its app is running`
+          : `${heldItems.length} more suggested items (${formatSize(totalSize(heldItems))}) not selected because their apps are running`,
+    })
   const setSelection = (ids: string[], pick: boolean) => {
     setSelected((current) => {
       const next = new Set(current)
@@ -65,14 +79,14 @@ export function ScanDemo() {
   }
 
   return (
-    <WindowFrame className="rounded-[10px] p-2.5 desk:rounded-[14px] desk:px-[22px] desk:py-[18px]">
+    <WindowFrame ref={frame} className="rounded-[10px] p-2.5 desk:flex desk:flex-col desk:rounded-[14px] desk:px-[22px] desk:py-4">
+      {/* 窗口顶上只留红黄绿三个点和「演示数据」，应用的页签栏去掉了（和系统数据一样，2026-11-26） */}
       <div className="hidden items-center justify-between desk:flex">
         <TrafficLights className="w-10" />
-        <AppTabs active="scan" />
-        <span className="w-10" />
+        <p className="text-[13px] text-win-subtle">{t({ zh: '演示数据', en: 'Demo data' })}</p>
       </div>
 
-      <div className="flex items-center justify-between gap-3 px-0.5 desk:mt-4 desk:px-0">
+      <div className="flex items-center justify-between gap-3 px-0.5 desk:mt-3 desk:px-0">
         <p className="text-[13px] font-medium text-win-muted desk:text-[16px]">
           {onlySuggested
             ? t({ zh: `找到 ${visibleCount} 项建议清理\u2002·\u2002${visibleSize}`, en: `${visibleCount} suggested\u2002·\u2002${visibleSize}` })
@@ -81,13 +95,10 @@ export function ScanDemo() {
                 en: `${visibleCount} found\u2002·\u2002${visibleSize} total`,
               })}
         </p>
-        <div className="hidden items-center gap-3 desk:flex">
-          <span className="text-[13px] text-win-subtle">{t({ zh: '演示数据', en: 'Demo data' })}</span>
-          <span aria-hidden="true" className="inline-flex h-9 items-center gap-2 rounded-lg border border-win-line bg-win-panel px-3 text-[14px] font-medium">
-            <RotateCw className="size-3.5" />
-            {t({ zh: '重新扫描', en: 'Rescan' })}
-          </span>
-        </div>
+        <span aria-hidden="true" className="hidden h-9 items-center gap-2 rounded-lg border border-win-line bg-win-panel px-3 text-[14px] font-medium desk:inline-flex">
+          <RotateCw className="size-3.5" />
+          {t({ zh: '重新扫描', en: 'Rescan' })}
+        </span>
       </div>
 
       <div className="mt-2 flex items-center gap-4 desk:mt-3">
@@ -116,13 +127,14 @@ export function ScanDemo() {
         </label>
       </div>
 
-      <div className="mt-1 rounded-lg border border-[#2b3244] bg-[#0c1019]/60 px-2 py-2 desk:mt-3 desk:rounded-xl desk:px-4 desk:py-3">
+      {/* 宽屏上这一块撑满窗口剩下的高度，展开应用后列表在里面滚动；最小高度正好放下六个没展开的应用 */}
+      <div className="mt-1 rounded-lg border border-[#2b3244] bg-[#0c1019]/60 px-2 py-2 desk:mt-3 desk:flex desk:flex-1 desk:flex-col desk:rounded-xl desk:px-4 desk:py-3">
         <div className="flex items-center justify-between px-0.5 text-[10px] text-win-muted desk:text-[13px]">
           <p className="font-medium desk:text-[15px]">{t({ zh: '应用与工具', en: 'Apps & Tools' })}</p>
           <p>{t({ zh: '按预计释放排序', en: 'Sorted by Est. Freed' })}</p>
         </div>
 
-        <ul className="mt-1 desk:mt-2">
+        <ul className="mt-1 desk:mt-2 desk:min-h-[362px] desk:flex-1 desk:basis-0 desk:overflow-y-auto desk:[scrollbar-color:#3a425a_transparent] desk:[scrollbar-width:thin]">
           {visible.map(({ app, items, suggested, occupied, estimated }) => {
             const open = expanded.get(app.id) ?? Boolean(q)
             const picked = suggested.filter(({ id }) => selected.has(id)).length
@@ -137,7 +149,7 @@ export function ScanDemo() {
                 .join(short ? ' · ' : '\u2002·\u2002')
             return (
               <li key={app.id} className="border-b border-[#2b3244] last:border-b-0">
-                <div className="flex cursor-pointer items-center gap-2.5 py-2 desk:gap-4 desk:py-2.5" onClick={() => setExpanded((current) => new Map(current).set(app.id, !open))}>
+                <div className="flex cursor-pointer items-center gap-2.5 py-2 desk:gap-4" onClick={() => setExpanded((current) => new Map(current).set(app.id, !open))}>
                   <span className="hidden w-4 shrink-0 desk:block">
                     {suggested.length > 0 && (
                       <Checkbox
@@ -236,6 +248,11 @@ export function ScanDemo() {
           {selectedItems.length > 0
             ? t({ zh: `已选 ${selectedItems.length} 项\u2002·\u2002预计释放 ${formatSize(totalSize(selectedItems))}`, en: `${selectedItems.length} selected\u2002·\u2002Est. freed ${formatSize(totalSize(selectedItems))}` })
             : t({ zh: '已选 0 项', en: '0 selected' })}
+          {heldNote && (
+            <span role="status" className="ml-4 hidden text-[13px] font-normal text-warn desk:inline">
+              {heldNote}
+            </span>
+          )}
         </p>
         <button
           type="button"
@@ -246,16 +263,10 @@ export function ScanDemo() {
           {t({ zh: '清理', en: 'Clean' })}
         </button>
       </div>
-      {/* 这句是应用底栏里的原话（应用里后面还有「查看」，演示里不做） */}
-      {heldItems.length > 0 && (
-        <p role="status" className="mt-1 px-0.5 text-[11px] leading-4 text-warn desk:px-0 desk:text-[13px] desk:leading-5">
-          {t({
-            zh: `另有 ${heldItems.length} 个建议项（${formatSize(totalSize(heldItems))}）因应用正在运行没勾选`,
-            en:
-              heldItems.length === 1
-                ? `1 more suggested item (${formatSize(totalSize(heldItems))}) not selected because its app is running`
-                : `${heldItems.length} more suggested items (${formatSize(totalSize(heldItems))}) not selected because their apps are running`,
-          })}
+      {/* 手机上提示单独占一行；宽屏上接在「已选 N 项」后面，不另占一行 */}
+      {heldNote && (
+        <p role="status" className="mt-1 px-0.5 text-[11px] leading-4 text-warn desk:hidden">
+          {heldNote}
         </p>
       )}
 

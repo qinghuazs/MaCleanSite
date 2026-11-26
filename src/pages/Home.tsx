@@ -19,7 +19,7 @@ const l = links(0)
 const comingSoon: L = { zh: '即将开放下载', en: 'Download coming soon' }
 
 export function Home() {
-  // 宽屏上首屏和系统数据两页之间「滚一下换一页」，带 data-page 的区块就是一页
+  // 宽屏上前几页之间「滚一下换一页」（首屏、系统数据、扫描结果），带 data-page 的区块就是一页
   usePagedScroll()
   return (
     <>
@@ -107,18 +107,31 @@ function Hero() {
   )
 }
 
-/** 功能卡片：左边标题、右边说明，下面是演示 */
-function FeatureCard({ id, title, desc, mobileDesc, extra, children }: { id: string; title: L; desc?: L; mobileDesc?: L; extra?: ReactNode; children: ReactNode }) {
+/**
+ * 一页演示：大标题 + 介绍 + 演示窗口，窗口直接放在页面上（没有外层卡片）。
+ * 宽屏上这三样合起来正好一屏（窗口的高度由演示自己的 useFitScreen 算），并且参与「滚一下换一页」（data-page）。
+ * 手机上的演示多半是简化过的，介绍可以另给一段
+ */
+function DemoPage({ id, title, intro, mobileIntro, children }: { id: string; title: L; intro: { zh: ReactNode; en: ReactNode }; mobileIntro?: L; children: ReactNode }) {
   const { t } = useLang()
-  // 不传 desc 的那一块没有标题栏，也没有外面这层卡片（边框、底色、内边距），演示窗口直接放在页面上、和上面的文字左右对齐；
-  // 标题留给读屏软件
-  if (!desc) {
-    return (
-      <section id={id} aria-label={t(title)}>
-        {children}
-      </section>
-    )
-  }
+  return (
+    // 宽屏上页与页之间留 14px：上一页对齐时，这一页正好从屏幕底边开始。
+    // 点链接跳到这一页时和翻页停在同一个位置（顶边紧贴 77px 高的页头；全站的 scroll-padding-top 是 88px，这里抵掉 11px）
+    <div id={id} data-page className="mt-[18px] first:mt-0 desk:mt-3.5 desk:-scroll-mt-[11px]">
+      {/* 手机上页与页之间用一条线分开；宽屏上是翻页，不需要 */}
+      <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
+        <h2 className="text-[32px] leading-[41px] desk:text-[36px] desk:leading-[46px]">{t(title)}</h2>
+        <p className={`mt-2 text-muted ${mobileIntro ? 'hidden text-[17px] leading-[28px] desk:block' : 'text-[14px] leading-6 desk:text-[17px] desk:leading-[28px]'}`}>{t(intro)}</p>
+        {mobileIntro && <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">{t(mobileIntro)}</p>}
+      </div>
+      <div className="mt-[22px] desk:mt-6">{children}</div>
+    </div>
+  )
+}
+
+/** 功能卡片：左边标题、右边说明，下面是演示 */
+function FeatureCard({ id, title, desc, mobileDesc, extra, children }: { id: string; title: L; desc: L; mobileDesc?: L; extra?: ReactNode; children: ReactNode }) {
+  const { t } = useLang()
   return (
     <section id={id} className="rounded-[24px] border border-line bg-surface px-[13px] py-[13px] desk:px-[30px] desk:py-[30px] xl:px-[71px]">
       <div className="px-0.5 pt-0.5 desk:grid desk:grid-cols-[auto_minmax(0,655px)] desk:items-start desk:justify-between desk:gap-10 desk:px-0 desk:pt-0">
@@ -138,60 +151,50 @@ function Features() {
   const { t } = useLang()
   return (
     <section id="features" className="wrap pb-14 desk:pb-[86px]">
-      {/* 第二页：标题 + 介绍 + 系统数据窗口，宽屏上正好一屏（窗口的高度由 SystemDataDemo 里的 useFitScreen 算）。
-          宽屏上和首屏之间是翻页，不需要分隔线 */}
-      <div data-page>
-        <div className="border-t border-line pt-[23px] desk:border-t-0 desk:pt-6">
-          <h2 className="text-[32px] leading-[41px] desk:text-[44px] desk:leading-[57px]">{t({ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' })}</h2>
-          {/* 系统数据的介绍（用户写的，2026-11-26）：两句各占一行，先说容量条，再说地图。
-              手机上的演示是简化过的（没有容量条），暂时还用原来那段手机版说明，等最后统一改手机端时再定 */}
-          <p className="mt-2 hidden text-[17px] leading-[28px] text-muted desk:block">
-            {t({
-              zh: (
-                <>
-                  启动磁盘已用多少、还剩多少，应用支持、沙盒容器、缓存和开发工具各占几何，容量条上一目了然。
-                  <br />
-                  再顺着地图找到大目录，点选色块，看看空间花在了哪里，对应的目录和建议清理量随之变化。
-                </>
-              ),
-              en: (
-                <>
-                  The capacity bar shows at a glance how much of the startup disk is used and how much is left, and how much goes to application support, sandboxed containers, caches, and
-                  developer tools.
-                  <br />
-                  Then follow the map to the big folders: click a block to see where the space went, and the folders and the suggested amount update with it.
-                </>
-              ),
-            })}
-          </p>
-          <p className="mt-2 text-[14px] leading-6 text-muted desk:hidden">
-            {t({
-              zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
-              en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
-            })}
-          </p>
-        </div>
+      {/* 系统数据、扫描结果各是一页（2026-11-26 按用户的意思改的）；卸载应用和 MCP 还是原来的卡片，以后再改 */}
+      <DemoPage
+        id="system-data"
+        title={{ zh: '系统数据：一图观全貌，方寸见分明', en: 'System Data: one map, every detail' }}
+        // 介绍是用户写的：两句各占一行，先说容量条，再说地图
+        intro={{
+          zh: (
+            <>
+              启动磁盘已用多少、还剩多少，应用支持、沙盒容器、缓存和开发工具各占几何，容量条上一目了然。
+              <br />
+              再顺着地图找到大目录，点选色块，看看空间花在了哪里，对应的目录和建议清理量随之变化。
+            </>
+          ),
+          en: (
+            <>
+              The capacity bar shows at a glance how much of the startup disk is used and how much is left, and how much goes to application support, sandboxed containers, caches, and
+              developer tools.
+              <br />
+              Then follow the map to the big folders: click a block to see where the space went, and the folders and the suggested amount update with it.
+            </>
+          ),
+        }}
+        // 手机上的演示没有容量条，暂时还用原来那段手机版说明，等最后统一改手机端时再定
+        mobileIntro={{
+          zh: '点一块颜色，看看哪几个目录占得最多。地图按容量分区，点「查看扫描结果」可以接着看哪些文件适合清理。',
+          en: 'Tap a block to see which folders take the most. The map is sized by capacity. Tap View Scan Results to see which files are worth cleaning.',
+        }}
+      >
+        <SystemDataDemo />
+      </DemoPage>
 
-        <div className="mt-[22px] desk:mt-6">
-          <FeatureCard id="system-data" title={{ zh: '看清系统数据', en: 'See what’s in System Data' }}>
-            <SystemDataDemo />
-          </FeatureCard>
-        </div>
-      </div>
+      <DemoPage
+        id="scan"
+        title={{ zh: '扫描结果：一览繁芜，去留从容', en: 'Scan Results: all in view, yours to decide' }}
+        // 介绍先沿用原来卡片上的说明，等用户给新的
+        intro={{
+          zh: '点开 Chrome，分别看「建议清理」「待确认」和「仅查看」。缓存清掉后可能重新下载，有些项目还要先退出应用。默认已选 0 项。',
+          en: 'Open Chrome to see what’s Suggested, what needs review, and what’s View only. Caches may be downloaded again after cleaning, and some items need the app to quit first. Nothing is selected by default.',
+        }}
+      >
+        <ScanDemo />
+      </DemoPage>
 
       <div className="mt-[18px] space-y-[18px] desk:mt-[22px] desk:space-y-[22px]">
-
-        <FeatureCard
-          id="scan"
-          title={{ zh: '按应用查看扫描结果', en: 'Scan results, app by app' }}
-          desc={{
-            zh: '点开 Chrome，分别看「建议清理」「待确认」和「仅查看」。缓存清掉后可能重新下载，有些项目还要先退出应用。默认已选 0 项。',
-            en: 'Open Chrome to see what’s Suggested, what needs review, and what’s View only. Caches may be downloaded again after cleaning, and some items need the app to quit first. Nothing is selected by default.',
-          }}
-        >
-          <ScanDemo />
-        </FeatureCard>
-
         <FeatureCard
           id="uninstall"
           title={{ zh: '卸载应用', en: 'Uninstall Apps' }}

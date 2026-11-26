@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 // 首页宽屏上「滚一下换一页」（用户 2026-11-26 要求，像苹果官网那样）。
 //
-// 带 data-page 的区块各是一页，从页面最上面连着排（目前是首屏和系统数据两页，其余区块以后再改）。
+// 带 data-page 的区块各是一页，从页面最上面连着排（目前是首屏、系统数据、扫描结果三页，其余区块以后再改）。
 // 在这几页的范围里，滚轮或触控板往下滑一次就翻到下一页，往上滑一次翻回上一页；
 // 翻过最后一页以后是普通的滚动。从下面往回滚时先停在最后一页，再滑一次才继续往上翻。
 //
@@ -61,6 +61,13 @@ export function usePagedScroll() {
       // 捏合缩放、横向滚动、弹窗打开时不管
       if (event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY) || event.deltaY === 0) return
       if (document.querySelector('dialog[open]')) return
+      // 指针在一块自己能滚的区域上（比如扫描结果窗口里的应用列表），而且它在这个方向上还没滚到头：让它先滚
+      for (let el = event.target instanceof Element ? event.target : null; el && el !== document.body; el = el.parentElement) {
+        if (el.scrollHeight <= el.clientHeight + 1) continue
+        const overflow = getComputedStyle(el).overflowY
+        if (overflow !== 'auto' && overflow !== 'scroll') continue
+        if (event.deltaY < 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return
+      }
       const pages = stops()
       if (pages.length < 2) return
       if (locked) {

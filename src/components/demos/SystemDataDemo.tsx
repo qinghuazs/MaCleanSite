@@ -1,66 +1,14 @@
 import { ArrowDownRight, ArrowRight } from 'lucide-react'
-import { useLayoutEffect, useRef, useState, type RefObject } from 'react'
+import { useRef, useState } from 'react'
 import { categories, disk, formatSize, mapSize, mobileMapSize, mobileTiles, tiles, type Category, type CategoryId } from '../../content/demo'
 import { useLang } from '../../i18n'
 import { TrafficLights, WindowFrame } from './chrome'
+import { useFitScreen } from './useFitScreen'
 
 // 系统数据演示：点地图上的色块或图例切换分类，右边的明细跟着变。
 // 桌面照应用窗口画（容量条、图例、两层地图、明细）；手机上简化成五个色块加明细
 
 const pct = (v: number, total: number) => `${(v / total) * 100}%`
-
-/**
- * 让「区块标题 + 介绍 + 这个窗口」在宽屏上正好占一屏（用户 2026-11-26 要求）。
- * 窗口的高度取视口里剩下的高度，多出来的都给地图；剩下的高度放不下内容时把窗口整体缩小一点（最小 0.8 倍，
- * 再小字就看不清了），还放不下就照内容的高度排、超出一屏。视口特别高时地图也不无限拉长。
- * 「一屏」从区块顶边算起，顶边紧贴页头下面。
- */
-function useFitScreen(frame: RefObject<HTMLDivElement | null>, lang: string, selected: string) {
-  // 内容最少要多高：同一种语言、同一个宽度下只增不减，切换分类时窗口不会忽大忽小
-  const natural = useRef({ key: '', height: 0 })
-  useLayoutEffect(() => {
-    const el = frame.current
-    const section = document.getElementById('features')
-    if (!el || !section) return
-    const minZoom = 0.8
-    const bottomGap = 14 // 窗口底边离屏幕底边留一点空
-    const maxExtra = 240 // 比内容最少的高度最多再高这么多
-    const fit = () => {
-      if (el.offsetParent === null) {
-        // 手机版式下这个窗口不显示
-        el.style.removeProperty('zoom')
-        el.style.removeProperty('height')
-        return
-      }
-      const cacheKey = `${lang}:${el.parentElement!.clientWidth}`
-      if (natural.current.key !== cacheKey) natural.current = { key: cacheKey, height: 0 }
-      // 先按 1 倍、高度收到 0 量出内容最少要多高（加上下两条边框）
-      el.style.setProperty('zoom', '1')
-      el.style.height = '0px'
-      natural.current.height = Math.max(natural.current.height, el.scrollHeight + 2)
-      const need = natural.current.height
-      const top = el.getBoundingClientRect().top - section.getBoundingClientRect().top
-      // 翻到这一页时，区块顶边紧贴页头下面（见 usePagedScroll）
-      const offset = document.querySelector('header')?.getBoundingClientRect().height ?? 77
-      const available = window.innerHeight - offset - bottomGap - top
-      const zoom = Math.min(1, Math.max(minZoom, available / need))
-      el.style.setProperty('zoom', String(zoom))
-      el.style.height = `${Math.min(Math.max(available / zoom, need), need + maxExtra)}px`
-    }
-    fit()
-    window.addEventListener('resize', fit)
-    // 上面的标题、介绍折行变了（换语言、字体加载完），窗口能用的高度也跟着变
-    const header = section.firstElementChild
-    const observer = 'ResizeObserver' in window && header ? new ResizeObserver(fit) : null
-    if (observer && header) observer.observe(header)
-    document.fonts?.ready.then(fit)
-    return () => {
-      window.removeEventListener('resize', fit)
-      observer?.disconnect()
-    }
-    // 换了分类，明细的内容高度可能变，重新量一次
-  }, [frame, lang, selected])
-}
 
 export function SystemDataDemo() {
   const [selected, setSelected] = useState<CategoryId>('support')
@@ -83,6 +31,7 @@ function Desktop({ current, onSelect }: Props) {
   const demoData = t({ zh: '演示数据', en: 'Demo data' })
   const panel = 'rounded-xl border border-win-line bg-win-panel'
   const frame = useRef<HTMLDivElement>(null)
+  // 宽屏上和上面的标题、介绍合起来正好一屏，多出来的高度给地图
   useFitScreen(frame, lang, current.id)
 
   return (
